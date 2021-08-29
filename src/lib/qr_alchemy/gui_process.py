@@ -1,6 +1,7 @@
 
 import gi
 import qr_alchemy.process as qr_process
+import qr_alchemy.saved as qr_saved
 
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
@@ -101,6 +102,7 @@ class QrActionWindow(Gtk.Window):
 
         if state == Gtk.ResponseType.OK:
             print("got name:" + name)
+            qr_saved.set_saved_code(name,self.qr_code)
         save_window.destroy()
 
     def bu_run_clicked(self,qr_code):
