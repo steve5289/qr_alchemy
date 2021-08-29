@@ -5,17 +5,24 @@ import getopt
 import qr_alchemy.process as qr_process
 
 def main():
-    optlist, args = getopt.getopt(sys.argv[1:], "hf:")
-    
+    optlist, args = getopt.getopt(sys.argv[1:], "hf:c:")
+    configfile="./src/etc/qr_alchemy.conf"
+    file=''
 
     for opt, arg in  optlist:
         if opt == '-h':
             help()
         elif opt == '-f':
-            qr_process.qr_image_handler(arg)
+            file=arg
+        elif opt == '-c':
+            configfile=arg
         else:
             help()
-    if len(args) >= 1:
+
+    qr_process.configfile(configfile)
+    if file:
+        qr_process.qr_image_handler(file)
+    elif len(args) >= 1:
         qr_process.qr_code_handler(args[0])
 
 

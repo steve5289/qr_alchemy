@@ -1,5 +1,12 @@
 
 import subprocess
+import configparser
+
+qr_configfile=""
+
+def configfile(file): 
+    global qr_configfile
+    qr_configfile=file
 
 def qr_image_handler(file):
     qr_code_raw = subprocess.check_output(['zbarimg', '-q', '--raw', file])
@@ -43,13 +50,8 @@ def qr_get_action(header):
 
 
 def qr_code2action():
-    out = {
-        "http"   : "cli:xdg-open",
-        "https"  : "cli:xdg-open",
-        "mailto" : "cli:xdg-open",
-        "geo"    : "cli:xdg-open",
-        "tel"    : "cli:xdg-open",
-        ""       : "text",
-        "*"      : "text"
-    }
+    config = configparser.ConfigParser()
+    config.read("./src/etc/qr_alchemy.conf")
+    
+    out = config['action_map']
     return out
