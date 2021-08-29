@@ -1,6 +1,7 @@
 
 import subprocess
 import configparser
+import os
 
 qr_configfile_path=""
 qr_configfile="qr_alchemy.conf"
@@ -55,18 +56,32 @@ def _get_homedir():
         return os.environ['HOME']
     else:
         return os.environ['/']
+
+def _get_user_configfile():
+    homedir=_get_homedir()
+    qr_userconfig=homedir + qr_user_configdir + qr_configfile
+    
     
 def qr_code2action():
     config = configparser.ConfigParser()
     config.read(qr_configfile_path)
+
+    qr_userconfig=_get_user_configfile()
+    config_user=configparser.ConfigParser()
+
+    try:
+        config_user.read(qr_userconfig)
+
+        config |= config_user
+    except:
+        print("user configfile unavailable")
     
     return config['action_map']
 
 
 def qr_update_configaction(key, value):
 
-    homedir=_get_homedir()
-    qr_userconfig=homedir + qr_user_configdir + qr_configfile
+    qr_userconfig=_get_user_configfile()
     
     config = configparser.ConfigParser()
     
@@ -77,5 +92,3 @@ def qr_update_configaction(key, value):
         
     config['action_map'][key]=value
     config.write(qr_userconfig)
-
-    
