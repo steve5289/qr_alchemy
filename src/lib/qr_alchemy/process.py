@@ -53,5 +53,4 @@ def qr_code2action():
     config = configparser.ConfigParser()
     config.read("./src/etc/qr_alchemy.conf")
     
-    out = config['action_map']
-    return out
+    return config['action_map']
