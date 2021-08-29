@@ -2,6 +2,7 @@
 import subprocess
 import configparser
 import os
+import qr_alchemy.gui_process as gui
 
 qr_configfile_path=""
 qr_configfile="qr_alchemy.conf"
@@ -14,18 +15,16 @@ def configfile(file):
 def qr_image_handler(file):
     qr_code_raw = subprocess.check_output(['zbarimg', '-q', '--raw', file])
     qr_code = qr_code_raw.decode("utf-8")
-  
+ 
+     
     if qr_code:
-        print(qr_code)
-        qr_code_handler(qr_code)
-    else:
-        print("code not found in image")
+        return qr_code
+    return None
 
 def qr_code_handler(qr_code):
     header = qr_get_header(qr_code)
-
     action = qr_get_action(header)
-    
+
     qr_exec(action, qr_code)
 
 
@@ -60,6 +59,7 @@ def _get_homedir():
 def _get_user_configfile():
     homedir=_get_homedir()
     qr_userconfig=homedir + qr_user_configdir + qr_configfile
+    return qr_userconfig
     
     
 def qr_code2action():
@@ -92,3 +92,4 @@ def qr_update_configaction(key, value):
         
     config['action_map'][key]=value
     config.write(qr_userconfig)
+

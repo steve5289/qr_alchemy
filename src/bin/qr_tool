@@ -3,6 +3,7 @@
 import sys
 import getopt
 import qr_alchemy.process as qr_process
+import qr_alchemy.gui_process as qr_gui_process
 
 def main():
     optlist, args = getopt.getopt(sys.argv[1:], "hf:c:")
@@ -21,9 +22,11 @@ def main():
 
     qr_process.configfile(configfile)
     if file:
-        qr_process.qr_image_handler(file)
+        qr_code = qr_process.qr_image_handler(file)
+        if qr_code:
+            qr_gui_process.qr_gui_handle_code(qr_code)
     elif len(args) >= 1:
-        qr_process.qr_code_handler(args[0])
+        qr_gui_process.qr_gui_handle_code(args[0])
 
 
 main()
