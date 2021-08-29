@@ -2,11 +2,13 @@
 import subprocess
 import configparser
 
-qr_configfile=""
+qr_configfile_path=""
+qr_configfile="qr_alchemy.conf"
+qr_user_configdir=".config/qr_alchemy/"
 
-def configfile(file): 
-    global qr_configfile
-    qr_configfile=file
+def configfile(file):
+    global qr_configfile_path
+    qr_configfile_path=file
 
 def qr_image_handler(file):
     qr_code_raw = subprocess.check_output(['zbarimg', '-q', '--raw', file])
@@ -48,9 +50,32 @@ def qr_get_action(header):
         return header2action[header]
     return header2action['*']
 
-
+def _get_homedir():
+    if "HOME" in  os.environ:
+        return os.environ['HOME']
+    else:
+        return os.environ['/']
+    
 def qr_code2action():
     config = configparser.ConfigParser()
-    config.read("./src/etc/qr_alchemy.conf")
+    config.read(qr_configfile_path)
     
     return config['action_map']
+
+
+def qr_update_configaction(key, value):
+
+    homedir=_get_homedir()
+    qr_userconfig=homedir + qr_user_configdir + qr_configfile
+    
+    config = configparser.ConfigParser()
+    
+    try:
+        config.read(qr_userconfig)
+    except:
+        print("user config not found")
+        
+    config['action_map'][key]=value
+    config.write(qr_userconfig)
+
+    
