@@ -5,7 +5,7 @@ from datetime import datetime
 qr_user_configdir=".config/qr_alchemy/"
 savefile="saved_qr.dat"
 histfile="history_qr.dat"
-hist_max=3
+hist_max=50
 
 def _get_homedir():
     if "HOME" in  os.environ:
@@ -68,7 +68,7 @@ def add_history(qr_code):
     codes = get_history()
     fh_w = open(histfile, 'wb')
 
-    entry = now +"|" + qr_code
+    entry = [now, qr_code]
     codes.append(entry)
     while len(codes) > hist_max:
         codes.pop(0)
