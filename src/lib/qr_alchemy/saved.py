@@ -5,7 +5,7 @@ from datetime import datetime
 qr_user_configdir=".config/qr_alchemy/"
 savefile="saved_qr.dat"
 histfile="history_qr.dat"
-hist_max=50
+hist_max=10
 
 def _get_homedir():
     if "HOME" in  os.environ:
@@ -69,9 +69,9 @@ def add_history(qr_code):
     fh_w = open(histfile, 'wb')
 
     entry = [now, qr_code]
-    codes.append(entry)
+    codes.insert(0, entry)
     while len(codes) > hist_max:
-        codes.pop(0)
+        del codes[-1]
     print(codes)
     pickle.dump(codes, fh_w)
     fh_w.close()
