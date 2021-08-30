@@ -17,6 +17,9 @@ class QrSavedWindow(Gtk.Window):
 
 
         self.show_all()
+
+
+
     def page_history(self):
         history=qr_saved.get_history()
 
@@ -33,6 +36,9 @@ class QrSavedWindow(Gtk.Window):
             renderer = Gtk.CellRendererText()
             column = Gtk.TreeViewColumn(column_title, renderer, text=i)
             tv_hist.append_column(column)
+            if column_title == "QR Code":
+                column.set_resizable(True)
+                column.set_max_width(50)
 
         # setting up the layout, putting the treeview in a scrollwindow, and the buttons in a row
         stv_hist = Gtk.ScrolledWindow()
