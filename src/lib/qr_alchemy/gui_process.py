@@ -14,6 +14,7 @@ class QrActionWindow(Gtk.Window):
         Gtk.Window.__init__(self, title="QR Code Detected")
 
         self.qr_code=qr_code
+        qr_saved.add_history(qr_code)
 
         ## Top Box
         box_t = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=1)
