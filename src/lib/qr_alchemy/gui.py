@@ -24,11 +24,14 @@ class EntryDialog(Gtk.MessageDialog):
     
         # Entry
         box_t.pack_start(self.en_name, False, True, 0)
+        self.en_name.set_activates_default(True)
+        self.en_name.connect("activate", self.bu_ok_clicked)
 
         bu_cancel = Gtk.Button(label="Cancel")
         bu_cancel.connect("clicked", self.bu_cancel_clicked)
         bu_ok = Gtk.Button(label="Ok")
         bu_ok.connect("clicked", self.bu_ok_clicked)
+        self.set_default(bu_ok)
 
         box_b = Gtk.Box(spacing=1)
         box_t.pack_end(box_b, False, True, 0)
@@ -40,9 +43,10 @@ class EntryDialog(Gtk.MessageDialog):
         self.destroy()
         
     def bu_ok_clicked(self, qr_code):
-        self.state=Gtk.ResponseType.OK
-        self.name=self.en_name.get_text()
-        self.destroy()
+        if self.en_name.get_text(): 
+            self.state=Gtk.ResponseType.OK
+            self.name=self.en_name.get_text()
+            self.destroy()
         
     def get_name(self):
         return self.name
