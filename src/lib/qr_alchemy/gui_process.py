@@ -31,7 +31,7 @@ class QrActionWindow(Gtk.Window):
 
         # Buttons
         bu_cancel = Gtk.Button(label="Do Nothing")
-        bu_cancel.connect("clicked", Gtk.main_quit)
+        bu_cancel.connect("clicked", self.bu_cancel_clicked)
         bu_save = Gtk.Button(label="Save")
         bu_save.connect("clicked", self.bu_save_clicked)
         bu_run = Gtk.Button(label="Run")
@@ -59,14 +59,18 @@ class QrActionWindow(Gtk.Window):
         if state == Gtk.ResponseType.OK:
             print("got name:" + name)
             qr_saved.set_saved_code(name,self.qr_code)
-        save_window.destroy()
+        self.destroy()
 
     def bu_run_clicked(self,qr_code):
         qr_process.qr_code_handler(self.qr_code)
-        Gtk.main_quit()
+        self.destroy()
         return
 
-def qr_gui_handle_code(qr_code):
+    def bu_cancel_clicked(self,qr_code):
+        self.destroy()
+        return
+
+def qr_gui_handle_code(qr_code,exit_on_close=True):
     win = QrActionWindow(qr_code=qr_code)
     win.connect("destroy", Gtk.main_quit)
     win.show_all()

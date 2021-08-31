@@ -3,13 +3,15 @@ import gi
 import qr_alchemy.process as qr_process
 import qr_alchemy.saved as qr_saved
 import qr_alchemy.gui as gui
+import qr_alchemy.gui_process as gui_process
 
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
 
 class QrSavedWindow(Gtk.Window):
+    first_select=0
     def __init__(self):
-        super().__init__(title="Treeview Filter Demo")
+        super().__init__(title="QR Alchemy")
         self.set_border_width(0)
 
 
@@ -39,6 +41,9 @@ class QrSavedWindow(Gtk.Window):
             if column_title == "QR Code":
                 column.set_resizable(True)
                 column.set_max_width(50)
+        select = tv_hist.get_selection()
+        #select.set_mode(Gtk.SelectionMode.SINGLE)
+        tv_hist.connect('cursor-changed', self.selected_hist_entry)
 
         # setting up the layout, putting the treeview in a scrollwindow, and the buttons in a row
         stv_hist = Gtk.ScrolledWindow()
@@ -46,25 +51,20 @@ class QrSavedWindow(Gtk.Window):
         box.pack_start(stv_hist, True, True, 1)
         stv_hist.add(tv_hist)
         return box
+
+    def selected_hist_entry(self, tv_hist):
+        if self.first_select == 1:
+            #model, treeitr = selection.get_selected()
+            selected = tv_hist.get_selection()
+            data, i = selected.get_selected()
+            if i is not None:
+                qr_code=data[i][1]
+                gui_process.qr_gui_handle_code(qr_code=qr_code, exit_on_close=False)
+        self.first_select=1
+
+        
         
 
-
-    #def __init__(self):
-    #    Gtk.Window.__init__(self, title="Stored QR Codes")
-#
-#
-#        history=qr_saved.get_history()
-#
-#        ## Top Box
-#        box_t = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=1)
-#        self.add(box_t)
-#
-#        # ListStore
-#        ls_hist = Gtk.ListStore(str,str)
-#        for entry in history:
-#            ls_hist.append(list(entry))
-#        box_t.pack_start(ls_hist, False, True, 0)
-        
 
 
 def qr_gui_saved():
