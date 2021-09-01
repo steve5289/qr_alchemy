@@ -59,7 +59,7 @@ class QrSavedWindow(Gtk.Window):
             data, i = selected.get_selected()
             if i is not None:
                 qr_code=data[i][1]
-                gui_process.qr_gui_handle_code(qr_code=qr_code, exit_on_close=False)
+                gui_process.qr_gui_handle_code(qr_code)
         self.first_select=1
 
         

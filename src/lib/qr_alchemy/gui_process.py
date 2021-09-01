@@ -70,7 +70,7 @@ class QrActionWindow(Gtk.Window):
         self.destroy()
         return
 
-def qr_gui_handle_code(qr_code,exit_on_close=True):
+def qr_gui_handle_code(qr_code):
     win = QrActionWindow(qr_code=qr_code)
     win.connect("destroy", Gtk.main_quit)
     win.show_all()
