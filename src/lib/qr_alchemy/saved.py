@@ -31,7 +31,7 @@ def get_saved_codes():
     savefile=_get_user_savefile()
 
     try:
-        fh = open(savefile,'r')
+        fh = open(savefile,'rb')
         codes=pickle.load(fh)
         fh.close()
     except:
@@ -57,7 +57,6 @@ def get_history():
         fh.close()
     except:
         codes = list()
-    print("codes read: ", codes)
     return codes
 
 def add_history(qr_code):
@@ -72,7 +71,6 @@ def add_history(qr_code):
     codes.insert(0, entry)
     while len(codes) > hist_max:
         del codes[-1]
-    print(codes)
     pickle.dump(codes, fh_w)
     fh_w.close()
 
