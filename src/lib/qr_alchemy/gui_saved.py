@@ -6,7 +6,7 @@ import qr_alchemy.gui as gui
 import qr_alchemy.gui_process as gui_process
 
 gi.require_version('Gtk', '3.0')
-from gi.repository import Gtk
+from gi.repository import Gtk,Gio
 
 class QrSavedWindow(Gtk.Window):
     # HACK ALERT!!!!
@@ -26,8 +26,23 @@ class QrSavedWindow(Gtk.Window):
         self.notebook.append_page(self.page_history(), Gtk.Label('History'))
 
 
+        self.hb = Gtk.HeaderBar()
+        self.hb.set_show_close_button(True)
+        self.hb.props.title="QR Alchemy"
+        self.set_titlebar(self.hb)
+
+        bu_conf = Gtk.Button()
+        bu_conf_icon = Gio.ThemedIcon(name='emblem-system')
+        bu_conf_image = Gtk.Image.new_from_gicon(bu_conf_icon, Gtk.IconSize.MENU)
+        bu_conf.add(bu_conf_image)
+        bu_conf.connect("clicked", self.bu_config_clicked)
+        self.hb.pack_end(bu_conf)
+
         self.show_all()
 
+    def bu_config_clicked(self, button):
+        self.first_select = 1
+        
 
     def page_saved(self):
         saved=qr_saved.get_saved_codes()
@@ -36,7 +51,6 @@ class QrSavedWindow(Gtk.Window):
         # Creating the ListStore model
         ls_saved = Gtk.ListStore(str, str)
         for name in sorted(saved.keys()):
-            print('things', name, saved[name])
             ls_saved.append([name, saved[name]])
 
         tv_saved = Gtk.TreeView(model=ls_saved)
@@ -61,7 +75,7 @@ class QrSavedWindow(Gtk.Window):
         return box
 
     def selected_saved_entry(self, tv_saved):
-        if self.first_select_sav == 1 or (self.first_select_hist == 0 and self.first_select_sav == 0):
+        if self.first_select_sav == 1 or self.first_select == 0:
             #model, treeitr = selection.get_selected()
             selected = tv_saved.get_selection()
             data, i = selected.get_selected()
@@ -69,6 +83,7 @@ class QrSavedWindow(Gtk.Window):
                 qr_code=data[i][1]
                 gui_process.qr_gui_handle_code(qr_code)
         self.first_select_sav=1
+        self.first_select = 1
 
     def page_history(self):
         history=qr_saved.get_history()
@@ -101,7 +116,7 @@ class QrSavedWindow(Gtk.Window):
         return box
 
     def selected_hist_entry(self, tv_hist):
-        if self.first_select_hist == 1 or (self.first_select_hist == 0 and self.first_select_sav == 0):
+        if self.first_select_hist == 1 or self.first_select == 0:
             #model, treeitr = selection.get_selected()
             selected = tv_hist.get_selection()
             data, i = selected.get_selected()
@@ -109,6 +124,7 @@ class QrSavedWindow(Gtk.Window):
                 qr_code=data[i][1]
                 gui_process.qr_gui_handle_code(qr_code)
         self.first_select_hist=1
+        self.first_select = 1
 
         
         
