@@ -4,6 +4,7 @@ import qr_alchemy.process as qr_process
 import qr_alchemy.saved as qr_saved
 import qr_alchemy.gui as gui
 import qr_alchemy.gui_process as gui_process
+import qr_alchemy.gui_config as gui_config
 
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk,Gio
@@ -41,6 +42,9 @@ class QrSavedWindow(Gtk.Window):
         self.show_all()
 
     def bu_config_clicked(self, button):
+        config_window = gui_config.QRConfig(self,title='bob', message='hello')
+        config_window.show_all()
+        config_window.run()
         self.first_select = 1
         
 
