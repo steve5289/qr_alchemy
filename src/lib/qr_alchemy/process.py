@@ -7,7 +7,9 @@ import qr_alchemy.gui_process as gui
 qr_configfile_path=""
 qr_configfile="qr_alchemy.conf"
 qr_user_configdir=".config/qr_alchemy/"
-qr_action_types=['Nothing', 'System Default', 'Plugin', 'Program']
+qr_action_types=['System Default', 'Nothing', 'Plugin', 'Program']
+qr_plugin_dir="/usr/share/qr_alchemy/input_plugins/"
+qr_user_plugin_dir=qr_user_configdir + "input_plugins/"
 
 def configfile(file):
     global qr_configfile_path
@@ -96,3 +98,28 @@ def qr_update_configaction(key, value):
     config['action_map'][key]=value
     config.write(qr_userconfig)
 
+
+
+def qr_get_plugins():
+
+    plugins=_qr_get_plugins_from_dir(qr_plugin_dir)
+    user_plugins=_qr_get_plugins_from_dir(qr_user_plugin_dir)
+
+    plugins |= user_plugins 
+
+    return plugins
+
+def _qr_get_plugins_from_dir(plugin_dir):
+    if not os.path.isdir(plugin_dir):
+        return dict()
+
+    files = os.listdir(plugin_dir)
+    plugins=dict()
+    
+    for file in files:
+        path = qr_plugin_dir + file
+        # check if it's executable and a file
+        if os.access(path, os.X_OK) and os.isfile(path):
+            plugins[file]=path
+    return plugins
+    

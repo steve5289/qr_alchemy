@@ -76,7 +76,7 @@ class QRConfig(Gtk.MessageDialog):
     def bu_add_clicked(self, qr_code):
         print('add')
         entryDialog = QRConfigEntry(self,title='bob', message='hello')
-        entryDialog.show_all()
+        #entryDialog.show_all()
         entryDialog.run()
         
     def bu_edit_clicked(self, qr_code):
@@ -87,6 +87,11 @@ class QRConfigEntry(Gtk.MessageDialog):
     en_name = Gtk.Entry()
     state=Gtk.ResponseType.CANCEL
     name=""
+    action_type=""
+    plugin=""
+    prog=""
+    pg_plugin=Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=1)
+    
     def __init__(self, parent,title,message):
         Gtk.MessageDialog.__init__(self, title=title)
 
@@ -104,24 +109,22 @@ class QRConfigEntry(Gtk.MessageDialog):
 
         cb_type = Gtk.ComboBox.new_with_model(ls_type)
         cb_type.connect('changed', self.cb_type_changed)
+        rt_type = Gtk.CellRendererText()
+        cb_type.pack_start(rt_type, True)
+        cb_type.add_attribute(rt_type, 'text', 0)
+        cb_type.set_active(0)
+        action_type=action_types[0]
+        box_t.pack_start(cb_type, False, False, 0)
+
+        # Plugin Box
+        self.pg_plugin=self.page_plugin()
+        box_t.pack_start(self.pg_plugin, True, True,0)
+
+        # Command Box
+        self.pg_prog = self.page_prog()
+        box_t.pack_start(self.pg_prog, True, True,0)
+       
         
-        
-        page_a=self.page_actions()
-        box_t.pack_start(page_a, True, True,0)
-
-    
-    def cb_type_changed(self, comboBox):
-        print('changed')
-
-    def page_actions(self):
-        actions=qr_process.qr_code2action()
-
-        box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=1)
-
-        # Label
-        lb_desc = Gtk.Label(label="Choose what actions to perform based on what type of qr code is recieved:")
-        lb_desc.set_line_wrap(True)
-        box.pack_start(lb_desc, False, True, 0)
 
         # Buttons
         box_h = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=1)
@@ -131,9 +134,68 @@ class QRConfigEntry(Gtk.MessageDialog):
         bu_ok.connect("clicked", self.bu_ok_clicked)
         box_h.pack_start(bu_ok, False, False, 0)
         box_h.pack_end(bu_cancel, False, False, 0)
-        box.pack_start(box_h, True, False, 0)
+        box_t.pack_start(box_h, True, False, 0)
+
+        ## Control show is shown
+        box_t.show_all()
+        if action_types[0] != "Plugin":
+            self.pg_plugin.hide()
+        if action_types[0] != "Program":
+            self.pg_prog.hide()
+
+    def cb_type_changed(self, comboBox):
+        cb_tree_itr = comboBox.get_active_iter()
+        model = comboBox.get_model()
+        self.action_type = model[cb_tree_itr][0]
+        if self.action_type == "Plugin":
+            self.pg_plugin.show_all()
+        else:
+            self.pg_plugin.hide()
+        if self.action_type == "Program":
+            self.pg_prog.show_all()
+        else:
+            self.pg_prog.hide()
+        print('changed to:', self.action_type)
+
+    def page_plugin(self):
+        actions=qr_process.qr_code2action()
+
+        box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=1)
+
+        # Label
+        input_plugins = qr_process.qr_get_plugins()
+        ls_plugin = Gtk.ListStore(str)
+        for plugin in sorted(input_plugins.keys()):
+            ls_type.append([plugin])
+
+        cb_plugin = Gtk.ComboBox.new_with_model(ls_plugin)
+        rt_plugin = Gtk.CellRendererText()
+        cb_plugin.pack_start(rt_plugin, True)
+        cb_plugin.add_attribute(rt_plugin, 'text', 0)
+        cb_plugin.connect('changed', self.cb_type_changed)
+        box.pack_start(cb_plugin, False, False, 0)
 
         return box
+
+    def page_prog(self):
+        box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=1)
+
+        # Label
+        en_prog = Gtk.Entry()
+        en_prog.connect('changed', self.en_prog_changed)
+        box.pack_start(en_prog, False, False, 0)
+
+        return box
+
+    def en_prog_changed(self, entry):
+        self.prog = entry.get_text()
+        
+
+    def cb_plugin_changed(self, comboBox):
+        cb_tree_itr = comboBox.get_active_iter()
+        model = comboBox.get_model()
+        self.plugin = model[cb_tree_itr][0]
+        
 
     def bu_ok_clicked(self, qr_code):
         self.state = state=Gtk.ResponseType.OK
@@ -144,3 +206,12 @@ class QRConfigEntry(Gtk.MessageDialog):
         self.state = state=Gtk.ResponseType.CANCEL
         print('cancel')
         self.destroy()
+
+    def get_results():
+        results = dict()
+        results['status']=self.status
+        results['action_type']=self.action_type
+        if self.action_type == "Plugin":
+            results['plugin']=self.plugin
+        if self.action_type == "Program":
+            results['prog']=self.prog
