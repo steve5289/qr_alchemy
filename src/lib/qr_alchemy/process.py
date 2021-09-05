@@ -7,6 +7,7 @@ import qr_alchemy.gui_process as gui
 qr_configfile_path=""
 qr_configfile="qr_alchemy.conf"
 qr_user_configdir=".config/qr_alchemy/"
+qr_action_types=['Nothing', 'System Default', 'Plugin', 'Program']
 
 def configfile(file):
     global qr_configfile_path
@@ -27,6 +28,8 @@ def qr_code_handler(qr_code):
 
     qr_exec(action, qr_code)
 
+def get_qr_action_types():
+    return qr_action_types
 
 def qr_exec(action, qr_code):
     if str.startswith(action, "cli:"):
