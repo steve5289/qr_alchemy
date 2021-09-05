@@ -91,6 +91,8 @@ def qr_code2action():
         action = config['action_map'][entry]
         split = action.split(':', 2)
         action_type = split[0]
+        if action_type == '':
+            continue
 
         if len(split) > 1:
             action_subtype = split[1]

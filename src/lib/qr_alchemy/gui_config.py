@@ -46,11 +46,11 @@ class QRConfig(Gtk.MessageDialog):
         box.pack_start(box_h, True, False, 0)
 
         # Creating the ListStore model
-        ls_act = Gtk.ListStore(str, str)
+        self.ls_act = Gtk.ListStore(str, str)
         for key in sorted(self.actions.keys()):
-            ls_act.append([key, ':'.join(self.actions[key])])
+            self.ls_act.append([key, ':'.join(self.actions[key])])
 
-        self.tv_act = Gtk.TreeView(model=ls_act)
+        self.tv_act = Gtk.TreeView(model=self.ls_act)
         for i, column_title in enumerate(
             ["Type", "Action"]
         ):
@@ -77,6 +77,14 @@ class QRConfig(Gtk.MessageDialog):
         entryDialog = QRConfigEntry(self,title='Add New Action')
         entryDialog.connect("destroy", Gtk.main_quit)
         entryDialog.run()
+        results=entryDialog.get_results()
+        selected = self.tv_act.get_selection()
+        data, i = selected.get_selected()
+        if i is not None:
+            code_type=data[i][0]
+            results=entryDialog.get_results()
+            if results['state'] == Gtk.ResponseType.OK and not code_type in self.actions:
+                qr_process.qr_update_configaction(code_type, results['action_type'], results['action_subtype'])
         
     def bu_edit_clicked(self, win):
         print('edit')
@@ -90,9 +98,9 @@ class QRConfig(Gtk.MessageDialog):
             entryDialog = QRConfigEntry(self,title='Edit Action',code_type=code_type, action_type=action_type, action_subtype=action_subtype)
             entryDialog.connect("destroy", Gtk.main_quit)
             entryDialog.run()
+
             results=entryDialog.get_results()
-            print('state', results['state'])
-            if results['state'] == Gtk.ResponseType.OK:
+            if results['state'] == Gtk.ResponseType.OK and (results['action_type'] != action_type or results['action_subtype'] != action_subtype):
                 qr_process.qr_update_configaction(code_type, results['action_type'], results['action_subtype'])
         
 
@@ -266,6 +274,13 @@ class QRConfigEntry(Gtk.MessageDialog):
         
 
     def bu_ok_clicked(self, qr_code):
+        if self.code_type != None or self.action_type == None:
+            return
+        if self.action_type == 'Program' and self.prog == None:
+            return
+        if self.action_type == 'Plugin' and self.plugin == None:
+            return
+
         self.state = state=Gtk.ResponseType.OK
         print('ok')
         self.destroy()
