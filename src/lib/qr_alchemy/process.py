@@ -43,8 +43,6 @@ def qr_exec(action, qr_code):
     if a_type == "System Default":
         subprocess.run(['xdg-open', qr_code])
     if a_type == "Program":
-        junk, cli = action.split(':',2)
-        print(cli, qr_code)
         subprocess.run([a_subtype, qr_code])
     elif a_type == 'Plugin':
         print("plugin function not yet implemented")
@@ -80,7 +78,6 @@ def qr_code2action():
     config.read(qr_configfile_path)
 
     qr_userconfig=_get_user_configfile()
-    config_user=configparser.ConfigParser()
 
     try:
         config.read(qr_userconfig)
