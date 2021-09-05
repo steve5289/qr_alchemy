@@ -23,7 +23,6 @@ class QRConfig(Gtk.MessageDialog):
     
 
     def page_actions(self):
-
         box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=1)
 
         # Label
@@ -78,11 +77,12 @@ class QRConfig(Gtk.MessageDialog):
         print('delete')
         selected = self.tv_act.get_selection()
         data, i = selected.get_selected()
-        code_type=data[i][0]
         
-        if code_type != '*':
-            qr_process.qr_update_configaction(data[i][0], '', '')
-            self.ls_actions_populate(self.ls_act)
+        if i != None:
+            code_type=data[i][0]
+            if code_type != '*':
+                qr_process.qr_update_configaction(data[i][0], '', '')
+                self.ls_actions_populate(self.ls_act)
         
     def bu_add_clicked(self, qr_code):
         print('add')
@@ -207,11 +207,11 @@ class QRConfigEntry(Gtk.MessageDialog):
         bu_cancel.connect("clicked", self.bu_cancel_clicked)
         bu_ok    = Gtk.Button(label="Ok")
         bu_ok.connect("clicked", self.bu_ok_clicked)
-        box_h.pack_start(bu_ok, False, False, 0)
-        box_h.pack_end(bu_cancel, False, False, 0)
+        box_h.pack_end(bu_ok, False, False, 0)
+        box_h.pack_start(bu_cancel, False, False, 0)
         box_t.pack_start(box_h, True, False, 0)
 
-        ## Control show is shown
+        ## Control what is shown
         box_t.show_all()
         if action_types[0] != "Plugin":
             self.pg_plugin.hide()
