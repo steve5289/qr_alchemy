@@ -7,10 +7,9 @@ import qr_alchemy.process as qr_process
 
 
 class QRConfig(Gtk.MessageDialog):
-    en_name = Gtk.Entry()
     state=Gtk.ResponseType.CANCEL
     name=""
-    def __init__(self, parent,title,message):
+    def __init__(self, parent,title):
         Gtk.MessageDialog.__init__(self, title=title)
 
         dialog = self.get_content_area()
@@ -24,7 +23,7 @@ class QRConfig(Gtk.MessageDialog):
     
 
     def page_actions(self):
-        actions=qr_process.qr_code2action()
+        self.actions=qr_process.qr_code2action()
 
         box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=1)
 
@@ -40,7 +39,7 @@ class QRConfig(Gtk.MessageDialog):
         bu_add    = Gtk.Button(label="Add")
         bu_add.connect("clicked", self.bu_add_clicked)
         bu_edit   = Gtk.Button(label="Edit")
-        bu_add.connect("clicked", self.bu_edit_clicked)
+        bu_edit.connect("clicked", self.bu_edit_clicked)
         box_h.pack_start(bu_delete, False, False, 0)
         box_h.pack_end(bu_add, False, False, 0)
         box_h.pack_end(bu_edit, False, False, 0)
@@ -48,26 +47,26 @@ class QRConfig(Gtk.MessageDialog):
 
         # Creating the ListStore model
         ls_act = Gtk.ListStore(str, str)
-        for key in sorted(actions.keys()):
-            ls_act.append([key, actions[key]])
+        for key in sorted(self.actions.keys()):
+            ls_act.append([key, ':'.join(self.actions[key])])
 
-        tv_act = Gtk.TreeView(model=ls_act)
+        self.tv_act = Gtk.TreeView(model=ls_act)
         for i, column_title in enumerate(
             ["Type", "Action"]
         ):
             renderer = Gtk.CellRendererText()
             column = Gtk.TreeViewColumn(column_title, renderer, text=i)
-            tv_act.append_column(column)
+            self.tv_act.append_column(column)
             if column_title == "Action":
                 column.set_resizable(True)
                 column.set_max_width(50)
-        select = tv_act.get_selection()
+        select = self.tv_act.get_selection()
 
         # setting up the layout, putting the treeview in a scrollwindow, and the buttons in a row
         stv_act = Gtk.ScrolledWindow()
         stv_act.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
         box.pack_start(stv_act, True, True, 1)
-        stv_act.add(tv_act)
+        stv_act.add(self.tv_act)
         return box
 
     def bu_delete_clicked(self, qr_code):
@@ -75,24 +74,45 @@ class QRConfig(Gtk.MessageDialog):
         
     def bu_add_clicked(self, qr_code):
         print('add')
-        entryDialog = QRConfigEntry(self,title='bob', message='hello')
+        entryDialog = QRConfigEntry(self,title='Add New Action')
+        entryDialog.connect("destroy", Gtk.main_quit)
         entryDialog.run()
         
-    def bu_edit_clicked(self, qr_code):
+    def bu_edit_clicked(self, win):
         print('edit')
+        selected = self.tv_act.get_selection()
+        data, i = selected.get_selected()
+        if i is not None:
+            code_type=data[i][0]
+            
+            action_type, action_subtype = qr_process.qr_get_action(code_type)
+        
+            entryDialog = QRConfigEntry(self,title='Edit Action',code_type=code_type, action_type=action_type, action_subtype=action_subtype)
+            entryDialog.connect("destroy", Gtk.main_quit)
+            entryDialog.run()
+            results=entryDialog.get_results()
+            print('state', results['state'])
+            if results['state'] == Gtk.ResponseType.OK:
+                qr_process.qr_update_configaction(code_type, results['action_type'], results['action_subtype'])
         
 
 class QRConfigEntry(Gtk.MessageDialog):
-    en_name = Gtk.Entry()
     state=Gtk.ResponseType.CANCEL
     code_type=None
-    action_type=""
-    plugin=""
-    prog=""
+    action_type=None
+    plugin=None
+    prog=None
     pg_plugin=None
     
-    def __init__(self, parent,title,message):
+    def __init__(self, parent, title, code_type=None, action_type=None, action_subtype=None):
         Gtk.MessageDialog.__init__(self, title=title)
+
+        self.code_type=code_type
+        self.action_type=action_type
+        if action_type == "Plugin":
+            self.plugin=plugin
+        if action_type == "Program":
+            self.prog=prog
 
         dialog = self.get_content_area()
         
@@ -114,6 +134,7 @@ class QRConfigEntry(Gtk.MessageDialog):
         if self.code_type != None:
             en_code.set_text(self.code_type)
             en_code.set_editable(False)
+            en_code.set_sensitive(False)
         box_code_type.pack_end(en_code, False, True, 0)
 
         ## Action Box
@@ -128,15 +149,20 @@ class QRConfigEntry(Gtk.MessageDialog):
         # ComboBox
         action_types = qr_process.get_qr_action_types()
         ls_type = Gtk.ListStore(str)
+        i = 0
+        default_action=0
         for a_type in action_types:
             ls_type.append([a_type])
+            if a_type == self.action_type:
+                default_action = i
+            i+=1
 
         cb_type = Gtk.ComboBox.new_with_model(ls_type)
         cb_type.connect('changed', self.cb_type_changed)
         rt_type = Gtk.CellRendererText()
         cb_type.pack_start(rt_type, True)
         cb_type.add_attribute(rt_type, 'text', 0)
-        cb_type.set_active(0)
+        cb_type.set_active(default_action)
         action_type=action_types[0]
         box_action.pack_end(cb_type, False, False, 0)
 
@@ -194,14 +220,21 @@ class QRConfigEntry(Gtk.MessageDialog):
         # combobox
         input_plugins = qr_process.qr_get_plugins()
         ls_plugin = Gtk.ListStore(str)
+        i = 0
+        default_value=None
         for plugin in sorted(input_plugins.keys()):
             ls_type.append([plugin])
+            if plugin == self.plugin:
+                default_value = i
+            i+=1
 
         cb_plugin = Gtk.ComboBox.new_with_model(ls_plugin)
         rt_plugin = Gtk.CellRendererText()
         cb_plugin.pack_start(rt_plugin, True)
         cb_plugin.add_attribute(rt_plugin, 'text', 0)
         cb_plugin.connect('changed', self.cb_type_changed)
+        if default_value != None:
+            cb_plugin.set_active(default_value)
         box.pack_end(cb_plugin, False, False, 0)
 
         return box
@@ -216,6 +249,8 @@ class QRConfigEntry(Gtk.MessageDialog):
 
         # Entry
         en_prog = Gtk.Entry()
+        if self.prog != None:
+            en_prog.set_text(self.prog)
         en_prog.connect('changed', self.en_prog_changed)
         box.pack_end(en_prog, False, False, 0)
 
@@ -223,7 +258,6 @@ class QRConfigEntry(Gtk.MessageDialog):
 
     def en_prog_changed(self, entry):
         self.prog = entry.get_text()
-        
 
     def cb_plugin_changed(self, comboBox):
         cb_tree_itr = comboBox.get_active_iter()
@@ -241,11 +275,15 @@ class QRConfigEntry(Gtk.MessageDialog):
         print('cancel')
         self.destroy()
 
-    def get_results():
+    def get_results(self):
         results = dict()
-        results['status']=self.status
+        results['state']=self.state
         results['action_type']=self.action_type
         if self.action_type == "Plugin":
-            results['plugin']=self.plugin
-        if self.action_type == "Program":
-            results['prog']=self.prog
+            results['action_subtype']=self.plugin
+        elif self.action_type == "Program":
+            results['action_subtype']=self.prog
+        else:
+            results['action_subtype']=''
+        
+        return results

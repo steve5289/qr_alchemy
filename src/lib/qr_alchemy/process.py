@@ -34,12 +34,16 @@ def get_qr_action_types():
     return qr_action_types
 
 def qr_exec(action, qr_code):
-    if str.startswith(action, "cli:"):
+    a_type = action[0]
+    a_subtype = action[1]
+    if a_type == "System Default":
+        subprocess.run(['xdg-open', qr_code])
+    if a_type == "Program":
         junk, cli = action.split(':',2)
         print(cli, qr_code)
-        subprocess.run([cli, qr_code])
-    elif action == 'text':
-        print("text function not yet implemented")
+        subprocess.run([a_subtype, qr_code])
+    elif a_type == 'Plugin':
+        print("plugin function not yet implemented")
         print("qr code: '" + qr_code +"'")
 
 def qr_get_header(qr_code):
@@ -63,7 +67,7 @@ def _get_homedir():
 
 def _get_user_configfile():
     homedir=_get_homedir()
-    qr_userconfig=homedir + qr_user_configdir + qr_configfile
+    qr_userconfig=homedir + '/' + qr_user_configdir + qr_configfile
     return qr_userconfig
     
     
@@ -75,16 +79,28 @@ def qr_code2action():
     config_user=configparser.ConfigParser()
 
     try:
-        config_user.read(qr_userconfig)
+        config.read(qr_userconfig)
 
-        config |= config_user
     except:
         print("user configfile unavailable")
     
-    return config['action_map']
+    config_new = dict()
+    for topic in config:
+        config_new[topic]=dict()
+    for entry in config['action_map']:
+        action = config['action_map'][entry]
+        split = action.split(':', 2)
+        action_type = split[0]
+
+        if len(split) > 1:
+            action_subtype = split[1]
+            config_new['action_map'][entry] = [action_type, action_subtype]
+        else:
+            config_new['action_map'][entry] = [action_type]
+    return config_new['action_map']
 
 
-def qr_update_configaction(key, value):
+def qr_update_configaction(code_type, a_type, a_subtype):
 
     qr_userconfig=_get_user_configfile()
     
@@ -95,9 +111,15 @@ def qr_update_configaction(key, value):
     except:
         print("user config not found")
         
-    config['action_map'][key]=value
-    config.write(qr_userconfig)
-
+    if not 'action_map' in config:
+        config['action_map']=dict()
+    print("update:", code_type, a_type, a_subtype)
+    if a_subtype != '':
+        config['action_map'][code_type]=a_type + ":" + a_subtype
+    else:
+        config['action_map'][code_type]=a_type
+    with open(qr_userconfig, 'w') as configfile:
+        config.write(configfile)
 
 
 def qr_get_plugins():
@@ -105,7 +127,7 @@ def qr_get_plugins():
     plugins=_qr_get_plugins_from_dir(qr_plugin_dir)
     user_plugins=_qr_get_plugins_from_dir(qr_user_plugin_dir)
 
-    plugins |= user_plugins 
+    plugins |= user_plugins
 
     return plugins
 
@@ -122,4 +144,3 @@ def _qr_get_plugins_from_dir(plugin_dir):
         if os.access(path, os.X_OK) and os.isfile(path):
             plugins[file]=path
     return plugins
-    
