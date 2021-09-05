@@ -76,7 +76,6 @@ class QRConfig(Gtk.MessageDialog):
     def bu_add_clicked(self, qr_code):
         print('add')
         entryDialog = QRConfigEntry(self,title='bob', message='hello')
-        #entryDialog.show_all()
         entryDialog.run()
         
     def bu_edit_clicked(self, qr_code):
@@ -86,20 +85,45 @@ class QRConfig(Gtk.MessageDialog):
 class QRConfigEntry(Gtk.MessageDialog):
     en_name = Gtk.Entry()
     state=Gtk.ResponseType.CANCEL
-    name=""
+    code_type=None
     action_type=""
     plugin=""
     prog=""
-    pg_plugin=Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=1)
+    pg_plugin=None
     
     def __init__(self, parent,title,message):
         Gtk.MessageDialog.__init__(self, title=title)
 
         dialog = self.get_content_area()
-
+        
         ## Top Box
         box_t = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=1)
         dialog.pack_start(box_t, True, True, 0)
+
+        ## Code type Box
+        box_code_type = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=1)
+        box_t.pack_start(box_code_type, True, True, 0)
+
+        # Label
+        lb_desc_code = Gtk.Label(label="QR Code Type:")
+        lb_desc_code.set_line_wrap(False)
+        box_code_type.pack_start(lb_desc_code, False, True, 0)
+
+        # Entry
+        en_code = Gtk.Entry()
+        if self.code_type != None:
+            en_code.set_text(self.code_type)
+            en_code.set_editable(False)
+        box_code_type.pack_end(en_code, False, True, 0)
+
+        ## Action Box
+        box_action = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=1)
+        box_t.pack_start(box_action, True, True, 0)
+
+        # Label
+        lb_desc_action = Gtk.Label(label="Action:")
+        lb_desc_action.set_line_wrap(False)
+        box_action.pack_start(lb_desc_action, False, True, 0)
 
         # ComboBox
         action_types = qr_process.get_qr_action_types()
@@ -114,13 +138,13 @@ class QRConfigEntry(Gtk.MessageDialog):
         cb_type.add_attribute(rt_type, 'text', 0)
         cb_type.set_active(0)
         action_type=action_types[0]
-        box_t.pack_start(cb_type, False, False, 0)
+        box_action.pack_end(cb_type, False, False, 0)
 
-        # Plugin Box
+        ## Plugin Box
         self.pg_plugin=self.page_plugin()
         box_t.pack_start(self.pg_plugin, True, True,0)
 
-        # Command Box
+        ## Command Box
         self.pg_prog = self.page_prog()
         box_t.pack_start(self.pg_prog, True, True,0)
        
@@ -160,9 +184,14 @@ class QRConfigEntry(Gtk.MessageDialog):
     def page_plugin(self):
         actions=qr_process.qr_code2action()
 
-        box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=1)
+        box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=1)
 
         # Label
+        lb_desc = Gtk.Label(label="Plugin:")
+        lb_desc.set_line_wrap(False)
+        box.pack_start(lb_desc, False, True, 0)
+
+        # combobox
         input_plugins = qr_process.qr_get_plugins()
         ls_plugin = Gtk.ListStore(str)
         for plugin in sorted(input_plugins.keys()):
@@ -173,7 +202,7 @@ class QRConfigEntry(Gtk.MessageDialog):
         cb_plugin.pack_start(rt_plugin, True)
         cb_plugin.add_attribute(rt_plugin, 'text', 0)
         cb_plugin.connect('changed', self.cb_type_changed)
-        box.pack_start(cb_plugin, False, False, 0)
+        box.pack_end(cb_plugin, False, False, 0)
 
         return box
 
@@ -181,9 +210,14 @@ class QRConfigEntry(Gtk.MessageDialog):
         box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=1)
 
         # Label
+        lb_desc = Gtk.Label(label="Program:")
+        lb_desc.set_line_wrap(False)
+        box.pack_start(lb_desc, False, True, 0)
+
+        # Entry
         en_prog = Gtk.Entry()
         en_prog.connect('changed', self.en_prog_changed)
-        box.pack_start(en_prog, False, False, 0)
+        box.pack_end(en_prog, False, False, 0)
 
         return box
 
