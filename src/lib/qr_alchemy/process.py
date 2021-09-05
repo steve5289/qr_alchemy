@@ -35,7 +35,11 @@ def get_qr_action_types():
 
 def qr_exec(action, qr_code):
     a_type = action[0]
-    a_subtype = action[1]
+    if len(action) > 1:
+        a_subtype = action[1]
+    else:
+        a_subtype = ''
+
     if a_type == "System Default":
         subprocess.run(['xdg-open', qr_code])
     if a_type == "Program":
