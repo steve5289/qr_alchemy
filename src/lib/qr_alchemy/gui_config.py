@@ -112,7 +112,6 @@ class QRConfig(Gtk.MessageDialog):
                 action_subtype = ''
         
             entryDialog = QRConfigEntry(self,title='Edit Action',code_type=code_type, action_type=action_type, action_subtype=action_subtype)
-            entryDialog.connect("destroy", Gtk.main_quit)
             entryDialog.run()
 
             results=entryDialog.get_results()
@@ -161,7 +160,6 @@ class QRConfigEntry(Gtk.MessageDialog):
             en_code.set_editable(False)
             en_code.set_sensitive(False)
         box_code_type.pack_end(en_code, False, True, 0)
-        en_code.connect('changed', self.en_code_changed)
 
         ## Action Box
         box_action = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=1)
@@ -184,7 +182,6 @@ class QRConfigEntry(Gtk.MessageDialog):
             i+=1
 
         cb_type = Gtk.ComboBox.new_with_model(ls_type)
-        cb_type.connect('changed', self.cb_type_changed)
         rt_type = Gtk.CellRendererText()
         cb_type.pack_start(rt_type, True)
         cb_type.add_attribute(rt_type, 'text', 0)
@@ -205,9 +202,7 @@ class QRConfigEntry(Gtk.MessageDialog):
         # Buttons
         box_h = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=1)
         bu_cancel = Gtk.Button(label="Cancel")
-        bu_cancel.connect("clicked", self.bu_cancel_clicked)
         bu_ok    = Gtk.Button(label="Ok")
-        bu_ok.connect("clicked", self.bu_ok_clicked)
         box_h.pack_end(bu_ok, False, False, 0)
         box_h.pack_start(bu_cancel, False, False, 0)
         box_t.pack_start(box_h, True, False, 0)
@@ -219,16 +214,31 @@ class QRConfigEntry(Gtk.MessageDialog):
         if action_types[0] != "Program":
             self.pg_prog.hide()
 
+        ## Setup Connections
+        bu_cancel.connect("clicked", self.bu_cancel_clicked)
+        bu_ok.connect("clicked", self.bu_ok_clicked)
+        cb_type.connect('changed', self.cb_type_changed)
+        en_code.connect('changed', self.en_code_changed)
+
     def cb_type_changed(self, comboBox):
         cb_tree_itr = comboBox.get_active_iter()
         model = comboBox.get_model()
         self.action_type = model[cb_tree_itr][0]
         if self.action_type == "Plugin":
-            self.pg_plugin.show_all()
+            try:
+                self.pg_plugin.show_all()
+            except:
+                pass
         else:
-            self.pg_plugin.hide()
+            try:
+                self.pg_plugin.hide()
+            except:
+                pass
         if self.action_type == "Program":
-            self.pg_prog.show_all()
+            try:
+                self.pg_prog.show_all()
+            except:
+                pass
         else:
             self.pg_prog.hide()
         print('changed to:', self.action_type)
