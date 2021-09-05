@@ -30,19 +30,6 @@ class QRConfig(Gtk.MessageDialog):
         lb_desc.set_line_wrap(True)
         box.pack_start(lb_desc, False, True, 0)
 
-        # Buttons
-        box_h = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=1)
-        bu_delete = Gtk.Button(label="Delete")
-        bu_delete.connect("clicked", self.bu_delete_clicked)
-        bu_add    = Gtk.Button(label="Add")
-        bu_add.connect("clicked", self.bu_add_clicked)
-        bu_edit   = Gtk.Button(label="Edit")
-        bu_edit.connect("clicked", self.bu_edit_clicked)
-        box_h.pack_start(bu_delete, False, False, 0)
-        box_h.pack_end(bu_add, False, False, 0)
-        box_h.pack_end(bu_edit, False, False, 0)
-        box.pack_start(box_h, True, False, 0)
-
         # Creating the ListStore model
         self.ls_act = Gtk.ListStore(str, str)
         self.ls_actions_populate(self.ls_act)
@@ -59,11 +46,25 @@ class QRConfig(Gtk.MessageDialog):
                 column.set_max_width(50)
         select = self.tv_act.get_selection()
 
-        # setting up the layout, putting the treeview in a scrollwindow, and the buttons in a row
+        # setting up the layout, putting the treeview in a scrollwindow
         stv_act = Gtk.ScrolledWindow()
         stv_act.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
+
+        # Buttons
+        box_h = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=1)
+        bu_delete = Gtk.Button(label="Delete")
+        bu_delete.connect("clicked", self.bu_delete_clicked)
+        bu_add    = Gtk.Button(label="Add")
+        bu_add.connect("clicked", self.bu_add_clicked)
+        bu_edit   = Gtk.Button(label="Edit")
+        bu_edit.connect("clicked", self.bu_edit_clicked)
+        box_h.pack_start(bu_delete, False, False, 0)
+        box_h.pack_end(bu_add, False, False, 0)
+        box_h.pack_end(bu_edit, False, False, 0)
+
         box.pack_start(stv_act, True, True, 1)
         stv_act.add(self.tv_act)
+        box.pack_start(box_h, True, False, 0)
         return box
 
     def ls_actions_populate(self,listStore):
