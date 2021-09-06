@@ -100,7 +100,9 @@ install:
 standalone_postprocess:
 	mkdir -p '${POSTPROCESS_DIR}'
 	cp -p '${BUILD_STANDALONE}/postprocess.sh' '${POSTPROCESS}'
+	chmod 755 ${POSTPROCESS}
 
 postprocess:
 	mkdir -p '${POSTPROCESS_DIR}'
 	cp -p '${BUILD_SHARE}/postprocess.sh' '${POSTPROCESS}'
+	chmod 755 ${POSTPROCESS}
