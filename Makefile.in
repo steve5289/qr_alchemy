@@ -9,7 +9,7 @@ BUILD_PIXMAP=${BUILD}/pixmaps
 BUILD_BIN=${BUILD}/bin
 BUILD_LIB=${BUILD}/lib
 BUILD_CONF=${BUILD}/etc
-BUILD_SHARE=${BUILD}/plugins
+BUILD_SHARE=${BUILD}/share
 BUILD_STANDALONE=${BUILD}/standalone
 
 BINDIR=%%BINDIR%%
@@ -20,6 +20,8 @@ APPDIR=%%APPDIR%%
 USER_APPDIR=%%USER_APPDIR%%
 PIXMAPDIR=%%PIXMAPDIR%%
 STANDALONEDIR=%%STANDALONEDIR%%
+POSTPROCESS_DIR=%%HOME%%/.config/megapixels/
+POSTPROCESS=${POSTPROCESS_DIR}/postprocess.sh
 
 STANDALONE_LAUNCHER=${BUILD_STANDALONE}/${NAME}.sh
 STANDALONE_DESKTOP=${BUILD_STANDALONE}/${NAME}.desktop
@@ -28,7 +30,7 @@ build: clean build_prep standalone_build standard_build
 	chmod 755 "${BUILD_BIN}"/*
 	chmod 644 "${BUILD_CONF}"/*
 	chmod 644 "${BUILD_APP}"/*
-	#chmod -R 755 "${BUILD_SHARE}"/*
+	chmod -R 755 "${BUILD_SHARE}"/*
 	chmod 755 "${STANDALONE_LAUNCHER}"
 	chmod 644 "${STANDALONE_DESKTOP}"
 	chmod 755 "${BUILD_LIB}/${NAME}"/*
@@ -41,10 +43,11 @@ build_prep:
 	cp -pr "${SRC}" "${BUILD}"
 	
 standard_build:
-	sed -i 's|%CONFDIR%|${CONFDIR}|g' ${BUILD_BIN}/${NAME}
-	sed -i 's|%VERSION%|${VERSION}|g' ${BUILD_BIN}/${NAME}
+	sed -i 's|%CONFDIR%|${CONFDIR}|g' "${BUILD_BIN}/${NAME}"
+	sed -i 's|%VERSION%|${VERSION}|g' "${BUILD_BIN}/${NAME}"
 
-	sed -i 's|%BINDIR%|${BINDIR}|g' ${BUILD_APP}/${NAME}.desktop
+	sed -i 's|%BINDIR%|${BINDIR}|g' "${BUILD_APP}/${NAME}.desktop"
+	sed -i 's|%BINDIR%|${BINDIR}|g' "${BUILD_SHARE}/postprocess.sh"
 
 standalone_build:
 	sed -i 's|%STANDALONE%|${STANDALONEDIR}|g' "${STANDALONE_LAUNCHER}"
@@ -61,6 +64,8 @@ standalone_build:
 	sed -i 's|%BUILD_CONF%|${BUILD_CONF}|g' "${STANDALONE_DESKTOP}"
 	sed -i 's|%BUILD_PIXMAP%|${BUILD_PIXMAP}|g' "${STANDALONE_DESKTOP}"
 
+	sed -i 's|%STANDALONE%|${STANDALONEDIR}|g' "${BUILD_STANDALONE}/postprocess.sh"
+	sed -i 's|%BUILD_STANDALONE%|${BUILD_STANDALONE}|g' "${BUILD_STANDALONE}/postprocess.sh"
 clean:
 	rm -rf '${BUILD}'
 
@@ -70,6 +75,7 @@ run:
 standalone_install:
 	cp -p "${STANDALONE_DESKTOP}" "${USER_APPDIR}"/
 	update-desktop-database || :
+	@echo '${NAME} installed. If you want this to process megapixels pictures, please run `make standalone_postprocess` to install that'
 
 install:
 	mkdir -p '${BINDIR}'
@@ -83,7 +89,16 @@ install:
 	cp -pr '${BUILD_LIB}'/* '${PYTHON_LIBDIR}/'
 	cp -pr '${BUILD_APP}'/* '${APPDIR}/'
 	cp -pr '${BUILD_PIXMAP}'/* '${PIXMAPDIR}/'
-	#cp -pr '${BUILD_SHARE}'/* '${SHAREDIR}/'
+	cp -pr '${BUILD_SHARE}'/* '${SHAREDIR}/'
 	cp -pr '${BUILD_CONF}'/* '${CONFDIR}/'
 	update-desktop-database || :
 
+	@echo '${NAME} installed. If you want this to process megapixels pictures, please run `make postprocess` to install that'
+
+standalone_postprocess:
+	mkdir -p '${POSTPROCESS_DIR}'
+	cp -p '${BUILD_STANDALONE}/postprocess.sh' '${POSTPROCESS}'
+
+postprocess:
+	mkdir -p '${POSTPROCESS_DIR}'
+	cp -p '${BUILD_SHARE}/postprocess.sh' '${POSTPROCESS}'
