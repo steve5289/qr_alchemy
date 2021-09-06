@@ -4,6 +4,7 @@ import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
 import qr_alchemy.process as qr_process
+import qr_alchemy.gui as gui
 
 
 class QRConfig(Gtk.Window):
@@ -85,11 +86,27 @@ class QRConfig(Gtk.Window):
         selected = self.tv_act.get_selection()
         data, i = selected.get_selected()
         
-        if i != None:
-            code_type=data[i][0]
-            if code_type != '*':
-                qr_process.qr_update_configaction(data[i][0], '', '')
-                self.ls_actions_populate(self.ls_act)
+        if i == None:
+            return
+            
+        code_type=data[i][0]
+        if code_type == '*':
+            return
+
+        ok_window = gui.OkDialog(
+           self,
+           title="Really Delete?",
+           message="Are you sure you want to delete " +code_type + "?"       
+        )
+        ok_window.show_all()
+        ok_window.run()
+
+        state = ok_window.get_state()
+        if state != Gtk.ResponseType.OK:
+            return
+
+        qr_process.qr_update_configaction(data[i][0], '', '')
+        self.ls_actions_populate(self.ls_act)
         
     def bu_add_clicked(self, qr_code):
         print('add')
@@ -192,6 +209,7 @@ class QRConfigEntry(Gtk.MessageDialog):
         cb_type.pack_start(rt_type, True)
         cb_type.add_attribute(rt_type, 'text', 0)
         cb_type.set_active(default_action)
+        self.cb_type_changed(cb_type)
         action_type=action_types[0]
         box_action.pack_end(cb_type, False, False, 0)
 
@@ -246,7 +264,10 @@ class QRConfigEntry(Gtk.MessageDialog):
             except:
                 pass
         else:
-            self.pg_prog.hide()
+            try:
+                self.pg_prog.hide()
+            except:
+                pass
         print('changed to:', self.action_type)
 
     def en_code_changed(self, entry):
@@ -312,10 +333,13 @@ class QRConfigEntry(Gtk.MessageDialog):
 
     def bu_ok_clicked(self, qr_code):
         if self.code_type == None or self.action_type == None:
+            print('test1', self.code_type, self.action_type)
             return
         if self.action_type == 'Program' and self.prog == None:
+            print('test2')
             return
         if self.action_type == 'Plugin' and self.plugin == None:
+            print('test3')
             return
 
         self.state = state=Gtk.ResponseType.OK
