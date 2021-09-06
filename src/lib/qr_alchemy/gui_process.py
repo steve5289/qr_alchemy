@@ -59,7 +59,6 @@ class QrActionWindow(Gtk.Window):
         if state == Gtk.ResponseType.OK:
             print("got name:" + name)
             qr_saved.set_saved_code(name,self.qr_code)
-        self.destroy()
 
     def bu_run_clicked(self,qr_code):
         qr_process.qr_code_handler(self.qr_code)
