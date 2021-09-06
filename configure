@@ -61,7 +61,7 @@ function generate_makefile {
 
     # bin directory
     if [[ -z "$BINDIR" ]]; then
-        BINDIR="/usr/local/sbin"
+        BINDIR="/usr/local/bin"
     fi
     sed -i "s|%%BINDIR%%|$BINDIR|g" "$MAKEFILE"
 
