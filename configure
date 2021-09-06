@@ -68,6 +68,9 @@ function generate_makefile {
     fi
     sed -i "s|%%BINDIR%%|$BINDIR|g" "$MAKEFILE"
 
+    # home directory
+    sed -i "s|%%HOME%%|$HOME|g" "$MAKEFILE"
+
     # config directory
     if [[ -z "$CONFDIR" ]]; then
         CONFDIR="/etc"
