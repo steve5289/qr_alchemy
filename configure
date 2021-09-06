@@ -53,8 +53,11 @@ function generate_makefile {
     	if [[ -z "$BASE_PYTHON_VERSION" ]]; then
    	    die "Could not determine base python version"
    	fi
-
-    	PYTHON_LIBDIR="/lib/python$BASE_PYTHON_VERSION/site-packages/"
+        if [[ -d "/lib/python$BASE_PYTHON_VERSION/site-packages/" ]]; then
+            PYTHON_LIBDIR="/lib/python$BASE_PYTHON_VERSION/site-packages/"
+        elif [[ -d "/lib/python$BASE_PYTHON_VERSION" ]]; then
+            PYTHON_LIBDIR="/lib/python$BASE_PYTHON_VERSION"
+        fi
     fi
 
     sed -i "s|%%PYTHON_LIBDIR%%|$PYTHON_LIBDIR|g" "$MAKEFILE"
