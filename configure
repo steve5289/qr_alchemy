@@ -67,7 +67,7 @@ function generate_makefile {
 
     # config directory
     if [[ -z "$CONFDIR" ]]; then
-        BINDIR="/etc"
+        CONFDIR="/etc"
     fi
     sed -i "s|%%CONFDIR%%|$CONFDIR|g" "$MAKEFILE"
 
