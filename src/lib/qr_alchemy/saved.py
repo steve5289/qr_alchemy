@@ -8,7 +8,7 @@ histfile="history_qr.dat"
 hist_max=10
 
 def _get_homedir():
-    if "HOME" in  os.environ:
+    if "HOME" in os.environ:
         return os.environ['HOME'] + '/'
     else:
         return os.environ['/']

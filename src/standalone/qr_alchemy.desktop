@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=QR Alchemy
+Comment=Provides the ability do manage, run, save and generate QR codes
+Encoding=UTF-8
+Exec=%STANDALONEDIR%/%BUILD_STANDALONE%/qr_alchemy.sh
+Icon=%STANDALONEDIR%/%BUILD_PIXMAP%/qr_alchemy.png
+Type=Application
+Categories=Utilities;
+X-Purism-FormFactor=Workstation;Mobile;
+

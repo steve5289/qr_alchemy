@@ -1,0 +1,80 @@
+NAME=qr_alchemy
+
+SRC=./src
+
+BUILD=./build
+BUILD_APP=${BUILD}/app
+BUILD_PIXMAP=${BUILD}/pixmaps
+BUILD_BIN=${BUILD}/bin
+BUILD_LIB=${BUILD}/lib
+BUILD_CONF=${BUILD}/etc
+BUILD_SHARE=${BUILD}/plugins
+BUILD_STANDALONE=${BUILD}/standalone
+
+BINDIR=%%BINDIR%%
+CONFDIR=%%CONFDIR%%
+PYTHON_LIBDIR=%%PYTHON_LIBDIR%%
+SHAREDIR=%%SHAREDIR%%
+APPDIR=%%APPDIR%%
+USER_APPDIR=%%USER_APPDIR%%
+PIXMAPDIR=%%PIXMAPDIR%%
+STANDALONEDIR=%%STANDALONEDIR%%
+
+STANDALONE_LAUNCHER=${BUILD_STANDALONE}/${NAME}.sh
+STANDALONE_DESKTOP=${BUILD_STANDALONE}/${NAME}.desktop
+
+build: clean build_prep standalone_build standard_build
+	chmod 755 "${BUILD_BIN}"/*
+	chmod 644 "${BUILD_CONF}"/*
+	chmod 644 "${BUILD_APP}"/*
+	chmod -R 755 "${BUILD_SHARE}"/*
+	chmod 755 "${STANDALONE_LAUNCHER}"
+	chmod 644 "${STANDALONE_DESKTOP}"
+	chmod 755 "${BUILD_LIB}/${NAME}"/*
+
+	python -m compileall "${BUILD_LIB}/${NAME}"/
+	@echo 'build complete. Run `sudo make install` to install in system space or `make standalone_install` to install in your homedir'
+
+
+build_prep:
+	cp -pr "${SRC}" "${BUILD}"
+	
+standard_build:
+	sed -i 's|%CONFDIR%|${CONFDIR}|g' ${BUILD_BIN}/${NAME}
+
+	sed -i 's|%BINDIR%|${BINDIR}|g' ${BUILD_APP}/${NAME}.desktop
+
+standalone_build:
+	sed -i 's|%STANDALONE%|${STANDALONEDIR}|g' "${STANDALONE_LAUNCHER}"
+	sed -i 's|%BUILD_STANDALONE%|${BUILD_STANDALONE}|g' "${STANDALONE_LAUNCHER}"
+	sed -i 's|%BUILD_LIB%|${BUILD_LIB}|g' "${STANDALONE_LAUNCHER}"
+	sed -i 's|%BUILD_BIN%|${BUILD_BIN}|g' "${STANDALONE_LAUNCHER}"
+	sed -i 's|%BUILD_CONF%|${BUILD_CONF}|g' "${STANDALONE_LAUNCHER}"
+	sed -i 's|%BUILD_APP%|${BUILD_APP}|g' "${STANDALONE_LAUNCHER}"
+
+	sed -i 's|%STANDALONEDIR%|${STANDALONEDIR}|g' "${STANDALONE_DESKTOP}"
+	sed -i 's|%BUILD_STANDALONE%|${BUILD_STANDALONE}|g' "${STANDALONE_DESKTOP}"
+	sed -i 's|%BUILD_LIB%|${BUILD_LIB}|g' "${STANDALONE_DESKTOP}"
+	sed -i 's|%BUILD_BIN%|${BUILD_BIN}|g' "${STANDALONE_DESKTOP}"
+	sed -i 's|%BUILD_CONF%|${BUILD_CONF}|g' "${STANDALONE_DESKTOP}"
+	sed -i 's|%BUILD_PIXMAP%|${BUILD_PIXMAP}|g' "${STANDALONE_DESKTOP}"
+
+clean:
+	rm -rf '${BUILD}'
+
+run:
+	"${STANDALONE_LAUNCHER}"
+
+standalone_install:
+	cp -p "${STANDALONE_DESKTOP}" "${USER_APPDIR}"/
+	update-desktop-database || :
+
+install:
+	cp -pr '${BUILD_BIN}'/* '${BINDIR}/'
+	cp -pr '${BUILD_LIB}'/* '${PYTHON_LIBDIR}/'
+	cp -pr '${BUILD_APP}'/* '${APPDIR}/'
+	cp -pr '${BUILD_PIXMAP}'/* '${PIXMAPDIR}/'
+	cp -pr '${BUILD_SHARE}'/* '${SHAREDIR}/'
+	cp -pr '${BUILD_CONF}'/* '${CONFDIR}/'
+	update-desktop-database || :
+

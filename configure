@@ -1,0 +1,115 @@
+#!/usr/bin/bash
+
+MAKEFILE_SRC=./Makefile.in
+MAKEFILE=./Makefile
+
+function check_dependancies {
+    echo '## Checking Dependancies'
+    check_cmd zbarimg
+    check_cmd python3
+
+    check_python_lib os
+    check_python_lib gi
+    check_python_lib subprocess
+    check_python_lib configparser
+
+    echo 'All Dependancies check out!'
+    echo
+    echo
+}
+
+function check_cmd {
+    local CMD="$1"
+
+    echo -n "checking $CMD..."
+    command -v $CMD > /dev/null 2>&1
+    if [[ $? -ne 0 ]]; then
+        die "$CMD not found.\n This is required for this install"
+    fi
+    echo 'ok'
+}
+function check_python_lib {
+    local LIB="$1"
+
+    echo -n "checking python($LIB)..."
+    python3 -c "import $LIB"
+    if [[ $? -ne 0 ]]; then
+        die "python3($LIB) not found... This is required for this install"
+    fi
+    echo 'ok'
+}
+
+function generate_makefile {
+    echo -n 'Generating Makefile...'
+    set -e
+
+    cp -f "$MAKEFILE_SRC" "$MAKEFILE"
+
+    # Python lib
+    if [[ -z "$PYTHON_LIBDIR" ]]; then
+        BASE_PYTHON_VERSION=$(python --version | awk '{print $2}' | awk -F. '{print $1 "." $2}')
+    	if [[ -z "$BASE_PYTHON_VERSION" ]]; then
+   	    die "Could not determine base python version"
+   	fi
+
+    	PYTHON_LIBDIR="/lib/python$BASE_PYTHON_VERSION/site-packages/"
+    fi
+
+    sed -i "s|%%PYTHON_LIBDIR%%|$PYTHON_LIBDIR|g" "$MAKEFILE"
+
+    # bin directory
+    if [[ -z "$BINDIR" ]]; then
+        BINDIR="/usr/local/sbin"
+    fi
+    sed -i "s|%%BINDIR%%|$BINDIR|g" "$MAKEFILE"
+
+    # config directory
+    if [[ -z "$CONFDIR" ]]; then
+        BINDIR="/etc"
+    fi
+    sed -i "s|%%CONFDIR%%|$CONFDIR|g" "$MAKEFILE"
+
+    # share directory
+    if [[ -z "$SHAREDIR" ]]; then
+        SHAREDIR="/usr/local/share/qr_alchemy"
+    fi
+    sed -i "s|%%SHAREDIR%%|$SHAREDIR|g" "$MAKEFILE"
+    
+    # application directory
+    if [[ -z "$APPDIR" ]]; then
+        APPDIR="/usr/local/share/applications/"
+    fi
+    sed -i "s|%%APPDIR%%|$APPDIR|g" "$MAKEFILE"
+    
+    # user application directory
+    if [[ -z "$USER_APPDIR" ]]; then
+        USER_APPDIR="$HOME/.local/share/applications/"
+    fi
+    sed -i "s|%%USER_APPDIR%%|$USER_APPDIR|g" "$MAKEFILE"
+    
+    # pixmaps directory
+    if [[ -z "$PIXMAPDIR" ]]; then
+        PIXMAPDIR="/usr/share/pixmaps/"
+    fi
+    sed -i "s|%%PIXMAPDIR%%|$PIXMAPDIR|g" "$MAKEFILE"
+    
+    # standalone directory
+    STANDALONEDIR=$(pwd)
+    sed -i "s|%%STANDALONEDIR%%|$STANDALONEDIR|g" "$MAKEFILE"
+
+    set +e
+    echo 'Done.'
+}
+
+function die {
+    echo -e "$@"
+    exit 1
+
+}
+
+function main {
+    check_dependancies
+    generate_makefile
+    echo 'configure complete! run `make` to build'
+}
+main "$@"
