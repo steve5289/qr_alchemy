@@ -42,10 +42,7 @@ class QrSavedWindow(Gtk.Window):
         self.show_all()
 
     def bu_config_clicked(self, button):
-        config_window = gui_config.QRConfig(self,title='Configuration')
-        #config_window.connect("destroy", Gtk.main_quit)
-        config_window.show_all()
-        config_window.run()
+        config_window = gui_config.qr_gui_config()
         self.first_select = 1
         
 

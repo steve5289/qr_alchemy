@@ -6,17 +6,23 @@ from gi.repository import Gtk
 import qr_alchemy.process as qr_process
 
 
-class QRConfig(Gtk.MessageDialog):
+class QRConfig(Gtk.Window):
     state=Gtk.ResponseType.CANCEL
     name=""
-    def __init__(self, parent,title):
-        Gtk.MessageDialog.__init__(self, title=title)
+    def __init__(self):
+        Gtk.Window.__init__(self, title="QR Code Detected")
+        #Gtk.Dialog.__init__(self, title='Configuration')
 
-        dialog = self.get_content_area()
+        #dialog = self.get_content_area()
+        self.hb = Gtk.HeaderBar()
+        self.hb.set_show_close_button(True)
+        self.hb.props.title="Configuration"
+        self.set_titlebar(self.hb)
+        self.connect
 
         ## Top Box
         box_t = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=1)
-        dialog.pack_start(box_t, True, True, 0)
+        self.add(box_t)
         page_a=self.page_actions()
         box_t.pack_start(page_a, True, True,0)
 
@@ -334,3 +340,9 @@ class QRConfigEntry(Gtk.MessageDialog):
             results['action_subtype']=''
         
         return results
+
+def qr_gui_config():
+    win = QRConfig()
+    win.connect("destroy", Gtk.main_quit)
+    win.show_all()
+    Gtk.main()
