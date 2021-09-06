@@ -33,7 +33,7 @@ build: clean build_prep standalone_build standard_build
 	chmod 644 "${STANDALONE_DESKTOP}"
 	chmod 755 "${BUILD_LIB}/${NAME}"/*
 
-	python -m compileall "${BUILD_LIB}/${NAME}"/
+	python3 -m compileall "${BUILD_LIB}/${NAME}"/
 	@echo 'build complete. Run `sudo make install` to install in system space or `make standalone_install` to install in your homedir'
 
 
