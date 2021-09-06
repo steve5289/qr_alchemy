@@ -63,7 +63,7 @@ def add_history(qr_code):
     histfile=_get_user_histfile()
 
     dt_now = datetime.now()
-    now = dt_now.strftime("%Y-%m/%d %H:%M:%S")
+    now = dt_now.strftime("%Y-%m-%d %H:%M:%S")
     codes = get_history()
     fh_w = open(histfile, 'wb')
 
