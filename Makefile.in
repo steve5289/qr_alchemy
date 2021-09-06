@@ -28,7 +28,7 @@ build: clean build_prep standalone_build standard_build
 	chmod 755 "${BUILD_BIN}"/*
 	chmod 644 "${BUILD_CONF}"/*
 	chmod 644 "${BUILD_APP}"/*
-	chmod -R 755 "${BUILD_SHARE}"/*
+	#chmod -R 755 "${BUILD_SHARE}"/*
 	chmod 755 "${STANDALONE_LAUNCHER}"
 	chmod 644 "${STANDALONE_DESKTOP}"
 	chmod 755 "${BUILD_LIB}/${NAME}"/*
@@ -72,11 +72,18 @@ standalone_install:
 	update-desktop-database || :
 
 install:
+	mkdir -p '${BINDIR}'
+	mkdir -p '${PYTHON_LIBDIR}'
+	mkdir -p '${APPDIR}'
+	mkdir -p '${PIXMAPDIR}'
+	mkdir -p '${SHAREDIR}'
+	mkdir -p '${CONFDIR}'
+
 	cp -pr '${BUILD_BIN}'/* '${BINDIR}/'
 	cp -pr '${BUILD_LIB}'/* '${PYTHON_LIBDIR}/'
 	cp -pr '${BUILD_APP}'/* '${APPDIR}/'
 	cp -pr '${BUILD_PIXMAP}'/* '${PIXMAPDIR}/'
-	cp -pr '${BUILD_SHARE}'/* '${SHAREDIR}/'
+	#cp -pr '${BUILD_SHARE}'/* '${SHAREDIR}/'
 	cp -pr '${BUILD_CONF}'/* '${CONFDIR}/'
 	update-desktop-database || :
 
