@@ -49,7 +49,7 @@ function generate_makefile {
 
     # Python lib
     if [[ -z "$PYTHON_LIBDIR" ]]; then
-        BASE_PYTHON_VERSION=$(python --version | awk '{print $2}' | awk -F. '{print $1 "." $2}')
+        BASE_PYTHON_VERSION=$(python3 --version | awk '{print $2}' | awk -F. '{print $1 "." $2}')
     	if [[ -z "$BASE_PYTHON_VERSION" ]]; then
    	    die "Could not determine base python version"
    	fi
