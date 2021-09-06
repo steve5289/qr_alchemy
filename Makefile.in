@@ -25,6 +25,7 @@ POSTPROCESS=${POSTPROCESS_DIR}/postprocess.sh
 
 STANDALONE_LAUNCHER=${BUILD_STANDALONE}/${NAME}.sh
 STANDALONE_DESKTOP=${BUILD_STANDALONE}/${NAME}.desktop
+STANDALONE_POSTPROCESS=${BUILD_STANDALONE}/postprocess.sh
 
 build: clean build_prep standalone_build standard_build
 	chmod 755 "${BUILD_BIN}"/*
@@ -33,6 +34,7 @@ build: clean build_prep standalone_build standard_build
 	chmod -R 755 "${BUILD_SHARE}"/*
 	chmod 755 "${STANDALONE_LAUNCHER}"
 	chmod 644 "${STANDALONE_DESKTOP}"
+	chmod 755 "${STANDALONE_POSTPROCESS}"
 	chmod 755 "${BUILD_LIB}/${NAME}"/*
 
 	python3 -m compileall "${BUILD_LIB}/${NAME}"/
@@ -64,8 +66,8 @@ standalone_build:
 	sed -i 's|%BUILD_CONF%|${BUILD_CONF}|g' "${STANDALONE_DESKTOP}"
 	sed -i 's|%BUILD_PIXMAP%|${BUILD_PIXMAP}|g' "${STANDALONE_DESKTOP}"
 
-	sed -i 's|%STANDALONE%|${STANDALONEDIR}|g' "${BUILD_STANDALONE}/postprocess.sh"
-	sed -i 's|%BUILD_STANDALONE%|${BUILD_STANDALONE}|g' "${BUILD_STANDALONE}/postprocess.sh"
+	sed -i 's|%STANDALONE%|${STANDALONEDIR}|g' "${STANDALONE_POSTPROCESS}"
+	sed -i 's|%BUILD_STANDALONE%|${BUILD_STANDALONE}|g' "${STANDALONE_POSTPROCESS}"
 clean:
 	rm -rf '${BUILD}'
 
