@@ -1,3 +1,11 @@
+#!/usr/bin/env bash
+## Script Description
+# This script's purpose is to act as a postprocessing script as part of megapixe's image processing by detecting, and performing actions based on them (with user input).
+
+
+CLEAN_DNG_FILE=1
+STOCK_POSTPROCESS_PATH="/usr/share/megapixels/postprocess.sh"
+
 ## 
 # Execution Starts here
 function main {
