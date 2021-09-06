@@ -7,7 +7,7 @@ import qr_alchemy.gui_process as qr_gui_process
 import qr_alchemy.gui_saved as qr_gui_saved
 
 def main():
-    optlist, args = getopt.getopt(sys.argv[1:], "hf:c:")
+    optlist, args = getopt.getopt(sys.argv[1:], "hVf:c:")
     configfile="%CONFDIR%/qr_alchemy.conf"
     file=''
 
@@ -18,6 +18,9 @@ def main():
             file=arg
         elif opt == '-c':
             configfile=arg
+        elif opt == '-V':
+            print(sys.argv[0], 'version: ', '%VERSION%')
+            sys.exit(0)
         else:
             help()
 

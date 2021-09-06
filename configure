@@ -2,6 +2,8 @@
 
 MAKEFILE_SRC=./Makefile.in
 MAKEFILE=./Makefile
+VERSION=0.1.0
+
 
 function check_dependancies {
     echo '## Checking Dependancies'
@@ -97,6 +99,7 @@ function generate_makefile {
     STANDALONEDIR=$(pwd)
     sed -i "s|%%STANDALONEDIR%%|$STANDALONEDIR|g" "$MAKEFILE"
 
+    sed -i "s|%%VERSION%%|$VERSION|g" "$MAKEFILE"
     set +e
     echo 'Done.'
 }
