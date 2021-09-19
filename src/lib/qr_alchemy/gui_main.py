@@ -25,6 +25,8 @@ class QrMainWindow(Gtk.Window):
     hist_codes=list()
     disable_actions=False
     hist_click=0
+    page_saved = gui_saved.QrSavedPage()
+    page_hist = gui_hist.QrHistPage()
     def __init__(self):
         super().__init__(title="QR Alchemy")
         self.set_border_width(0)
@@ -45,12 +47,11 @@ class QrMainWindow(Gtk.Window):
         # Pages
         self.notebook = Gtk.Notebook()
         self.add(self.notebook)
-        page_saved = gui_saved.QrSavedPage()
-        page_hist = gui_hist.QrHistPage()
         
         
-        self.notebook.append_page(page_saved.get_box(), Gtk.Label('Saved'))
-        self.notebook.append_page(page_hist.get_box(), Gtk.Label('History'))
+        self.notebook.append_page(self.page_saved.get_box(), Gtk.Label('Saved'))
+        self.notebook.append_page(self.page_hist.get_box(), Gtk.Label('History'))
+        self.notebook.connect("switch-page", self.nb_page_changed)
 
         self.show_all()
 
@@ -58,6 +59,9 @@ class QrMainWindow(Gtk.Window):
         config_window = gui_config.qr_gui_config()
         self.first_select = 1
         
+    def nb_page_changed(self, notebook, page, page_num):
+        if page_num == 0:
+            self.page_saved.refresh_saved()
         
 def qr_gui_main():
     win = QrMainWindow()
