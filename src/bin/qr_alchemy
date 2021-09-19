@@ -3,12 +3,14 @@
 import sys
 import getopt
 import qr_alchemy.process as qr_process
+import qr_alchemy.plugins as qr_plugins
 import qr_alchemy.gui_process as qr_gui_process
 import qr_alchemy.gui_main as qr_gui_main
 
 def main():
-    optlist, args = getopt.getopt(sys.argv[1:], "hVf:c:")
+    optlist, args = getopt.getopt(sys.argv[1:], "hVf:c:p:")
     configfile="%CONFDIR%/qr_alchemy.conf"
+    sys_plugin_dir="%SHAREDIR%/"
     file=''
 
     for opt, arg in  optlist:
@@ -18,13 +20,17 @@ def main():
             file=arg
         elif opt == '-c':
             configfile=arg
+        elif opt == '-p':
+            sys_plugin_dir=arg
         elif opt == '-V':
             print(sys.argv[0], 'version: ', '%VERSION%')
             sys.exit(0)
         else:
             help()
-
+    print('test2: ', sys_plugin_dir)
+    qr_plugins.set_sys_plugin_dir(sys_plugin_dir)
     qr_process.configfile(configfile)
+
     if file:
         qr_code = qr_process.qr_image_handler(file)
         if qr_code:

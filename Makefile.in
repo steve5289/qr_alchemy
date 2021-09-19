@@ -53,6 +53,7 @@ standard_build:
 
 standalone_build:
 	sed -i 's|%STANDALONE%|${STANDALONEDIR}|g' "${STANDALONE_LAUNCHER}"
+	sed -i 's|%BUILD_SHARE%|${BUILD_SHARE}|g' "${STANDALONE_LAUNCHER}"
 	sed -i 's|%BUILD_STANDALONE%|${BUILD_STANDALONE}|g' "${STANDALONE_LAUNCHER}"
 	sed -i 's|%BUILD_LIB%|${BUILD_LIB}|g' "${STANDALONE_LAUNCHER}"
 	sed -i 's|%BUILD_BIN%|${BUILD_BIN}|g' "${STANDALONE_LAUNCHER}"

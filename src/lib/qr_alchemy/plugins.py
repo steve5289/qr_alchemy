@@ -6,30 +6,55 @@ sys_output_plugin_dir=""
 
 user_input_plugin_dir=""
 user_output_plugin_dir=""
+qr_user_configdir=".config/qr_alchemy/"
+
+def _get_homedir():
+    if "HOME" in  os.environ:
+        return os.environ['HOME']
+    else:
+        return os.environ['/']
+
+def set_sys_plugin_dir(path):
+    global sys_input_plugin_dir
+    global sys_output_plugin_dir
+    global user_input_plugin_dir
+    global user_output_plugin_dir
+
+    sys_plugin_dir=path
+    sys_input_plugin_dir=path+"/input_plugins"
+    sys_output_plugin_dir=path+"/output_plugins"
+    
+    homedir=_get_homedir()
+    qr_userconfig=homedir + '/' + qr_user_configdir
+    user_input_plugin_dir=qr_userconfig + "/input_plugins"
+    user_output_plugin_dir=qr_userconfig + "/output_plugins"
+    print('test')
 
 def _get_plugins(sys_dir,user_dir):
     plugin=dict()
 
-    files = os.listdir(sys_dir)
-    for file in files:
-        path=sys_dir + file
-        if os.access(path, os.X_OK) and os.isfile(path):
-            plugin[file]=path
+    try: 
+        files = os.listdir(sys_dir)
+        for file in files:
+            path=sys_dir + '/' + file
+            #print('file:', file)
+            if os.access(path, os.X_OK):
+                plugin[file]=path
+    except:
+        pass
         
-    files = os.listdir(user_dir)
-    for file in files:
-        path=user_dir + file
-        if os.access(path, os.X_OK) and os.isfile(path):
-            plugin[file]=path
+    try:
+        files = os.listdir(user_dir)
+        for file in files:
+            path=user_dir + '/' + file
+            if os.access(path, os.X_OK) and os.isfile(path):
+                plugin[file]=path
+    except:
+        pass
 
     return plugin
 
 ## INPUT
-def set_sys_input_plugin_dir(path):
-    sys_input_plugin_dir=path
-
-def set_user_input_plugin_dir(path):
-    user_input_plugin_dir=path
 
 def get_input_plugins():
     return _get_plugins(sys_input_plugin_dir,user_input_plugin_dir)
@@ -53,22 +78,16 @@ def run_input_plugin(plugin, qr_code):
     
 
 ## OUTPUT
-def set_sys_output_plugin_dir(path):
-    sys_input_plugin_dir=path
-
-def set_user_output_plugin_dir(path):
-    user_input_plugin_dir=path
-
 def get_output_plugins():
     return _get_plugins(sys_output_plugin_dir,user_output_plugin_dir)
 
-def run_output_plugin(plugin, qr_code):
-    plugin_map=get_output_plugins
+def run_output_plugin(plugin):
+    plugin_map=get_output_plugins()
     
     if not plugin in plugin_map:
         print('Error! plugin not found: ', plugin)
         return False
     
-    cmd=subprocess.run([plugin_map[plugin], qr_code])
+    cmd=subprocess.run([plugin_map[plugin]])
 
     return [cmd.returncode,cmd.stdout]

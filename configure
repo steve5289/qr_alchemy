@@ -2,7 +2,7 @@
 
 MAKEFILE_SRC=./Makefile.in
 MAKEFILE=./Makefile
-VERSION=0.1.0
+VERSION=0.1.1
 
 
 function check_dependancies {
