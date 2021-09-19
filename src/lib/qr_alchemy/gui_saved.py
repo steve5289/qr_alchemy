@@ -9,6 +9,7 @@ import qr_alchemy.gui_config as gui_config
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk,Gio
 
+import traceback
 
 class QrSavedWindow(Gtk.Window):
     # HACK ALERT!!!!
@@ -70,7 +71,7 @@ class QrSavedWindow(Gtk.Window):
                 column.set_max_width(50)
         select = self.tv_saved.get_selection()
         select.set_mode(Gtk.SelectionMode.NONE)
-        self.tv_saved.connect('cursor-changed', self.selected_saved_entry)
+        self.tv_saved.connect('row-activated', self.selected_saved_entry)
 
         # setting up the layout, putting the treeview in a scrollwindow, and the buttons in a row
         stv_saved = Gtk.ScrolledWindow()
@@ -89,10 +90,10 @@ class QrSavedWindow(Gtk.Window):
             self.ls_saved.append([name, self.saved_code[name]])
         self.disable_actions=False
 
-    def selected_saved_entry(self, tv_saved):
+    def selected_saved_entry(self,thing1, thing2, tv_saved):
         if self.disable_actions:
             return
-        path,data = tv_saved.get_cursor()
+        path,data = self.tv_saved.get_cursor()
         if path == None:
             return
         indices = path.get_indices()
@@ -100,8 +101,9 @@ class QrSavedWindow(Gtk.Window):
         
         qr_code=self.saved_code[self.saved_codes[indices[0]]]
         
+        #traceback.print_stack()
         gui_process.qr_gui_handle_code(qr_code)
-        self.refresh_saved()
+        #self.refresh_saved()
 
     def page_history(self):
         box = Gtk.Box()
@@ -109,25 +111,25 @@ class QrSavedWindow(Gtk.Window):
         self.ls_hist = Gtk.ListStore(str, str)
         self.refresh_history()
 
-        tv_hist = Gtk.TreeView(model=self.ls_hist)
+        self.tv_hist = Gtk.TreeView(model=self.ls_hist)
         for i, column_title in enumerate(
             ["Date", "QR Code"]
         ):
             renderer = Gtk.CellRendererText()
             column = Gtk.TreeViewColumn(column_title, renderer, text=i)
-            tv_hist.append_column(column)
+            self.tv_hist.append_column(column)
             if column_title == "QR Code":
                 column.set_resizable(True)
                 column.set_max_width(50)
-        select = tv_hist.get_selection()
+        select = self.tv_hist.get_selection()
         select.set_mode(Gtk.SelectionMode.NONE)
-        tv_hist.connect('cursor-changed', self.selected_hist_entry)
+        self.tv_hist.connect('row-activated', self.selected_hist_entry)
 
         # setting up the layout, putting the treeview in a scrollwindow, and the buttons in a row
         stv_hist = Gtk.ScrolledWindow()
         stv_hist.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
         box.pack_start(stv_hist, True, True, 1)
-        stv_hist.add(tv_hist)
+        stv_hist.add(self.tv_hist)
         return box
 
     def refresh_history(self):
@@ -137,19 +139,11 @@ class QrSavedWindow(Gtk.Window):
             self.ls_hist.append(row)
         self.disable_actions=False
 
-    def selected_hist_entry(self, tv_hist):
-        #model, treeitr = selection.get_selected()
-        selected = tv_hist.get_selection()
-        print('selected', selected)
-        data, i = selected.get_selected()
-        if i is not None:
-            qr_code=data[i][1]
-            gui_process.qr_gui_handle_code(qr_code)
-            self.refresh_history()
+    def selected_hist_entry(self, thing1, thing2, tv_hist):
         if self.disable_actions:
             return
         #if self.hist_click == 0:
-        path,data = tv_hist.get_cursor()
+        path,data = self.tv_hist.get_cursor()
         if path == None:
             return
         indices = path.get_indices()
@@ -158,7 +152,7 @@ class QrSavedWindow(Gtk.Window):
         qr_code=self.hist_codes[indices[0]][1]
         
         gui_process.qr_gui_handle_code(qr_code)
-        self.refresh_saved()
+        #self.refresh_saved()
 
 
         
