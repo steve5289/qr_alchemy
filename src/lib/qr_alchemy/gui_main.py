@@ -10,21 +10,6 @@ from gi.repository import Gtk,Gio
 import traceback
 
 class QrMainWindow(Gtk.Window):
-    # HACK ALERT!!!!
-    # This uses the select multiple entries for the treeviews. This is 
-    # because this select option doesn't try to auto select things when 
-    # the tabs are switched.
-    # Currently picking an entry is handled by adding a function to the 
-    # selection that always says don't select. This is done as it prevents 
-    # selection but also allows us to call things when there is a selection.
-    # 
-    # There must be a better way of doing this... But I haven't found it yet...
-    tv_saved = Gtk.TreeView()
-    saved_codes=list()
-    saved_code=dict()
-    hist_codes=list()
-    disable_actions=False
-    hist_click=0
     page_saved = gui_saved.QrSavedPage()
     page_hist = gui_hist.QrHistPage()
     def __init__(self):
