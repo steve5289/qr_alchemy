@@ -9,14 +9,19 @@ import qr_alchemy.gui_config as gui_config
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk,Gio
 
+
 class QrSavedWindow(Gtk.Window):
     # HACK ALERT!!!!
     # These variables are for stopping this program from automatically launching 
     # the first thing shown in the list (due ti it getting 'selected'
     # These must be a better way, but I can't find one right now...
-    first_select=0
-    first_select_hist=0
-    first_select_sav=0
+    tv_saved = Gtk.TreeView()
+    saved_codes=list()
+    saved_code=dict()
+    hist_codes=list()
+    disable_actions=False
+    saved_click=0
+    hist_click=0
     def __init__(self):
         super().__init__(title="QR Alchemy")
         self.set_border_width(0)
@@ -47,56 +52,69 @@ class QrSavedWindow(Gtk.Window):
         
 
     def page_saved(self):
-        saved=qr_saved.get_saved_codes()
 
         box = Gtk.Box()
         # Creating the ListStore model
-        ls_saved = Gtk.ListStore(str, str)
-        for name in sorted(saved.keys()):
-            ls_saved.append([name, saved[name]])
+        self.ls_saved = Gtk.ListStore(str, str)
+        self.refresh_saved()
 
-        tv_saved = Gtk.TreeView(model=ls_saved)
+        self.tv_saved = Gtk.TreeView(model=self.ls_saved)
         for i, column_title in enumerate(
             ["Name", "QR Code"]
         ):
             renderer = Gtk.CellRendererText()
             column = Gtk.TreeViewColumn(column_title, renderer, text=i)
-            tv_saved.append_column(column)
+            self.tv_saved.append_column(column)
             if column_title == "QR Code":
                 column.set_resizable(True)
                 column.set_max_width(50)
-        select = tv_saved.get_selection()
-        #select.set_mode(Gtk.SelectionMode.SINGLE)
-        tv_saved.connect('cursor-changed', self.selected_saved_entry)
+        select = self.tv_saved.get_selection()
+        select.set_mode(Gtk.SelectionMode.NONE)
+        self.tv_saved.connect('cursor-changed', self.selected_saved_entry)
 
         # setting up the layout, putting the treeview in a scrollwindow, and the buttons in a row
         stv_saved = Gtk.ScrolledWindow()
         stv_saved.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
         box.pack_start(stv_saved, True, True, 1)
-        stv_saved.add(tv_saved)
+        stv_saved.add(self.tv_saved)
         return box
 
+    def refresh_saved(self):
+
+        self.disable_actions=True
+        self.saved_code=qr_saved.get_saved_codes()
+        self.ls_saved.clear()
+        self.saved_codes=sorted(self.saved_code.keys())
+        for name in self.saved_codes:
+            self.ls_saved.append([name, self.saved_code[name]])
+        self.disable_actions=False
+
     def selected_saved_entry(self, tv_saved):
-        if self.first_select_sav == 1 or self.first_select == 0:
+        if self.disable_actions:
+            return
+        if self.saved_click == 0:
             #model, treeitr = selection.get_selected()
-            selected = tv_saved.get_selection()
-            data, i = selected.get_selected()
-            if i is not None:
-                qr_code=data[i][1]
-                gui_process.qr_gui_handle_code(qr_code)
-        self.first_select_sav=1
-        self.first_select = 1
+            path,data = tv_saved.get_cursor()
+            if path == None:
+                return
+            indices = path.get_indices()
+        
+        
+            qr_code=self.saved_code[self.saved_codes[indices[0]]]
+        
+            gui_process.qr_gui_handle_code(qr_code)
+            self.refresh_saved()
+            self.saved_click = 1
+        else:
+            self.saved_click = 0
 
     def page_history(self):
-        history=qr_saved.get_history()
-
         box = Gtk.Box()
         # Creating the ListStore model
-        ls_hist = Gtk.ListStore(str, str)
-        for entry in history:
-            ls_hist.append(list(entry))
+        self.ls_hist = Gtk.ListStore(str, str)
+        self.refresh_history()
 
-        tv_hist = Gtk.TreeView(model=ls_hist)
+        tv_hist = Gtk.TreeView(model=self.ls_hist)
         for i, column_title in enumerate(
             ["Date", "QR Code"]
         ):
@@ -107,7 +125,7 @@ class QrSavedWindow(Gtk.Window):
                 column.set_resizable(True)
                 column.set_max_width(50)
         select = tv_hist.get_selection()
-        #select.set_mode(Gtk.SelectionMode.SINGLE)
+        select.set_mode(Gtk.SelectionMode.NONE)
         tv_hist.connect('cursor-changed', self.selected_hist_entry)
 
         # setting up the layout, putting the treeview in a scrollwindow, and the buttons in a row
@@ -117,16 +135,39 @@ class QrSavedWindow(Gtk.Window):
         stv_hist.add(tv_hist)
         return box
 
+    def refresh_history(self):
+        self.disable_actions=True
+        self.hist_codes=qr_saved.get_history()
+        for row in self.hist_codes:
+            self.ls_hist.append(row)
+        self.disable_actions=False
+
     def selected_hist_entry(self, tv_hist):
-        if self.first_select_hist == 1 or self.first_select == 0:
-            #model, treeitr = selection.get_selected()
-            selected = tv_hist.get_selection()
-            data, i = selected.get_selected()
-            if i is not None:
-                qr_code=data[i][1]
-                gui_process.qr_gui_handle_code(qr_code)
-        self.first_select_hist=1
-        self.first_select = 1
+        #model, treeitr = selection.get_selected()
+        selected = tv_hist.get_selection()
+        print('selected', selected)
+        data, i = selected.get_selected()
+        if i is not None:
+            qr_code=data[i][1]
+            gui_process.qr_gui_handle_code(qr_code)
+            self.refresh_history()
+        if self.disable_actions:
+            return
+        #if self.hist_click == 0:
+        path,data = tv_hist.get_cursor()
+        if path == None:
+            return
+        indices = path.get_indices()
+        
+        
+        qr_code=self.hist_codes[indices[0]][1]
+        
+        gui_process.qr_gui_handle_code(qr_code)
+        self.refresh_saved()
+        #    self.hist_click = 1
+        #else:
+        #    self.hist_click = 0
+
 
         
 def qr_gui_saved():
