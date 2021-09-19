@@ -32,8 +32,9 @@ class QrActionWindow(Gtk.Window):
         # Buttons
         bu_cancel = Gtk.Button(label="Do Nothing")
         bu_cancel.connect("clicked", self.bu_cancel_clicked)
-        bu_save = Gtk.Button(label="Save")
-        bu_save.connect("clicked", self.bu_save_clicked)
+        self.bu_save = Gtk.Button(label="Save")
+        self.refresh_save_state()
+        self.bu_save.connect("clicked", self.bu_save_clicked)
         bu_run = Gtk.Button(label="Run")
         bu_run.connect("clicked", self.bu_run_clicked)
         
@@ -41,31 +42,53 @@ class QrActionWindow(Gtk.Window):
         
         box_b.pack_start(bu_cancel,  False, True, 0)
         box_b.pack_end(bu_run, False, True, 0)
-        box_b.pack_end(bu_save, False, True, 24)
+        box_b.pack_end(self.bu_save, False, True, 24)
         
+    def refresh_save_state(self):
+        if qr_saved.is_code_saved(self.qr_code):
+            code_name=qr_saved.get_code_saved_name(self.qr_code)
+            self.bu_save.set_label("Delete Saved")
+            print('is saved')
+        else:
+            self.bu_save.set_label("Save")
+            print('is not saved')
 
-    def bu_save_clicked(self, qr_code):
-        save_window = gui.EntryDialog(
-           self,
-           title="QR Save",
-           message="Please Enter a name to give the qr code that will be saved:"        
-        )
-        save_window.show_all()
-        save_window.run()
+    def bu_save_clicked(self, button):
+        if qr_saved.is_code_saved(self.qr_code):
+            code_name=qr_saved.get_code_saved_name(self.qr_code)
+            ok_window = gui.OkDialog(
+                self,
+                title="Really Delete?",
+                message="Are you sure you want to delete saved code: " +code_name + "?"
+            )
+            ok_window.show_all()
+            ok_window.run()
+            state = ok_window.get_state()
+            if state == Gtk.ResponseType.OK:
+                qr_saved.delete_saved_code(code_name)
+                print('test1')
+        else:
+            save_window = gui.EntryDialog(
+                self,
+                title="QR Save",
+                message="Please Enter a name to give the qr code that will be saved:"        
+            )
+            save_window.show_all()
+            save_window.run()
 
-        name = save_window.get_name()
-        state = save_window.get_state()
+            name = save_window.get_name()
+            state = save_window.get_state()
 
-        if state == Gtk.ResponseType.OK:
-            print("got name:" + name)
-            qr_saved.set_saved_code(name,self.qr_code)
+            if state == Gtk.ResponseType.OK:
+                qr_saved.set_saved_code(name,self.qr_code)
+        self.refresh_save_state()
 
-    def bu_run_clicked(self,qr_code):
+    def bu_run_clicked(self,button):
         qr_process.qr_code_handler(self.qr_code)
         self.destroy()
         return
 
-    def bu_cancel_clicked(self,qr_code):
+    def bu_cancel_clicked(self,button):
         self.destroy()
         return
 
