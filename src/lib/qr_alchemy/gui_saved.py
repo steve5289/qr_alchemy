@@ -13,9 +13,14 @@ import traceback
 
 class QrSavedWindow(Gtk.Window):
     # HACK ALERT!!!!
-    # These variables are for stopping this program from automatically launching 
-    # the first thing shown in the list (due ti it getting 'selected'
-    # These must be a better way, but I can't find one right now...
+    # This uses the select multiple entries for the treeviews. This is 
+    # because this select option doesn't try to auto select things when 
+    # the tabs are switched.
+    # Currently picking an entry is handled by adding a function to the 
+    # selection that always says don't select. This is done as it prevents 
+    # selection but also allows us to call things when there is a selection.
+    # 
+    # There must be a better way of doing this... But I haven't found it yet...
     tv_saved = Gtk.TreeView()
     saved_codes=list()
     saved_code=dict()
@@ -70,8 +75,8 @@ class QrSavedWindow(Gtk.Window):
                 column.set_resizable(True)
                 column.set_max_width(50)
         select = self.tv_saved.get_selection()
-        select.set_mode(Gtk.SelectionMode.NONE)
-        self.tv_saved.connect('row-activated', self.selected_saved_entry)
+        select.set_mode(Gtk.SelectionMode.MULTIPLE)
+        select.set_select_function(self.selected_saved_entry)
 
         # setting up the layout, putting the treeview in a scrollwindow, and the buttons in a row
         stv_saved = Gtk.ScrolledWindow()
@@ -90,7 +95,7 @@ class QrSavedWindow(Gtk.Window):
             self.ls_saved.append([name, self.saved_code[name]])
         self.disable_actions=False
 
-    def selected_saved_entry(self,thing1, thing2, tv_saved):
+    def selected_saved_entry(self,null1,null2,null3,null4):
         if self.disable_actions:
             return
         path,data = self.tv_saved.get_cursor()
@@ -104,6 +109,7 @@ class QrSavedWindow(Gtk.Window):
         #traceback.print_stack()
         gui_process.qr_gui_handle_code(qr_code)
         #self.refresh_saved()
+        return False
 
     def page_history(self):
         box = Gtk.Box()
@@ -122,8 +128,8 @@ class QrSavedWindow(Gtk.Window):
                 column.set_resizable(True)
                 column.set_max_width(50)
         select = self.tv_hist.get_selection()
-        select.set_mode(Gtk.SelectionMode.NONE)
-        self.tv_hist.connect('row-activated', self.selected_hist_entry)
+        select.set_mode(Gtk.SelectionMode.MULTIPLE)
+        select.set_select_function(self.selected_hist_entry)
 
         # setting up the layout, putting the treeview in a scrollwindow, and the buttons in a row
         stv_hist = Gtk.ScrolledWindow()
@@ -139,7 +145,8 @@ class QrSavedWindow(Gtk.Window):
             self.ls_hist.append(row)
         self.disable_actions=False
 
-    def selected_hist_entry(self, thing1, thing2, tv_hist):
+    def selected_hist_entry(self,null1, null2, null3, null4):
+    #def selected_hist_entry(self,null):
         if self.disable_actions:
             return
         #if self.hist_click == 0:
@@ -153,6 +160,7 @@ class QrSavedWindow(Gtk.Window):
         
         gui_process.qr_gui_handle_code(qr_code)
         #self.refresh_saved()
+        return False
 
 
         
