@@ -75,7 +75,7 @@ class QRConfig(Gtk.Window):
         return box
 
     def ls_actions_populate(self,listStore):
-        listStore.clear()
+        self.ls_act.clear()
         self.actions=qr_process.qr_code2action()
         for key in sorted(self.actions.keys()):
             self.ls_act.append([key, ':'.join(self.actions[key])])
@@ -113,7 +113,6 @@ class QRConfig(Gtk.Window):
         entryDialog = QRConfigEntry(self,title='Add New Action')
         entryDialog.connect("destroy", Gtk.main_quit)
         entryDialog.run()
-        results=entryDialog.get_results()
 
         results=entryDialog.get_results()
         if results['state'] == Gtk.ResponseType.OK and not results['code_type'] in self.actions:
