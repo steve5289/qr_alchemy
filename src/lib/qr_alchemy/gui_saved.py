@@ -92,21 +92,16 @@ class QrSavedWindow(Gtk.Window):
     def selected_saved_entry(self, tv_saved):
         if self.disable_actions:
             return
-        if self.saved_click == 0:
-            #model, treeitr = selection.get_selected()
-            path,data = tv_saved.get_cursor()
-            if path == None:
-                return
-            indices = path.get_indices()
+        path,data = tv_saved.get_cursor()
+        if path == None:
+            return
+        indices = path.get_indices()
         
         
-            qr_code=self.saved_code[self.saved_codes[indices[0]]]
+        qr_code=self.saved_code[self.saved_codes[indices[0]]]
         
-            gui_process.qr_gui_handle_code(qr_code)
-            self.refresh_saved()
-            self.saved_click = 1
-        else:
-            self.saved_click = 0
+        gui_process.qr_gui_handle_code(qr_code)
+        self.refresh_saved()
 
     def page_history(self):
         box = Gtk.Box()
@@ -164,9 +159,6 @@ class QrSavedWindow(Gtk.Window):
         
         gui_process.qr_gui_handle_code(qr_code)
         self.refresh_saved()
-        #    self.hist_click = 1
-        #else:
-        #    self.hist_click = 0
 
 
         
