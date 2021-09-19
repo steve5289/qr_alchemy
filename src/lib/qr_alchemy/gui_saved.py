@@ -108,7 +108,7 @@ class QrSavedWindow(Gtk.Window):
         
         #traceback.print_stack()
         gui_process.qr_gui_handle_code(qr_code)
-        #self.refresh_saved()
+        self.refresh_saved()
         return False
 
     def page_history(self):
@@ -146,7 +146,6 @@ class QrSavedWindow(Gtk.Window):
         self.disable_actions=False
 
     def selected_hist_entry(self,null1, null2, null3, null4):
-    #def selected_hist_entry(self,null):
         if self.disable_actions:
             return
         #if self.hist_click == 0:
@@ -159,7 +158,7 @@ class QrSavedWindow(Gtk.Window):
         qr_code=self.hist_codes[indices[0]][1]
         
         gui_process.qr_gui_handle_code(qr_code)
-        #self.refresh_saved()
+        self.refresh_saved()
         return False
 
 
