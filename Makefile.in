@@ -47,6 +47,7 @@ build_prep:
 standard_build:
 	sed -i 's|%CONFDIR%|${CONFDIR}|g' "${BUILD_BIN}/${NAME}"
 	sed -i 's|%VERSION%|${VERSION}|g' "${BUILD_BIN}/${NAME}"
+	sed -i 's|%SHAREDIR%|${SHAREDIR}|g' "${BUILD_BIN}/${NAME}"
 
 	sed -i 's|%BINDIR%|${BINDIR}|g' "${BUILD_APP}/${NAME}.desktop"
 	sed -i 's|%BINDIR%|${BINDIR}|g' "${BUILD_SHARE}/postprocess.sh"
