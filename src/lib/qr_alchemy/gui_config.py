@@ -2,7 +2,7 @@
 import gi
 
 gi.require_version('Gtk', '3.0')
-from gi.repository import Gtk
+from gi.repository import Gtk,Gio
 import qr_alchemy.process as qr_process
 import qr_alchemy.plugins as qr_plugins
 import qr_alchemy.gui as gui
@@ -19,6 +19,14 @@ class QRConfig(Gtk.Window):
         self.hb = Gtk.HeaderBar()
         self.hb.set_show_close_button(True)
         self.hb.props.title="Configuration"
+
+        bu_close = Gtk.Button()
+        bu_close_icon = Gio.ThemedIcon(name='arrow-left')
+        bu_close_image = Gtk.Image.new_from_gicon(bu_close_icon, Gtk.IconSize.MENU)
+        bu_close.add(bu_close_image)
+        bu_close.connect("clicked", self.bu_close_clicked)
+
+        self.hb.pack_start(bu_close)
         self.set_titlebar(self.hb)
         self.connect
 
@@ -29,6 +37,8 @@ class QRConfig(Gtk.Window):
         box_t.pack_start(page_a, True, True,0)
 
     
+    def bu_close_clicked(self,button):
+        self.destroy()
 
     def page_actions(self):
         box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=1)
