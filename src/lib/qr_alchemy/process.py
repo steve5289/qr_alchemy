@@ -3,6 +3,7 @@ import subprocess
 import configparser
 import os
 import qr_alchemy.gui_process as gui
+import qr_alchemy.plugins as qr_plugins
 
 qr_configfile_path=""
 qr_configfile="qr_alchemy.conf"
@@ -45,8 +46,7 @@ def qr_exec(action, qr_code):
     if a_type == "Program":
         subprocess.run([a_subtype, qr_code])
     elif a_type == 'Plugin':
-        print("plugin function not yet implemented")
-        print("qr code: '" + qr_code +"'")
+        qr_plugins.run_input_plugin(a_subtype,qr_code)
 
 def qr_get_header(qr_code):
     split = qr_code.split(':')

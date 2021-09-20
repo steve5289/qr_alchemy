@@ -4,6 +4,7 @@ import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
 import qr_alchemy.process as qr_process
+import qr_alchemy.plugins as qr_plugins
 import qr_alchemy.gui as gui
 
 
@@ -156,9 +157,9 @@ class QRConfigEntry(Gtk.MessageDialog):
         self.code_type=code_type
         self.action_type=action_type
         if action_type == "Plugin":
-            self.plugin=plugin
+            self.plugin=action_subtype
         if action_type == "Program":
-            self.prog=prog
+            self.prog=action_subtype
 
         dialog = self.get_content_area()
         
@@ -209,7 +210,6 @@ class QRConfigEntry(Gtk.MessageDialog):
         cb_type.add_attribute(rt_type, 'text', 0)
         cb_type.set_active(default_action)
         self.cb_type_changed(cb_type)
-        action_type=action_types[0]
         box_action.pack_end(cb_type, False, False, 0)
 
         ## Plugin Box
@@ -232,9 +232,9 @@ class QRConfigEntry(Gtk.MessageDialog):
 
         ## Control what is shown
         box_t.show_all()
-        if action_types[0] != "Plugin":
+        if self.action_type != "Plugin":
             self.pg_plugin.hide()
-        if action_types[0] != "Program":
+        if self.action_type != "Program":
             self.pg_prog.hide()
 
         ## Setup Connections
@@ -283,12 +283,12 @@ class QRConfigEntry(Gtk.MessageDialog):
         box.pack_start(lb_desc, False, True, 0)
 
         # combobox
-        input_plugins = qr_process.qr_get_plugins()
+        input_plugins = qr_plugins.get_input_plugins()
         ls_plugin = Gtk.ListStore(str)
         i = 0
         default_value=None
         for plugin in sorted(input_plugins.keys()):
-            ls_type.append([plugin])
+            ls_plugin.append([plugin])
             if plugin == self.plugin:
                 default_value = i
             i+=1
@@ -297,7 +297,7 @@ class QRConfigEntry(Gtk.MessageDialog):
         rt_plugin = Gtk.CellRendererText()
         cb_plugin.pack_start(rt_plugin, True)
         cb_plugin.add_attribute(rt_plugin, 'text', 0)
-        cb_plugin.connect('changed', self.cb_type_changed)
+        cb_plugin.connect('changed', self.cb_plugin_changed)
         if default_value != None:
             cb_plugin.set_active(default_value)
         box.pack_end(cb_plugin, False, False, 0)
