@@ -82,7 +82,7 @@ class QRConfig(Gtk.Window):
 
         box.pack_start(stv_act, True, True, 1)
         stv_act.add(self.tv_act)
-        box.pack_start(box_h, True, False, 0)
+        box.pack_end(box_h, False, False, 0)
         return box
 
     def ls_actions_populate(self,listStore):
@@ -153,7 +153,7 @@ class QRConfig(Gtk.Window):
                 self.ls_actions_populate(self.ls_act)
         
 
-class QRConfigEntry(Gtk.MessageDialog):
+class QRConfigEntry(Gtk.Dialog):
     state=Gtk.ResponseType.CANCEL
     code_type=None
     action_type=None
@@ -179,7 +179,7 @@ class QRConfigEntry(Gtk.MessageDialog):
 
         ## Code type Box
         box_code_type = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=1)
-        box_t.pack_start(box_code_type, True, True, 0)
+        box_t.pack_start(box_code_type, False, True, 0)
 
         # Label
         lb_desc_code = Gtk.Label(label="QR Code Type:")
@@ -196,7 +196,7 @@ class QRConfigEntry(Gtk.MessageDialog):
 
         ## Action Box
         box_action = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=1)
-        box_t.pack_start(box_action, True, True, 0)
+        box_t.pack_start(box_action, False, True, 0)
 
         # Label
         lb_desc_action = Gtk.Label(label="Action:")
@@ -224,11 +224,11 @@ class QRConfigEntry(Gtk.MessageDialog):
 
         ## Plugin Box
         self.pg_plugin=self.page_plugin()
-        box_t.pack_start(self.pg_plugin, True, True,0)
+        box_t.pack_start(self.pg_plugin, False, True,0)
 
         ## Command Box
         self.pg_prog = self.page_prog()
-        box_t.pack_start(self.pg_prog, True, True,0)
+        box_t.pack_start(self.pg_prog, False, True,0)
        
         
 
@@ -238,7 +238,7 @@ class QRConfigEntry(Gtk.MessageDialog):
         bu_ok    = Gtk.Button(label="Ok")
         box_h.pack_end(bu_ok, False, False, 0)
         box_h.pack_start(bu_cancel, False, False, 0)
-        box_t.pack_start(box_h, True, False, 0)
+        box_t.pack_end(box_h, False, False, 0)
 
         ## Control what is shown
         box_t.show_all()
