@@ -66,7 +66,7 @@ class QrHistPage(Gtk.Window):
         
         qr_code=self.hist_codes[indices[0]][1]
         
-        gui_process.qr_gui_handle_code(qr_code)
+        gui_process.qr_gui_handle_code(qr_code,save_history=False)
         return False
 
     def get_box(self):

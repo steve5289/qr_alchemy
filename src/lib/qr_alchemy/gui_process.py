@@ -10,11 +10,12 @@ from gi.repository import Gtk
 class QrActionWindow(Gtk.Window):
     bu_save=Gtk.Button(label="Save")
     qr_code=""
-    def __init__(self, qr_code):
+    def __init__(self, qr_code, save_history=True):
         Gtk.Window.__init__(self, title="QR Code Detected")
 
         self.qr_code=qr_code
-        qr_saved.add_history(qr_code)
+        if save_history:
+            qr_saved.add_history(qr_code)
 
         ## Top Box
         box_t = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=1)
@@ -66,7 +67,6 @@ class QrActionWindow(Gtk.Window):
             state = ok_window.get_state()
             if state == Gtk.ResponseType.OK:
                 qr_saved.delete_saved_code(code_name)
-                print('test1')
         else:
             save_window = gui.EntryDialog(
                 self,
@@ -92,8 +92,8 @@ class QrActionWindow(Gtk.Window):
         self.destroy()
         return
 
-def qr_gui_handle_code(qr_code):
-    win = QrActionWindow(qr_code=qr_code)
+def qr_gui_handle_code(qr_code, save_history=True):
+    win = QrActionWindow(qr_code=qr_code, save_history=save_history)
     win.connect("destroy", Gtk.main_quit)
     win.show_all()
     Gtk.main()
