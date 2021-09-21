@@ -1,6 +1,7 @@
 
 import gi
 import qr_alchemy.process as qr_process
+import qr_alchemy.generate as qr_generate
 import qr_alchemy.saved as qr_saved
 import qr_alchemy.gui as gui
 
@@ -25,6 +26,10 @@ class QrActionWindow(Gtk.Window):
         lb_desc = Gtk.Label(label="A qr code has been detected in this image, what would you like to do with it?\n\nQR Code:\n" + qr_code)
         lb_desc.set_line_wrap(True)
         box_t.pack_start(lb_desc, False, True, 0)
+
+        # QR code
+        img_code = qr_generate.generate_qr_img(qr_code)
+        box_t.pack_start(img_code, True, True, 0)
 
         ## Bottom Box
         box_b = Gtk.Box(spacing=1)
