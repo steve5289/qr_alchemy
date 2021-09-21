@@ -81,6 +81,8 @@ def get_history():
     return codes
 
 def add_history(qr_code):
+    if not isinstance(qr_code, str):
+        return
     histfile=_get_user_histfile()
 
     dt_now = datetime.now()
