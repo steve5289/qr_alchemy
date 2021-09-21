@@ -88,6 +88,8 @@ def run_output_plugin(plugin):
         print('Error! plugin not found: ', plugin)
         return False
     
-    cmd=subprocess.run([plugin_map[plugin]])
+    cmd=subprocess.run([plugin_map[plugin]], capture_output=True)
+    stdout=cmd.stdout
+    print("type:", type(stdout))
 
-    return [cmd.returncode,cmd.stdout]
+    return [cmd.returncode,stdout.decode()]
