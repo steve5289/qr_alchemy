@@ -49,6 +49,7 @@ class QrHistPage(Gtk.Window):
         self.box.pack_start(stv_hist, True, True, 1)
 
     def refresh_history(self):
+        self.ls_hist.clear()
         self.hist_codes=qr_saved.get_history()
         for row in self.hist_codes:
             self.ls_hist.append(row)
