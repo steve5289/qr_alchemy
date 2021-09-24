@@ -130,4 +130,4 @@ class ResizableImage(Gtk.DrawingArea):
         context.set_source_surface(self.img_surface, 0, 0)
         context.paint()
         size = self.get_useful_size()
-        self.set_size_request(300, 300)
+        self.set_size_request(300, 100)
