@@ -2,7 +2,7 @@
 import gi
 
 gi.require_version('Gtk', '3.0')
-from gi.repository import Gtk
+from gi.repository import Gtk, GdkPixbuf, Gdk
 
 class EntryDialog(Gtk.Dialog):
     en_name = Gtk.Entry()
@@ -90,3 +90,46 @@ class OkDialog(Gtk.Dialog):
         
     def get_state(self):
         return self.state
+
+
+# Wrote this with much help from this blogpost: 
+# https://gabmus.org/posts/create_an_auto-resizing_image_widget_with_gtk3_and_python/
+# Thanks GabMus!
+class ResizableImage(Gtk.DrawingArea):
+    def __init__(self, image_data,image_type, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.pixbuf_loader = GdkPixbuf.PixbufLoader.new_with_mime_type(image_type)
+        self.pixbuf_loader.write(image_data)
+        self.pixbuf_loader.close()
+        self.pixbuf = self.pixbuf_loader.get_pixbuf()
+        self.img_surface = Gdk.cairo_surface_create_from_pixbuf(
+            self.pixbuf, 1, None
+        )
+
+    def get_useful_size(self):
+        allocated_width = self.get_allocated_width()
+        allocated_height = self.get_allocated_height()
+        if allocated_width < allocated_height:
+            effective_area = allocated_width
+        else:
+            effective_area = allocated_height
+
+        image_width = self.pixbuf.get_width()
+        image_height = self.pixbuf.get_height()
+        return effective_area/image_width * image_height
+
+    def get_scale_factor(self):
+        width_scale = self.get_allocated_width() / self.pixbuf.get_width()
+        height_scale = self.get_allocated_height() / self.pixbuf.get_height()
+
+        if width_scale < height_scale:
+            return width_scale
+        return height_scale
+
+    def do_draw(self, context):
+        scale_factor = self.get_scale_factor()
+        context.scale(scale_factor, scale_factor)
+        context.set_source_surface(self.img_surface, 0, 0)
+        context.paint()
+        size = self.get_useful_size()
+        self.set_size_request(300, 100)

@@ -1,6 +1,7 @@
 
 import gi
 import qr_alchemy.process as qr_process
+import qr_alchemy.generate as qr_generate
 import qr_alchemy.saved as qr_saved
 import qr_alchemy.gui as gui
 
@@ -10,7 +11,7 @@ from gi.repository import Gtk
 class QrActionWindow(Gtk.Window):
     bu_save=Gtk.Button(label="Save")
     qr_code=""
-    def __init__(self, qr_code, save_history=True):
+    def __init__(self, qr_code, save_history=True,display_image=False):
         Gtk.Window.__init__(self, title="QR Code Detected")
 
         self.qr_code=qr_code
@@ -26,12 +27,17 @@ class QrActionWindow(Gtk.Window):
         lb_desc.set_line_wrap(True)
         box_t.pack_start(lb_desc, False, True, 0)
 
+        # QR code Display
+        if display_image:
+            img_code = qr_generate.generate_qr_img(qr_code)
+            box_t.pack_start(img_code,True, True, 0)
+
         ## Bottom Box
         box_b = Gtk.Box(spacing=1)
         box_t.pack_end(box_b, False, True, 0)
 
         # Buttons
-        bu_cancel = Gtk.Button(label="Do Nothing")
+        bu_cancel = Gtk.Button(label="Done")
         bu_cancel.connect("clicked", self.bu_cancel_clicked)
         self.bu_save = Gtk.Button(label="Save")
         self.refresh_save_state()
@@ -92,8 +98,8 @@ class QrActionWindow(Gtk.Window):
         self.destroy()
         return
 
-def qr_gui_handle_code(qr_code, save_history=True):
-    win = QrActionWindow(qr_code=qr_code, save_history=save_history)
+def qr_gui_handle_code(qr_code, save_history=True, display_image=False):
+    win = QrActionWindow(qr_code=qr_code, save_history=save_history,display_image=display_image)
     win.connect("destroy", Gtk.main_quit)
     win.show_all()
     Gtk.main()
