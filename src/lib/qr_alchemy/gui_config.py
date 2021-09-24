@@ -45,13 +45,10 @@ class QRConfig(Gtk.Window):
 
         # Buttons
         box_h = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=1)
-        bu_delete = Gtk.Button(label="Delete")
-        bu_delete.connect("clicked", self.bu_delete_clicked)
         bu_add    = Gtk.Button(label="Add")
         bu_add.connect("clicked", self.bu_add_clicked)
         bu_edit   = Gtk.Button(label="Edit")
         bu_edit.connect("clicked", self.bu_edit_clicked)
-        box_h.pack_start(bu_delete, False, False, 0)
         box_h.pack_end(bu_add, False, False, 0)
         box_h.pack_end(bu_edit, False, False, 0)
 
@@ -148,9 +145,7 @@ class QRConfig(Gtk.Window):
             entryDialog = QRConfigEntry(self,title='Edit Action',code_type=code_type, action_type=action_type, action_subtype=action_subtype)
             entryDialog.run()
 
-            results=entryDialog.get_results()
             if results['state'] == Gtk.ResponseType.OK and (results['action_type'] != action_type or results['action_subtype'] != action_subtype):
-                qr_process.qr_update_configaction(code_type, results['action_type'], results['action_subtype'])
                 self.ls_actions_populate(self.ls_act)
         
 
@@ -161,11 +156,14 @@ class QRConfigEntry(Gtk.Dialog):
     plugin=None
     prog=None
     pg_plugin=None
+    exists=False
     
     def __init__(self, parent, title, code_type=None, action_type=None, action_subtype=None):
         Gtk.MessageDialog.__init__(self, title=title)
 
         self.code_type=code_type
+        if self.code_type != None:
+            self.exists=True
         self.action_type=action_type
         if action_type == "Plugin":
             self.plugin=action_subtype
@@ -181,9 +179,14 @@ class QRConfigEntry(Gtk.Dialog):
         # Buttons
         box_h = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=1)
         bu_cancel = Gtk.Button(label="Cancel")
+        bu_delete = Gtk.Button(label="Delete")
+        if self.code_type == '*':
+            bu_delete.set_sensitive(False)
         bu_ok    = Gtk.Button(label="Ok")
         box_h.pack_end(bu_ok, False, False, 0)
         box_h.pack_start(bu_cancel, False, False, 0)
+        if self.exists:
+            box_h.pack_start(bu_delete, False, False, 15)
         box_t.pack_start(box_h, False, False, 0)
 
         ## Code type Box
@@ -250,6 +253,7 @@ class QRConfigEntry(Gtk.Dialog):
 
         ## Setup Connections
         bu_cancel.connect("clicked", self.bu_cancel_clicked)
+        bu_delete.connect("clicked", self.bu_delete_clicked)
         bu_ok.connect("clicked", self.bu_ok_clicked)
         cb_type.connect('changed', self.cb_type_changed)
         en_code.connect('changed', self.en_code_changed)
@@ -352,28 +356,41 @@ class QRConfigEntry(Gtk.Dialog):
             print('test3')
             return
 
-        self.state = state=Gtk.ResponseType.OK
+        self.state = Gtk.ResponseType.OK
         print('ok')
+        if self.action_type == "Plugin":
+            subtype=plugin
+        if self.action_type == "Program":
+            subtype=prog
+        qr_process.qr_update_configaction(code_type, self.action_type, subtype)
         self.destroy()
         
-    def bu_cancel_clicked(self, qr_code):
-        self.state = state=Gtk.ResponseType.CANCEL
+    def bu_cancel_clicked(self, button):
+        self.state = Gtk.ResponseType.CANCEL
         print('cancel')
         self.destroy()
 
-    def get_results(self):
-        results = dict()
-        results['state']=self.state
-        results['code_type']=self.code_type
-        results['action_type']=self.action_type
-        if self.action_type == "Plugin":
-            results['action_subtype']=self.plugin
-        elif self.action_type == "Program":
-            results['action_subtype']=self.prog
-        else:
-            results['action_subtype']=''
-        
-        return results
+    def bu_delete_clicked(self, button):
+        print('delete')
+        if self.code_type == '*':
+            return
+
+        ok_window = gui.OkDialog(
+           self,
+           title="Really Delete?",
+           message="Are you sure you want to delete " +self.code_type + "?\nThis will cause these to use the default action."       
+        )
+        ok_window.show_all()
+        ok_window.run()
+
+        state = ok_window.get_state()
+        if state != Gtk.ResponseType.OK:
+            return
+
+        qr_process.qr_update_configaction(self.code_type, '', '')
+        self.state = Gtk.ResponseType.OK
+        self.destroy()
+
 
 def qr_gui_config():
     win = QRConfig()
