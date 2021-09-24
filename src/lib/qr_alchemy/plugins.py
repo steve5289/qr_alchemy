@@ -89,7 +89,9 @@ def run_output_plugin(plugin):
         return False
     
     cmd=subprocess.run([plugin_map[plugin],'start'], capture_output=True)
-    return cmd.rc,cmd.stdout
+    byte_stdout = cmd.stdout
+    str_stdout = byte_stdout.decode('UTF-8')
+    return [cmd.returncode,str_stdout]
 
 def stop_output_plugin(plugin):
     plugin_map=get_output_plugins()
