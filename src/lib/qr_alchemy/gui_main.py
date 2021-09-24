@@ -23,7 +23,7 @@ class QrMainWindow(Gtk.Window):
         self.set_titlebar(self.hb)
 
         bu_conf = Gtk.Button()
-        bu_conf_icon = Gio.ThemedIcon(name='application-menu-symbolic')
+        bu_conf_icon = Gio.ThemedIcon(name='preferences-system-symbolic')
         bu_conf_image = Gtk.Image.new_from_gicon(bu_conf_icon, Gtk.IconSize.MENU)
         bu_conf.add(bu_conf_image)
         bu_conf.connect("clicked", self.bu_config_clicked)
