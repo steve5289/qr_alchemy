@@ -72,7 +72,6 @@ class QrSavedPage():
         
         qr_code=self.saved_code[self.saved_codes[indices[0]]]
         
-        #traceback.print_stack()
         gui_process.qr_gui_handle_code(qr_code,save_history=False,display_image=True)
         self.refresh_saved()
         return False
