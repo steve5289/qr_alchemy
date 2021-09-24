@@ -22,7 +22,6 @@ class QrSavedPage():
     tv_saved = Gtk.TreeView()
     saved_codes=list()
     saved_code=dict()
-    disable_actions=False
     box=Gtk.Box()
 
     def __init__(self):
@@ -43,7 +42,8 @@ class QrSavedPage():
                 column.set_max_width(50)
         select = self.tv_saved.get_selection()
         select.set_mode(Gtk.SelectionMode.MULTIPLE)
-        select.set_select_function(self.selected_saved_entry)
+        self.tv_saved.set_activate_on_single_click(True)
+        self.tv_saved.connect('row-activated', self.selected_saved_entry)
 
         # setting up the layout, putting the treeview in a scrollwindow, and the buttons in a row
         stv_saved = Gtk.ScrolledWindow()
@@ -53,17 +53,13 @@ class QrSavedPage():
 
     def refresh_saved(self):
 
-        self.disable_actions=True
         self.saved_code=qr_saved.get_saved_codes()
         self.ls_saved.clear()
         self.saved_codes=sorted(self.saved_code.keys())
         for name in self.saved_codes:
             self.ls_saved.append([name, self.saved_code[name]])
-        self.disable_actions=False
 
-    def selected_saved_entry(self,null1,null2,null3,null4):
-        if self.disable_actions:
-            return
+    def selected_saved_entry(self,null1,null2,null3):
         path,data = self.tv_saved.get_cursor()
         if path == None:
             return
@@ -74,7 +70,8 @@ class QrSavedPage():
         
         gui_process.qr_gui_handle_code(qr_code,save_history=False,display_image=True)
         self.refresh_saved()
-        return False
+        select = self.tv_saved.get_selection()
+        select.unselect_all()
 
     def get_box(self):
         return self.box

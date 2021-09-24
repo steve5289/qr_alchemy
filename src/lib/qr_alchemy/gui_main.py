@@ -23,7 +23,7 @@ class QrMainWindow(Gtk.Window):
         self.set_titlebar(self.hb)
 
         bu_conf = Gtk.Button()
-        bu_conf_icon = Gio.ThemedIcon(name='emblem-system')
+        bu_conf_icon = Gio.ThemedIcon(name='preferences-system-symbolic')
         bu_conf_image = Gtk.Image.new_from_gicon(bu_conf_icon, Gtk.IconSize.MENU)
         bu_conf.add(bu_conf_image)
         bu_conf.connect("clicked", self.bu_config_clicked)
@@ -50,7 +50,14 @@ class QrMainWindow(Gtk.Window):
         
     def nb_page_changed(self, notebook, page, page_num):
         if page_num == 1:
+            print('refresh saved')
             self.page_saved.refresh_saved()
+        elif page_num == 2:
+            print('refresh history')
+            self.page_hist.refresh_history()
+        else:
+            print('refresh nothing')
+            
 
 def qr_gui_main():
     win = QrMainWindow()

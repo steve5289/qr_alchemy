@@ -22,34 +22,44 @@ class QrActionWindow(Gtk.Window):
         box_t = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=1)
         self.add(box_t)
 
-        # Label
-        lb_desc = Gtk.Label(label="A qr code has been detected in this image, what would you like to do with it?\n\nQR Code:\n" + qr_code)
-        lb_desc.set_line_wrap(True)
-        box_t.pack_start(lb_desc, False, True, 0)
-
-        # QR code Display
-        if display_image:
-            img_code = qr_generate.generate_qr_img(qr_code)
-            box_t.pack_start(img_code,True, True, 0)
-
+        # Buttons
         ## Bottom Box
         box_b = Gtk.Box(spacing=1)
-        box_t.pack_end(box_b, False, True, 0)
+        box_t.pack_start(box_b, False, True, 0)
 
-        # Buttons
         bu_cancel = Gtk.Button(label="Done")
         bu_cancel.connect("clicked", self.bu_cancel_clicked)
         self.bu_save = Gtk.Button(label="Save")
-        self.refresh_save_state()
         self.bu_save.connect("clicked", self.bu_save_clicked)
         bu_run = Gtk.Button(label="Run")
         bu_run.connect("clicked", self.bu_run_clicked)
-        
-
+        self.refresh_save_state()
         
         box_b.pack_start(bu_cancel,  False, True, 0)
         box_b.pack_end(bu_run, False, True, 0)
         box_b.pack_end(self.bu_save, False, True, 24)
+
+        # Label
+        lb_desc = Gtk.Label(label="What would you like to do with this qr code?")
+        lb_desc.set_line_wrap(True)
+        lb_desc.set_alignment(0,0)
+        box_t.pack_start(lb_desc, False, True, 10)
+
+        seperator = Gtk.Separator()
+        box_t.pack_start(seperator, False, True, 10)
+
+        # QR code Display
+        if display_image:
+            img_code = qr_generate.generate_qr_img(qr_code)
+            box_t.pack_start(img_code, True, True, 0)
+
+        # Label
+        lb_code = Gtk.Label(label=qr_code)
+        lb_code.set_line_wrap(True)
+        lb_code.set_alignment(0,0)
+        box_t.pack_start(lb_code, False, False, 0)
+
+
         
     def refresh_save_state(self):
         if qr_saved.is_code_saved(self.qr_code):
