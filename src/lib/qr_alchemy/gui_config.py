@@ -43,6 +43,20 @@ class QRConfig(Gtk.Window):
     def page_actions(self):
         box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=1)
 
+        # Buttons
+        box_h = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=1)
+        bu_delete = Gtk.Button(label="Delete")
+        bu_delete.connect("clicked", self.bu_delete_clicked)
+        bu_add    = Gtk.Button(label="Add")
+        bu_add.connect("clicked", self.bu_add_clicked)
+        bu_edit   = Gtk.Button(label="Edit")
+        bu_edit.connect("clicked", self.bu_edit_clicked)
+        box_h.pack_start(bu_delete, False, False, 0)
+        box_h.pack_end(bu_add, False, False, 0)
+        box_h.pack_end(bu_edit, False, False, 0)
+
+        box.pack_start(box_h, False, False, 0)
+
         # Label
         lb_desc = Gtk.Label(label="Choose what actions to perform based on what type of qr code is recieved:")
         lb_desc.set_line_wrap(True)
@@ -67,22 +81,9 @@ class QRConfig(Gtk.Window):
         # setting up the layout, putting the treeview in a scrollwindow
         stv_act = Gtk.ScrolledWindow()
         stv_act.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
-
-        # Buttons
-        box_h = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=1)
-        bu_delete = Gtk.Button(label="Delete")
-        bu_delete.connect("clicked", self.bu_delete_clicked)
-        bu_add    = Gtk.Button(label="Add")
-        bu_add.connect("clicked", self.bu_add_clicked)
-        bu_edit   = Gtk.Button(label="Edit")
-        bu_edit.connect("clicked", self.bu_edit_clicked)
-        box_h.pack_start(bu_delete, False, False, 0)
-        box_h.pack_end(bu_add, False, False, 0)
-        box_h.pack_end(bu_edit, False, False, 0)
-
-        box.pack_start(stv_act, True, True, 1)
         stv_act.add(self.tv_act)
-        box.pack_end(box_h, False, False, 0)
+        box.pack_start(stv_act, True, True, 1)
+
         return box
 
     def ls_actions_populate(self,listStore):
@@ -177,6 +178,14 @@ class QRConfigEntry(Gtk.Dialog):
         box_t = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=1)
         dialog.pack_start(box_t, True, True, 0)
 
+        # Buttons
+        box_h = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=1)
+        bu_cancel = Gtk.Button(label="Cancel")
+        bu_ok    = Gtk.Button(label="Ok")
+        box_h.pack_end(bu_ok, False, False, 0)
+        box_h.pack_start(bu_cancel, False, False, 0)
+        box_t.pack_start(box_h, False, False, 0)
+
         ## Code type Box
         box_code_type = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=1)
         box_t.pack_start(box_code_type, False, True, 0)
@@ -231,14 +240,6 @@ class QRConfigEntry(Gtk.Dialog):
         box_t.pack_start(self.pg_prog, False, True,0)
        
         
-
-        # Buttons
-        box_h = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=1)
-        bu_cancel = Gtk.Button(label="Cancel")
-        bu_ok    = Gtk.Button(label="Ok")
-        box_h.pack_end(bu_ok, False, False, 0)
-        box_h.pack_start(bu_cancel, False, False, 0)
-        box_t.pack_end(box_h, False, False, 0)
 
         ## Control what is shown
         box_t.show_all()
