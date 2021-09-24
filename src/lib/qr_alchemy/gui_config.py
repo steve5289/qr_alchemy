@@ -43,22 +43,22 @@ class QRConfig(Gtk.Window):
     def page_actions(self):
         box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=1)
 
-        # Buttons
-        box_h = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=1)
-        bu_add    = Gtk.Button(label="Add")
-        bu_add.connect("clicked", self.bu_add_clicked)
-        bu_edit   = Gtk.Button(label="Edit")
-        bu_edit.connect("clicked", self.bu_edit_clicked)
-        box_h.pack_end(bu_add, False, False, 0)
-        box_h.pack_end(bu_edit, False, False, 0)
-
-        box.pack_start(box_h, False, False, 0)
 
         # Label
         lb_desc = Gtk.Label(label="Choose what actions to perform based on what type of qr code is recieved:")
         lb_desc.set_line_wrap(True)
         box.pack_start(lb_desc, False, True, 0)
 
+        # Button
+        box_h = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=1)
+        bu_add    = Gtk.Button()
+        bu_add_icon = Gio.ThemedIcon(name='list-add-symbolic')
+        bu_add_image = Gtk.Image.new_from_gicon(bu_add_icon, Gtk.IconSize.MENU)
+        bu_add.add(bu_add_image)
+        bu_add.connect("clicked", self.bu_add_clicked)
+        box_h.pack_end(bu_add, False, False, 0)
+
+        box.pack_start(box_h, False, False, 0)
         # Creating the ListStore model
         self.ls_act = Gtk.ListStore(str, str)
         self.ls_actions_populate(self.ls_act)
@@ -74,6 +74,8 @@ class QRConfig(Gtk.Window):
                 column.set_resizable(True)
                 column.set_max_width(50)
         select = self.tv_act.get_selection()
+        self.tv_act.set_activate_on_single_click(True)
+        self.tv_act.connect("row-activated", self.bu_edit_clicked)
 
         # setting up the layout, putting the treeview in a scrollwindow
         stv_act = Gtk.ScrolledWindow()
@@ -86,7 +88,8 @@ class QRConfig(Gtk.Window):
     def ls_actions_populate(self,listStore):
         self.ls_act.clear()
         self.actions=qr_process.qr_code2action()
-        for key in sorted(self.actions.keys()):
+        self.action_keys=sorted(self.actions.keys())
+        for key in self.action_keys:
             self.ls_act.append([key, ':'.join(self.actions[key])])
         
 
@@ -120,33 +123,30 @@ class QRConfig(Gtk.Window):
     def bu_add_clicked(self, qr_code):
         print('add')
         entryDialog = QRConfigEntry(self,title='Add New Action')
-        entryDialog.connect("destroy", Gtk.main_quit)
         entryDialog.run()
+        self.ls_actions_populate(self.ls_act)
 
-        results=entryDialog.get_results()
-        if results['state'] == Gtk.ResponseType.OK and not results['code_type'] in self.actions:
-            qr_process.qr_update_configaction(results['code_type'], results['action_type'], results['action_subtype'])
-            self.ls_actions_populate(self.ls_act)
 
-    def bu_edit_clicked(self, win):
+    def bu_edit_clicked(self, null1, null2, null3):
         print('edit')
-        selected = self.tv_act.get_selection()
-        data, i = selected.get_selected()
-        if i is not None:
-            code_type=data[i][0]
-            
-            action = qr_process.qr_get_action(code_type)
-            action_type = action[0]
-            if len(action) > 1:
-                action_subtype = action[1]
-            else:
-                action_subtype = ''
+        path,data = self.tv_act.get_cursor()
+        if path == None:
+            return
+        indices = path.get_indices()
         
-            entryDialog = QRConfigEntry(self,title='Edit Action',code_type=code_type, action_type=action_type, action_subtype=action_subtype)
-            entryDialog.run()
+        code_type=self.action_keys[indices[0]]
+            
+        action = qr_process.qr_get_action(code_type)
+        action_type = action[0]
+        if len(action) > 1:
+            action_subtype = action[1]
+        else:
+            action_subtype = ''
+        
+        edit_dialog = QRConfigEntry(self,title='Edit Action',code_type=code_type, action_type=action_type, action_subtype=action_subtype)
+        edit_dialog.run()
 
-            if results['state'] == Gtk.ResponseType.OK and (results['action_type'] != action_type or results['action_subtype'] != action_subtype):
-                self.ls_actions_populate(self.ls_act)
+        self.ls_actions_populate(self.ls_act)
         
 
 class QRConfigEntry(Gtk.Dialog):
@@ -359,10 +359,12 @@ class QRConfigEntry(Gtk.Dialog):
         self.state = Gtk.ResponseType.OK
         print('ok')
         if self.action_type == "Plugin":
-            subtype=plugin
-        if self.action_type == "Program":
-            subtype=prog
-        qr_process.qr_update_configaction(code_type, self.action_type, subtype)
+            subtype=self.plugin
+        elif self.action_type == "Program":
+            subtype=self.prog
+        else:
+            subtype=''
+        qr_process.qr_update_configaction(self.code_type, self.action_type, subtype)
         self.destroy()
         
     def bu_cancel_clicked(self, button):
@@ -390,6 +392,8 @@ class QRConfigEntry(Gtk.Dialog):
         qr_process.qr_update_configaction(self.code_type, '', '')
         self.state = Gtk.ResponseType.OK
         self.destroy()
+    def get_state():
+        return self.state
 
 
 def qr_gui_config():
