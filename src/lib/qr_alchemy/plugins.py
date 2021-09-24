@@ -28,7 +28,6 @@ def set_sys_plugin_dir(path):
     qr_userconfig=homedir + '/' + qr_user_configdir
     user_input_plugin_dir=qr_userconfig + "/input_plugins"
     user_output_plugin_dir=qr_userconfig + "/output_plugins"
-    print('test')
 
 def _get_plugins(sys_dir,user_dir):
     plugin=dict()
@@ -37,7 +36,6 @@ def _get_plugins(sys_dir,user_dir):
         files = os.listdir(sys_dir)
         for file in files:
             path=sys_dir + '/' + file
-            #print('file:', file)
             if os.access(path, os.X_OK):
                 plugin[file]=path
     except:
@@ -89,7 +87,7 @@ def run_output_plugin(plugin):
         return False
     
     cmd=subprocess.run([plugin_map[plugin],'start'], capture_output=True)
-    return cmd.rc,cmd.stdout
+    return cmd.returncode,cmd.stdout
 
 def stop_output_plugin(plugin):
     plugin_map=get_output_plugins()

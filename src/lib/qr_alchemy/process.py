@@ -116,7 +116,6 @@ def qr_update_configaction(code_type, a_type, a_subtype):
         
     if not 'action_map' in config:
         config['action_map']=dict()
-    print("update:", code_type, a_type, a_subtype)
     if a_subtype != '':
         config['action_map'][code_type]=a_type + ":" + a_subtype
     else:

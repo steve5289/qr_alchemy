@@ -27,7 +27,6 @@ def main():
             sys.exit(0)
         else:
             help()
-    print('test2: ', sys_plugin_dir)
     qr_plugins.set_sys_plugin_dir(sys_plugin_dir)
     qr_process.configfile(configfile)
 
