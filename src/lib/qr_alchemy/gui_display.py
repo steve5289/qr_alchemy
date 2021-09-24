@@ -71,7 +71,7 @@ class QrDisplayPage():
         
         rc,qr_code = qr_plugins.run_output_plugin(plugin)
         if rc == 0:
-            gui_process.qr_gui_handle_code(qr_code)
+            gui_process.qr_gui_handle_code(qr_code, display_image=True)
         
         return False
 
