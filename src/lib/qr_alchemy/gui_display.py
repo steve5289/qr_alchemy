@@ -21,7 +21,6 @@ class QrDisplayPage():
     tv_display = Gtk.TreeView()
     plugins=list()
     plugin_map=dict()
-    disable_actions=False
     box=Gtk.Box()
 
     def __init__(self):
@@ -41,7 +40,8 @@ class QrDisplayPage():
                 column.set_max_width(50)
         select = self.tv_display.get_selection()
         select.set_mode(Gtk.SelectionMode.MULTIPLE)
-        select.set_select_function(self.selected_display_entry)
+        self.tv_display.set_activate_on_single_click(True)
+        self.tv_display.connect('row-activated', self.selected_display_entry)
 
         # setting up the layout, putting the treeview in a scrollwindow, and the buttons in a row
         stv_display = Gtk.ScrolledWindow()
@@ -50,17 +50,13 @@ class QrDisplayPage():
         self.box.pack_start(stv_display, True, True, 1)
 
     def refresh(self):
-        self.disable_actions=True
         self.plugin_map=qr_plugins.get_output_plugins()
         self.ls_display.clear()
         self.plugins=sorted(self.plugin_map.keys())
         for name in self.plugins:
             self.ls_display.append([name])
-        self.disable_actions=False
 
-    def selected_display_entry(self,null1,null2,null3,null4):
-        if self.disable_actions:
-            return
+    def selected_display_entry(self,null1,null2,null3):
         path,data = self.tv_display.get_cursor()
         if path == None:
             return
@@ -73,8 +69,9 @@ class QrDisplayPage():
         if rc == 0:
             gui_process.qr_gui_handle_code(qr_code, display_image=True)
         qr_plugins.stop_output_plugin(plugin)
+        select = self.tv_display.get_selection()
+        select.unselect_all()
         
-        return False
 
     def get_box(self):
         return self.box

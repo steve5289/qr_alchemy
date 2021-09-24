@@ -21,7 +21,6 @@ class QrHistPage(Gtk.Window):
     # 
     # There must be a better way of doing this... But I haven't found it yet...
     hist_codes=list()
-    disable_actions=False
     box = Gtk.Box()
     def __init__(self):
         # Creating the ListStore model
@@ -40,7 +39,8 @@ class QrHistPage(Gtk.Window):
                 column.set_max_width(50)
         select = self.tv_hist.get_selection()
         select.set_mode(Gtk.SelectionMode.MULTIPLE)
-        select.set_select_function(self.selected_hist_entry)
+        self.tv_hist.set_activate_on_single_click(True)
+        self.tv_hist.connect('row-activated', self.selected_hist_entry)
 
         # setting up the layout, putting the treeview in a scrollwindow, and the buttons in a row
         stv_hist = Gtk.ScrolledWindow()
@@ -49,15 +49,11 @@ class QrHistPage(Gtk.Window):
         self.box.pack_start(stv_hist, True, True, 1)
 
     def refresh_history(self):
-        self.disable_actions=True
         self.hist_codes=qr_saved.get_history()
         for row in self.hist_codes:
             self.ls_hist.append(row)
-        self.disable_actions=False
 
-    def selected_hist_entry(self,null1, null2, null3, null4):
-        if self.disable_actions:
-            return
+    def selected_hist_entry(self,null1, null2, null3):
         path,data = self.tv_hist.get_cursor()
         if path == None:
             return
@@ -67,7 +63,8 @@ class QrHistPage(Gtk.Window):
         qr_code=self.hist_codes[indices[0]][1]
         
         gui_process.qr_gui_handle_code(qr_code,save_history=False, display_image=True)
-        return False
+        select = self.tv_hist.get_selection()
+        select.unselect_all()
 
     def get_box(self):
         return self.box
