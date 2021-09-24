@@ -96,10 +96,12 @@ class OkDialog(Gtk.Dialog):
 # https://gabmus.org/posts/create_an_auto-resizing_image_widget_with_gtk3_and_python/
 # Thanks GabMus!
 class ResizableImage(Gtk.DrawingArea):
-    def __init__(self, path, *args, **kwargs):
+    def __init__(self, image_data,image_type, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.path = path
-        self.pixbuf = GdkPixbuf.Pixbuf.new_from_file(self.path)
+        self.pixbuf_loader = GdkPixbuf.PixbufLoader.new_with_mime_type(image_type)
+        self.pixbuf_loader.write(image_data)
+        self.pixbuf_loader.close()
+        self.pixbuf = self.pixbuf_loader.get_pixbuf()
         self.img_surface = Gdk.cairo_surface_create_from_pixbuf(
             self.pixbuf, 1, None
         )
