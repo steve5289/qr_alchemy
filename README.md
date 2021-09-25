@@ -6,7 +6,7 @@ Tool for generating and processing qr codes with custom actions on linux
 
  2. Install the needed dependancies:
 apt-get update
-apt-get install zbar qrencode python3
+apt-get install zbar qrencode python3 gnome-ssh-askpass
 
  3. run the configure
 ```

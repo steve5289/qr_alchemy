@@ -2,8 +2,10 @@
 
 MAKEFILE_SRC=./Makefile.in
 MAKEFILE=./Makefile
-VERSION=0.1.1
+VERSION=0.2.0
 
+export PATH="$PATH:/usr/sbin"
+export PATH="$PATH:/sbin"
 
 function check_dependancies {
     echo '## Checking Dependancies'
@@ -11,12 +13,19 @@ function check_dependancies {
     check_cmd qrencode
     check_cmd python3
     check_cmd iwgetid
+    check_cmd zenity
 
     check_python_lib os
     check_python_lib gi
     check_python_lib subprocess
     check_python_lib configparser
 
+    check_paths "askpass" \
+        /usr/lib/openssh/gnome-ssh-askpass \
+        /usr/libexec/openssh/ssh-askpass \
+        /usr/lib/ssh/x11-ssh-askpass \
+        /usr/bin/lxqt-openssh-askpass
+        
     echo 'All Dependancies check out!'
     echo
     echo
@@ -32,6 +41,23 @@ function check_cmd {
     fi
     echo 'ok'
 }
+
+function check_paths {
+    NAME="$1"
+    shift
+    FILES=( "$@" )
+    for FILE in "${FILES[@]}"; do
+        echo -n "Checking for $FILE..."
+        if [[ -f "$FILE" ]]; then
+            echo "ok"
+            return 0
+        else
+            echo "not ok"
+        fi
+    done
+    die "Could not find a '$NAME' on the system"
+}
+
 function check_python_lib {
     local LIB="$1"
 
