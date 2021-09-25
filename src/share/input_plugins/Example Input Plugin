@@ -1,3 +1,0 @@
-#!/usr/bin/env bash
-CODE="$@"
-zenity --info --text "You provided the qr code ${CODE}!"
