@@ -51,7 +51,7 @@ def qr_exec(action, qr_code):
 def qr_get_header(qr_code):
     split = qr_code.split(':')
     if (len(split) >= 2):
-        return split[0]
+        return split[0].lower()
     return ''
     
 def qr_get_action(header):
@@ -116,11 +116,10 @@ def qr_update_configaction(code_type, a_type, a_subtype):
         
     if not 'action_map' in config:
         config['action_map']=dict()
-    print("update:", code_type, a_type, a_subtype)
     if a_subtype != '':
-        config['action_map'][code_type]=a_type + ":" + a_subtype
+        config['action_map'][code_type.lower()]=a_type + ":" + a_subtype
     else:
-        config['action_map'][code_type]=a_type
+        config['action_map'][code_type.lower()]=a_type
     with open(qr_userconfig, 'w') as configfile:
         config.write(configfile)
 
@@ -147,3 +146,4 @@ def _qr_get_plugins_from_dir(plugin_dir):
         if os.access(path, os.X_OK) and os.isfile(path):
             plugins[file]=path
     return plugins
+
