@@ -73,6 +73,9 @@ function send_qr_code {
 }
 
 function main {
+	if [[ "$1" != 'start' ]]; then
+		return
+	fi
 	setup_askpass
 	get_wifi_info
 	send_qr_code
