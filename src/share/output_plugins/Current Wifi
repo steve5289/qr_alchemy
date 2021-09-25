@@ -44,7 +44,7 @@ function get_wifi_info {
 
 	if [[ -f "$SYSCONFIG_WIFI_FILE" ]]; then
 		WIFI_CONFIG=$(sudo -A cat "$SYSCONFIG_WIFI_FILE")
-		WIFI_AUTH=$(echo "$WIFI_CONFIG" | awk -d= '{print $1}')	
+		WIFI_AUTH=$(echo "$WIFI_CONFIG" | awk -F= '{print $1}')	
 		WIFI_PASSWD=$(echo "$WIFI_CONFIG" | sed  "s/^${WIFI_AUTH}=//")
 	
 	elif [[ -f "$NM_WIFI_FILE" ]]; then
