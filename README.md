@@ -9,13 +9,21 @@ apt-get update
 apt-get install zbar qrencode python3
 
  3. run the configure
+```
 ./configure
+```
 
  4. run make
+```
 make
+```
 
  5. Run sudo make install
+```
 sudo make install
+```
 
  6. (Optional) install the megapixels postprocess script
+```
 make postprocess
+```
