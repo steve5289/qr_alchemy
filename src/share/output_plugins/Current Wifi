@@ -1,0 +1,52 @@
+#!/usr/bin/env bash
+
+NM_CONNECTIONS="/etc/NetworkManager/system-connections"
+SYSCONFIG_NETWORK="/etc/sysconfig/network-scripts"
+export SUDO_ASKPASS=/usr/libexec/openssh/ssh-askpass
+
+
+function die {
+	zenity --error --text "$@"
+	exit 0
+}
+
+if [[ ! -x "$SUDO_ASKPASS" ]]; then
+	die "Failed to find askpass program for sudo"
+fi
+
+SSID=$(iwgetid -r )
+
+if [[ -z "$SSID" ]]; then
+	die "Error! You do not appear to be connected to a wifi network."
+fi
+NM_WIFI_FILE="$NM_CONNECTIONS/${SSID}.nmconnection"
+SYSCONFIG_WIFI_FILE="$NM_CONNECTIONS/keys-$SSID"
+
+
+
+if [[ -f "$SYSCONFIG_WIFI_FILE" ]]
+	WIFI_CONFIG=$(sudo -A cat "$SYSCONFIG_WIFI_FILE")
+	WIFI_AUTH=$(echo "$WIFI_CONFIG" | awk -d= '{print $1}')	
+	WIFI_PASSWD=$(echo "$WIFI_CONFIG" | sed  "s/^${WIFI_AUTH}=//")
+
+elif [[ -f "$NM_WIFI_FILE" ]]; then
+	WIFI_CONFIG=$(sudo -A cat "$NM_WIFI_FILE")
+	WIFI_AUTH_TYPE=$(echo "$WIFI_CONFIG" | grep '^key-mgmt=' | sed 's/^key-mgmt=//i')
+	
+	WIFI_PASSWD=$(echo "$WIFI_CONFIG" | grep '^psk=' | sed 's/^psk=//i')
+else	
+	die "Error! Could not find current Wifi config for network '$SSID'"
+fi
+
+if [[ -z "$WIFI_CONFIG" ]]; then
+	die "Failed to read wifi config"
+fi
+if [[ -z "$WIFI_AUTH" ]]; then
+	die "No auth type found for wifi connection"
+fi
+if [[ -z "$WIFI_PASSWD" && "$WIFI_AUTH != "none" ]]; then
+	die "No password found for wifi setup"
+fi
+
+
+echo "WIFI"T:$WIFI_AUTH;S:$SSID;P:$WIFI_PASSWD;;"
