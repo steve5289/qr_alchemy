@@ -4,6 +4,8 @@ NM_CONNECTIONS="/etc/NetworkManager/system-connections"
 SYSCONFIG_NETWORK="/etc/sysconfig/network-scripts"
 ASK_PASS_OPTIONS=( 
 	/usr/libexec/openssh/ssh-askpass 
+	/usr/lib/ssh/x11-ssh-askpass
+	/usr/bin/lxqt-openssh-askpass
 )
 
 
@@ -14,6 +16,10 @@ function die {
 
 function setup_askpass {
 	local EXEC
+
+	if [[ -n "$SUDO_ASKPASS" ]]; then
+		return
+	fi
 	for EXEC in "$ASK_PASS_OPTIONS"; do
 		if [[ -f "$EXEC" && -x "$EXEC" ]]; then
 			export SUDO_ASKPASS="$EXEC"
