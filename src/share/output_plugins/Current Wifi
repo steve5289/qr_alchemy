@@ -3,6 +3,7 @@
 NM_CONNECTIONS="/etc/NetworkManager/system-connections"
 SYSCONFIG_NETWORK="/etc/sysconfig/network-scripts"
 ASK_PASS_OPTIONS=( 
+	/usr/lib/openssh/gnome-ssh-askpass
 	/usr/libexec/openssh/ssh-askpass 
 	/usr/lib/ssh/x11-ssh-askpass
 	/usr/bin/lxqt-openssh-askpass
