@@ -1,4 +1,5 @@
 import os
+import sys
 import subprocess
 
 sys_input_plugin_dir=""
@@ -61,20 +62,22 @@ def get_input_plugins():
 
 def run_input_plugin(plugin, qr_code):
     plugin_map=get_input_plugins()
+    print('input_plugins:', plugin_map)
     
     if not plugin in plugin_map:
         print('Error! plugin not found: ', plugin)
         return False
     
-    pid=os.fork
+    pid=os.fork()
     if pid == 0:
-        pid=os.fork
+        pid=os.fork()
         if pid == 0:
-            os.exec(plugin_map[plugin], qr_code)
+            args=('null', qr_code)
+            os.execl(plugin_map[plugin], *args)
         else:
             sys.exit(0)
     else:
-        os.waitid(pid)
+        os.wait()
     
 
 ## OUTPUT
@@ -101,4 +104,5 @@ def stop_output_plugin(plugin):
         return False
     
     cmd=subprocess.run([plugin_map[plugin],'stop'])
+
 

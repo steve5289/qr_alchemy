@@ -8,7 +8,9 @@ VERSION=0.1.1
 function check_dependancies {
     echo '## Checking Dependancies'
     check_cmd zbarimg
+    check_cmd qrencode
     check_cmd python3
+    check_cmd iwgetid
 
     check_python_lib os
     check_python_lib gi

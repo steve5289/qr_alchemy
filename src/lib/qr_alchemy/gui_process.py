@@ -55,8 +55,10 @@ class QrActionWindow(Gtk.Window):
 
         # Label
         lb_code = Gtk.Label(label=qr_code)
-        lb_code.set_line_wrap(True)
         lb_code.set_alignment(0,0)
+        lb_code.set_selectable(True)
+        lb_code.set_line_wrap(True)
+        lb_code.set_line_wrap_mode(2)
         box_t.pack_start(lb_code, False, False, 0)
 
 
