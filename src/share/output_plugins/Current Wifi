@@ -20,7 +20,7 @@ function setup_askpass {
 	if [[ -n "$SUDO_ASKPASS" ]]; then
 		return
 	fi
-	for EXEC in "$ASK_PASS_OPTIONS"; do
+	for EXEC in "${ASK_PASS_OPTIONS[@]}"; do
 		if [[ -f "$EXEC" && -x "$EXEC" ]]; then
 			export SUDO_ASKPASS="$EXEC"
 			break
