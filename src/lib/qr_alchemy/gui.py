@@ -2,7 +2,7 @@
 import gi
 
 gi.require_version('Gtk', '3.0')
-from gi.repository import Gtk, GdkPixbuf, Gdk
+from gi.repository import Gtk, GdkPixbuf, Gdk, Gio
 
 class EntryDialog(Gtk.Dialog):
     en_name = Gtk.Entry()
@@ -13,9 +13,23 @@ class EntryDialog(Gtk.Dialog):
 
         dialog = self.get_content_area()
 
+        self.clipboard = Gtk.Clipboard.get(Gdk.SELECTION_CLIPBOARD)
+        self.clipboard_sel = Gtk.Clipboard.get(Gdk.SELECTION_PRIMARY)
+
         ## Top Box
         box_t = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=1)
         dialog.pack_start(box_t, True, True, 0)
+
+        # Main Buttons
+        bu_cancel = Gtk.Button(label="Cancel")
+        bu_cancel.connect("clicked", self.bu_cancel_clicked)
+        bu_ok = Gtk.Button(label="Ok")
+        bu_ok.connect("clicked", self.bu_ok_clicked)
+
+        box_b = Gtk.Box(spacing=1)
+        box_t.pack_start(box_b, False, True, 0)
+        box_b.pack_start(bu_cancel,  False, True, 0)
+        box_b.pack_end(bu_ok, False, True, 0)
 
         # Label
         lb_desc = Gtk.Label(label=message)
@@ -26,15 +40,23 @@ class EntryDialog(Gtk.Dialog):
         box_t.pack_start(self.en_name, False, True, 0)
         self.en_name.connect("activate", self.bu_ok_clicked)
 
-        bu_cancel = Gtk.Button(label="Cancel")
-        bu_cancel.connect("clicked", self.bu_cancel_clicked)
-        bu_ok = Gtk.Button(label="Ok")
-        bu_ok.connect("clicked", self.bu_ok_clicked)
+        # Paste Buttons
+        bu_paste = Gtk.Button()
+        bu_paste.connect("clicked", self.bu_paste_clicked)
+        bu_paste_icon = Gio.ThemedIcon(name='edit-paste-symbolic.symbolic')
+        bu_paste_image = Gtk.Image.new_from_gicon(bu_paste_icon, Gtk.IconSize.MENU)
+        bu_paste.add(bu_paste_image)
+        bu_paste_selected = Gtk.Button()
+        bu_paste_sel_icon = Gio.ThemedIcon(name='selection-end-symbolic')
+        bu_paste_sel_image = Gtk.Image.new_from_gicon(bu_paste_sel_icon, Gtk.IconSize.MENU)
+        bu_paste_selected.add(bu_paste_sel_image)
+        bu_paste_selected.connect("clicked", self.bu_paste_selected_clicked)
 
-        box_b = Gtk.Box(spacing=1)
-        box_t.pack_end(box_b, False, True, 0)
-        box_b.pack_start(bu_cancel,  False, True, 0)
-        box_b.pack_end(bu_ok, False, True, 0)
+        box_paste = Gtk.Box(spacing=1)
+        box_t.pack_start(box_paste, False, True, 0)
+        box_paste.pack_start(bu_paste,  False, True, 0)
+        box_paste.pack_start(bu_paste_selected, False, True, 30)
+
 
     def bu_cancel_clicked(self, qr_code):
         self.state=Gtk.ResponseType.CANCEL
@@ -46,6 +68,21 @@ class EntryDialog(Gtk.Dialog):
             self.name=self.en_name.get_text()
             self.destroy()
         
+    def bu_paste_clicked(self, qr_code):
+        self.en_name
+        cb_text = self.clipboard.wait_for_text()
+        if cb_text != None:
+            text=self.en_name.get_text() + cb_text
+            self.en_name.set_text(text)
+
+
+    def bu_paste_selected_clicked(self, qr_code):
+        self.en_name
+        cb_text = self.clipboard_sel.wait_for_text()
+        if cb_text != None:
+            text=self.en_name.get_text() + cb_text
+            self.en_name.set_text(text)
+
     def get_name(self):
         return self.name
 
@@ -65,20 +102,22 @@ class OkDialog(Gtk.Dialog):
         box_t = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=1)
         dialog.pack_start(box_t, True, True, 0)
 
-        # Label
-        lb_desc = Gtk.Label(label=message)
-        lb_desc.set_line_wrap(True)
-        box_t.pack_start(lb_desc, False, True, 0)
-    
+        # Buttons
         bu_cancel = Gtk.Button(label="Cancel")
         bu_cancel.connect("clicked", self.bu_cancel_clicked)
         bu_ok = Gtk.Button(label="Ok")
         bu_ok.connect("clicked", self.bu_ok_clicked)
 
         box_b = Gtk.Box(spacing=1)
-        box_t.pack_end(box_b, False, True, 0)
+        box_t.pack_start(box_b, False, True, 0)
         box_b.pack_start(bu_cancel,  False, True, 0)
         box_b.pack_end(bu_ok, False, True, 0)
+
+        # Label
+        lb_desc = Gtk.Label(label=message)
+        lb_desc.set_line_wrap(True)
+        box_t.pack_start(lb_desc, False, True, 0)
+    
 
     def bu_cancel_clicked(self, qr_code):
         self.state=Gtk.ResponseType.CANCEL
