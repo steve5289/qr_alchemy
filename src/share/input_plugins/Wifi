@@ -7,10 +7,8 @@ IFS=$';'
 DATA=( $(echo "$CODE" | sed 's/^wifi://i') )
 IFS=$' \t\n'
 
-if [[ ! "$CODE_TYPE" = "wifi" ]]; then
-	echo "This only handles wifi codes"
-	exit 1
-fi
+PATH="$PATH:/usr/sbin"
+PATH="$PATH:/sbin"
 
 for FIELD in "${DATA[@]}"; do
 	echo "field: $FIELD"

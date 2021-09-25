@@ -8,6 +8,9 @@ ASK_PASS_OPTIONS=(
 	/usr/bin/lxqt-openssh-askpass
 )
 
+PATH="$PATH:/usr/sbin"
+PATH="$PATH:/sbin"
+
 
 function die {
 	zenity --error --text "$@"
