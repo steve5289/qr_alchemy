@@ -92,7 +92,7 @@ class QrActionWindow(Gtk.Window):
             save_window.show_all()
             save_window.run()
 
-            name = save_window.get_name()
+            name = save_window.get_result()
             state = save_window.get_state()
 
             if state == Gtk.ResponseType.OK:

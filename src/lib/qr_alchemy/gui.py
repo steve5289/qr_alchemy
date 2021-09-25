@@ -5,7 +5,7 @@ gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk, GdkPixbuf, Gdk, Gio
 
 class EntryDialog(Gtk.Dialog):
-    en_name = Gtk.Entry()
+    en_result = Gtk.Entry()
     state=Gtk.ResponseType.CANCEL
     name=""
     def __init__(self, parent,title,message):
@@ -37,8 +37,8 @@ class EntryDialog(Gtk.Dialog):
         box_t.pack_start(lb_desc, False, True, 0)
     
         # Entry
-        box_t.pack_start(self.en_name, False, True, 0)
-        self.en_name.connect("activate", self.bu_ok_clicked)
+        box_t.pack_start(self.en_result, False, True, 0)
+        self.en_result.connect("activate", self.bu_ok_clicked)
 
         # Paste Buttons
         bu_paste = Gtk.Button()
@@ -63,36 +63,34 @@ class EntryDialog(Gtk.Dialog):
         self.destroy()
         
     def bu_ok_clicked(self, qr_code):
-        if self.en_name.get_text():
+        if self.en_result.get_text():
             self.state=Gtk.ResponseType.OK
-            self.name=self.en_name.get_text()
+            self.result=self.en_result.get_text()
             self.destroy()
         
     def bu_paste_clicked(self, qr_code):
-        self.en_name
+        self.en_result
         cb_text = self.clipboard.wait_for_text()
         if cb_text != None:
-            text=self.en_name.get_text() + cb_text
-            self.en_name.set_text(text)
+            text=self.en_result.get_text() + cb_text
+            self.en_result.set_text(text)
 
 
     def bu_paste_selected_clicked(self, qr_code):
-        self.en_name
+        self.en_result
         cb_text = self.clipboard_sel.wait_for_text()
         if cb_text != None:
-            text=self.en_name.get_text() + cb_text
-            self.en_name.set_text(text)
+            text=self.en_result.get_text() + cb_text
+            self.en_result.set_text(text)
 
-    def get_name(self):
-        return self.name
+    def get_result(self):
+        return self.result
 
     def get_state(self):
         return self.state
 
 class OkDialog(Gtk.Dialog):
-    en_name = Gtk.Entry()
     state=Gtk.ResponseType.CANCEL
-    name=""
     def __init__(self, parent,title,message):
         Gtk.Dialog.__init__(self, title=title)
 
