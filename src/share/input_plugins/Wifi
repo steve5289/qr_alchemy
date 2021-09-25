@@ -1,0 +1,51 @@
+#!/usr/bin/bash
+
+CODE="$1"
+CODE_TYPE=$(echo "$CODE"| awk -F: '{print tolower($1)}')
+
+IFS=$';'
+DATA=( $(echo "$CODE" | sed 's/^wifi://i') )
+IFS=$' \t\n'
+
+if [[ ! "$CODE_TYPE" = "wifi" ]]; then
+	echo "This only handles wifi codes"
+	exit 1
+fi
+
+for FIELD in "${DATA[@]}"; do
+	echo "field: $FIELD"
+	case $FIELD in
+		T*|t*)
+			AUTH_TYPE=$(echo "$FIELD" | awk -F: '{print $2}')
+		;;
+		S*|s*)
+			SSID=$(echo "$FIELD" | awk -F: '{print $2}')
+		;;
+		P*|p*)
+			PASSWD=$(echo "$FIELD" | awk -F: '{print $2}')
+		;;
+	esac
+done
+
+if [[ "$AUTH_TYPE" == "WPA" ]]; then
+	AUTH_TYPE="wpa-psk"
+fi
+
+if [[ -z "$SSID" ]]; then
+	zenity --error --text "Code did not provide an SSID to connect to"
+	exit 0
+fi
+
+nmcli device wifi rescan
+
+if [[ -n "$PASSWD" ]]; then
+	ERRORS=$(nmcli device wifi connect "$SSID" password "$PASSWD" 2>&1)
+	RET=$?
+else
+	ERRORS=$(nmcli device wifi connect "$SSID" 2>&1)
+	RET=$?
+fi
+
+if [[ "$RET" -ne 0 ]]; then
+	zenity --error --text "Failed to connect:\n$ERRORS"
+fi
