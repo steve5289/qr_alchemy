@@ -6,5 +6,6 @@ Exec=%BINDIR%/qr_alchemy
 Icon=qr_alchemy
 Type=Application
 Categories=X-Wine;
+MimeType=x-scheme-handler/wifi;
 X-Purism-FormFactor=Workstation;Mobile;
 
