@@ -1,4 +1,4 @@
-# qr_alchemy
+# QR Alchemy
 Tool for generating and processing qr codes with custom actions on linux
 
 ## Installation Instructions
