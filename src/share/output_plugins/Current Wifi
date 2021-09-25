@@ -49,7 +49,7 @@ function get_wifi_info {
 	
 	elif [[ -f "$NM_WIFI_FILE" ]]; then
 		WIFI_CONFIG=$(sudo -A cat "$NM_WIFI_FILE")
-		WIFI_AUTH_TYPE=$(echo "$WIFI_CONFIG" | grep '^key-mgmt=' | sed 's/^key-mgmt=//i')
+		WIFI_AUTH=$(echo "$WIFI_CONFIG" | grep '^key-mgmt=' | sed 's/^key-mgmt=//i')
 		
 		WIFI_PASSWD=$(echo "$WIFI_CONFIG" | grep '^psk=' | sed 's/^psk=//i')
 	else	
