@@ -8,13 +8,11 @@ class EntryDialog(Gtk.Dialog):
     en_result = Gtk.Entry()
     state=Gtk.ResponseType.CANCEL
     name=""
+    result=""
     def __init__(self, parent,title,message):
         Gtk.Dialog.__init__(self, title=title)
 
         dialog = self.get_content_area()
-
-        self.clipboard = Gtk.Clipboard.get(Gdk.SELECTION_CLIPBOARD)
-        self.clipboard_sel = Gtk.Clipboard.get(Gdk.SELECTION_PRIMARY)
 
         ## Top Box
         box_t = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=1)
@@ -40,22 +38,6 @@ class EntryDialog(Gtk.Dialog):
         box_t.pack_start(self.en_result, False, True, 0)
         self.en_result.connect("activate", self.bu_ok_clicked)
 
-        # Paste Buttons
-        bu_paste = Gtk.Button()
-        bu_paste.connect("clicked", self.bu_paste_clicked)
-        bu_paste_icon = Gio.ThemedIcon(name='edit-paste-symbolic.symbolic')
-        bu_paste_image = Gtk.Image.new_from_gicon(bu_paste_icon, Gtk.IconSize.MENU)
-        bu_paste.add(bu_paste_image)
-        bu_paste_selected = Gtk.Button()
-        bu_paste_sel_icon = Gio.ThemedIcon(name='selection-end-symbolic')
-        bu_paste_sel_image = Gtk.Image.new_from_gicon(bu_paste_sel_icon, Gtk.IconSize.MENU)
-        bu_paste_selected.add(bu_paste_sel_image)
-        bu_paste_selected.connect("clicked", self.bu_paste_selected_clicked)
-
-        box_paste = Gtk.Box(spacing=1)
-        box_t.pack_start(box_paste, False, True, 0)
-        box_paste.pack_start(bu_paste,  False, True, 0)
-        box_paste.pack_start(bu_paste_selected, False, True, 30)
 
 
     def bu_cancel_clicked(self, qr_code):
@@ -68,21 +50,6 @@ class EntryDialog(Gtk.Dialog):
             self.result=self.en_result.get_text()
             self.destroy()
         
-    def bu_paste_clicked(self, qr_code):
-        self.en_result
-        cb_text = self.clipboard.wait_for_text()
-        if cb_text != None:
-            text=self.en_result.get_text() + cb_text
-            self.en_result.set_text(text)
-
-
-    def bu_paste_selected_clicked(self, qr_code):
-        self.en_result
-        cb_text = self.clipboard_sel.wait_for_text()
-        if cb_text != None:
-            text=self.en_result.get_text() + cb_text
-            self.en_result.set_text(text)
-
     def get_result(self):
         return self.result
 
