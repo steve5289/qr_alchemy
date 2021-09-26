@@ -15,6 +15,9 @@ def _get_homedir():
     else:
         return os.environ['/']
 
+def set_user_plugin_dir(path):
+    qr_user_configdir=path
+
 def set_sys_plugin_dir(path):
     global sys_input_plugin_dir
     global sys_output_plugin_dir
@@ -34,12 +37,12 @@ def set_sys_plugin_dir(path):
 def _get_plugins(sys_dir,user_dir):
     plugin=dict()
 
-    try: 
+    try:
         files = os.listdir(sys_dir)
         for file in files:
             path=sys_dir + '/' + file
             #print('file:', file)
-            if os.access(path, os.X_OK):
+            if os.access(path, os.X_OK) and os.path.isfile(path):
                 plugin[file]=path
     except:
         pass
@@ -48,7 +51,7 @@ def _get_plugins(sys_dir,user_dir):
         files = os.listdir(user_dir)
         for file in files:
             path=user_dir + '/' + file
-            if os.access(path, os.X_OK) and os.isfile(path):
+            if os.access(path, os.X_OK) and os.path.isfile(path):
                 plugin[file]=path
     except:
         pass
