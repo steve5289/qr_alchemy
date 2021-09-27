@@ -1,9 +1,23 @@
 #!/usr/bin/python3
 import unittest
 from test import support
+import sys
 
 
 class TestSyntax(unittest.TestCase):
+    def runTest(self):
+        self.test_load_generate()
+        self.test_load_gui()
+        self.test_load_config()
+        self.test_load_gui_display()
+        self.test_load_gui_hist()
+        self.test_import_gui_process()
+        self.test_import_gui_saved()
+        self.test_import_plugins()
+        self.test_import_process()
+        self.test_import_saved()
+
+
     def test_load_generate(self):
         '''import qr_alchemy.generate'''
         import qr_alchemy.generate
@@ -55,6 +69,12 @@ class TestSyntax(unittest.TestCase):
         return True
 
 def main():
-    unittest.main()
+    suite = unittest.TestSuite()
+    suite.addTest(TestSyntax())
 
+
+    result = unittest.TextTestRunner(verbosity=1).run(suite).wasSuccessful()
+    if result:
+        sys.exit(0)
+    sys.exit(1)
 main()
