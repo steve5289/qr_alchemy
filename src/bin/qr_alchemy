@@ -3,6 +3,7 @@
 import sys
 import getopt
 import qr_alchemy.process as qr_process
+import qr_alchemy.config as qr_config
 import qr_alchemy.plugins as qr_plugins
 import qr_alchemy.gui_process as qr_gui_process
 import qr_alchemy.gui_main as qr_gui_main
@@ -29,7 +30,7 @@ def main():
             help()
     print('test2: ', sys_plugin_dir)
     qr_plugins.set_sys_plugin_dir(sys_plugin_dir)
-    qr_process.configfile(configfile)
+    qr_config.configfile(configfile)
 
     if file:
         qr_code = qr_process.qr_image_handler(file)
