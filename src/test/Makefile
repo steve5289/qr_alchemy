@@ -8,6 +8,7 @@ syntax: clean
 basic: syntax
 	PYTHONPATH=${PYTHON_LIB} ./TestGenerate.py -v
 	PYTHONPATH=${PYTHON_LIB} ./TestPlugins.py -v
+	PYTHONPATH=${PYTHON_LIB} ./TestConfig.py -v
 	
 clean:
 	rm -rf tmp/
