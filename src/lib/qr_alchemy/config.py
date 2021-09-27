@@ -21,8 +21,8 @@ def set_sys_configfile(file):
     sys_configfile_path=file
 
 def set_user_configfile(file):
-    global sys_configfile_path
-    sys_configfile_path=file
+    global user_configfile_path
+    user_configfile_path=file
 
 def _get_user_configfile():
     global user_configfile_path
