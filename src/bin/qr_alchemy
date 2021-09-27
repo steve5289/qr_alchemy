@@ -30,7 +30,7 @@ def main():
             help()
     print('test2: ', sys_plugin_dir)
     qr_plugins.set_sys_plugin_dir(sys_plugin_dir)
-    qr_config.configfile(configfile)
+    qr_config.set_sys_configfile(configfile)
 
     if file:
         qr_code = qr_process.qr_image_handler(file)

@@ -3,7 +3,8 @@ import configparser
 import qr_alchemy.gui_process as gui
 import qr_alchemy.plugins as qr_plugins
 
-qr_configfile_path=""
+sys_configfile_path=""
+user_configfile_path=""
 qr_configfile="qr_alchemy.conf"
 qr_user_configdir=".config/qr_alchemy/"
 qr_plugin_dir="/usr/share/qr_alchemy/input_plugins/"
@@ -14,23 +15,29 @@ def _get_homedir():
         return os.environ['HOME']
     else:
         return os.environ['/']
-def configfile(file):
-    global qr_configfile_path
-    qr_configfile_path=file
+
+def set_sys_configfile(file):
+    global sys_configfile_path
+    sys_configfile_path=file
+
+def set_user_configfile(file):
+    global sys_configfile_path
+    sys_configfile_path=file
 
 def _get_user_configfile():
-    homedir=_get_homedir()
-    qr_userconfig=homedir + '/' + qr_user_configdir + qr_configfile
-    return qr_userconfig
+    if user_configfile_path == '':
+        homedir=_get_homedir()
+        user_configfile_path=homedir + '/' + qr_user_configdir + qr_configfile
+    return user_configfile_path
     
 def qr_update_configaction(code_type, a_type, a_subtype):
 
-    qr_userconfig=_get_user_configfile()
+    user_configfile_path=_get_user_configfile()
     
     config = configparser.ConfigParser()
     
     try:
-        config.read(qr_userconfig)
+        config.read(user_configfile_path)
     except:
         print("user config not found")
         
@@ -40,17 +47,17 @@ def qr_update_configaction(code_type, a_type, a_subtype):
         config['action_map'][code_type.lower()]=a_type + ":" + a_subtype
     else:
         config['action_map'][code_type.lower()]=a_type
-    with open(qr_userconfig, 'w') as configfile:
+    with open(user_configfile_path, 'w') as configfile:
         config.write(configfile)
 
 def get_config():
     config = configparser.ConfigParser()
-    config.read(qr_configfile_path)
+    config.read(sys_configfile_path)
 
-    qr_userconfig=_get_user_configfile()
+    user_configfile_path=_get_user_configfile()
 
     try:
-        config.read(qr_userconfig)
+        config.read(user_configfile_path)
 
     except:
         print("user configfile unavailable")
