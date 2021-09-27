@@ -5,6 +5,7 @@ import subprocess
 sys_input_plugin_dir=""
 sys_output_plugin_dir=""
 
+qr_userconfig=""
 user_input_plugin_dir=""
 user_output_plugin_dir=""
 qr_user_configdir=".config/qr_alchemy/"
@@ -16,23 +17,29 @@ def _get_homedir():
         return os.environ['/']
 
 def set_user_plugin_dir(path):
-    qr_user_configdir=path
+    global qr_user_configdir
+    global qr_userconfig 
+    global user_input_plugin_dir
+    global user_output_plugin_dir
+
+    qr_userconfig=path
+    user_input_plugin_dir=qr_userconfig + "/input_plugins"
+    user_output_plugin_dir=qr_userconfig + "/output_plugins"
 
 def set_sys_plugin_dir(path):
     global sys_input_plugin_dir
     global sys_output_plugin_dir
-    global user_input_plugin_dir
-    global user_output_plugin_dir
+    global qr_userconfig 
 
     sys_plugin_dir=path
     sys_input_plugin_dir=path+"/input_plugins"
     sys_output_plugin_dir=path+"/output_plugins"
     
-    homedir=_get_homedir()
-    qr_userconfig=homedir + '/' + qr_user_configdir
-    user_input_plugin_dir=qr_userconfig + "/input_plugins"
-    user_output_plugin_dir=qr_userconfig + "/output_plugins"
-    print('test')
+    if qr_userconfig == "":
+        homedir=_get_homedir()
+        qr_userconfig=homedir + '/' + qr_user_configdir
+        set_user_plugin_dir(qr_userconfig)
+        
 
 def _get_plugins(sys_dir,user_dir):
     plugin=dict()
@@ -41,7 +48,6 @@ def _get_plugins(sys_dir,user_dir):
         files = os.listdir(sys_dir)
         for file in files:
             path=sys_dir + '/' + file
-            #print('file:', file)
             if os.access(path, os.X_OK) and os.path.isfile(path):
                 plugin[file]=path
     except:
@@ -65,7 +71,6 @@ def get_input_plugins():
 
 def run_input_plugin(plugin, qr_code):
     plugin_map=get_input_plugins()
-    print('input_plugins:', plugin_map)
     
     if not plugin in plugin_map:
         print('Error! plugin not found: ', plugin)
