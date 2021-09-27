@@ -18,6 +18,12 @@ class TestGenerate(unittest.TestCase):
         self.assertEqual(type(image), qr_alchemy.gui.ResizableImage)
 
 def main():
-    unittest.main()
+    suite = unittest.TestSuite()
+    suite.addTest(TestGenerate())
 
+
+    result = unittest.TextTestRunner(verbosity=1).run(suite).wasSuccessful()
+    if result:
+        sys.exit(0)
+    sys.exit(1)
 main()
