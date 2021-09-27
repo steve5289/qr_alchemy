@@ -110,4 +110,4 @@ postprocess:
 	chmod 755 ${POSTPROCESS}
 
 test:
-	cd build/test && make
+	cd build/test && make basic
