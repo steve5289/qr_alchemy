@@ -1,7 +1,7 @@
 
 import gi
 import qr_alchemy.process as qr_process
-import qr_alchemy.saved as qr_saved
+import qr_alchemy.history as qr_history
 import qr_alchemy.gui as gui
 import qr_alchemy.gui_process as gui_process
 import qr_alchemy.gui_config as gui_config
@@ -50,7 +50,7 @@ class QrHistPage(Gtk.Window):
 
     def refresh_history(self):
         self.ls_hist.clear()
-        self.hist_codes=qr_saved.get_history()
+        self.hist_codes=qr_history.get_history()
         for row in self.hist_codes:
             self.ls_hist.append(row)
 
