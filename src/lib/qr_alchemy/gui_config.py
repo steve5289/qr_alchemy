@@ -118,7 +118,7 @@ class QRConfig(Gtk.Window):
         if state != Gtk.ResponseType.OK:
             return
 
-        qr_config.qr_update_configaction(data[i][0], '', '')
+        qr_config.update_confog_actionmap(data[i][0], '', '')
         self.ls_actions_populate(self.ls_act)
         
     def bu_add_clicked(self, qr_code):
@@ -365,7 +365,7 @@ class QRConfigEntry(Gtk.Dialog):
             subtype=self.prog
         else:
             subtype=''
-        qr_config.qr_update_configaction(self.code_type, self.action_type, subtype)
+        qr_config.update_confog_actionmap(self.code_type, self.action_type, subtype)
         self.destroy()
         
     def bu_cancel_clicked(self, button):
@@ -390,7 +390,7 @@ class QRConfigEntry(Gtk.Dialog):
         if state != Gtk.ResponseType.OK:
             return
 
-        qr_config.qr_update_configaction(self.code_type, '', '')
+        qr_config.update_confog_actionmap(self.code_type, '', '')
         self.state = Gtk.ResponseType.OK
         self.destroy()
     def get_state():

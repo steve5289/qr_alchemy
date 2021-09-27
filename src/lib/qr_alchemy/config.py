@@ -25,15 +25,25 @@ def set_user_configfile(file):
     sys_configfile_path=file
 
 def _get_user_configfile():
+    global user_configfile_path
     if user_configfile_path == '':
         homedir=_get_homedir()
         user_configfile_path=homedir + '/' + qr_user_configdir + qr_configfile
     return user_configfile_path
-    
-def qr_update_configaction(code_type, a_type, a_subtype):
+
+def update_confog_actionmap(code_type, a_type, a_subtype):
+    section = 'action_map'
+    key = code_type
+    if a_subtype == '':
+        value=a_type
+    else:
+        value=a_type + ":" + a_subtype
+    update_config(section, key, value)
+
+def update_config(section, key, value):
+    global user_configfile_path
 
     user_configfile_path=_get_user_configfile()
-    
     config = configparser.ConfigParser()
     
     try:
@@ -41,16 +51,14 @@ def qr_update_configaction(code_type, a_type, a_subtype):
     except:
         print("user config not found")
         
-    if not 'action_map' in config:
-        config['action_map']=dict()
-    if a_subtype != '':
-        config['action_map'][code_type.lower()]=a_type + ":" + a_subtype
-    else:
-        config['action_map'][code_type.lower()]=a_type
+    if not section in config:
+        config[section]=dict()
+    config[section][key]=value
     with open(user_configfile_path, 'w') as configfile:
         config.write(configfile)
 
 def get_config():
+    global sys_configfile_path
     config = configparser.ConfigParser()
     config.read(sys_configfile_path)
 
