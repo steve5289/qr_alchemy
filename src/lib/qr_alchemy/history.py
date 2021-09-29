@@ -3,6 +3,7 @@ import pickle
 from datetime import datetime
 
 hist_max=10
+histfile=""
 
 def _get_homedir():
     if "HOME" in os.environ:
