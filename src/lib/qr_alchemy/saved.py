@@ -18,12 +18,11 @@ def _get_user_savefile():
     global savefile
     if not savefile:
         qr_user_configdir=".config/qr_alchemy/"
-        savefile="saved_qr.dat"
+        filename="saved_qr.dat"
         homedir=_get_homedir()
-        qr_userconfig=homedir + qr_user_configdir + savefile
+        savefile=homedir + qr_user_configdir + filename
         if not os.path.isdir(homedir + qr_user_configdir):
             os.mkdir(homedir + qr_user_configdir)
-        return qr_userconfig
     return savefile
     
 def get_saved_codes():
