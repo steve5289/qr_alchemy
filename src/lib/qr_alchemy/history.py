@@ -2,8 +2,6 @@ import os
 import pickle
 from datetime import datetime
 
-qr_user_configdir=".config/qr_alchemy/"
-histfile="history_qr.dat"
 hist_max=10
 
 def _get_homedir():
@@ -12,16 +10,26 @@ def _get_homedir():
     else:
         return os.environ['/']
 
+def set_histfile(file):
+    global histfile
+    histfile=file
+
 def _get_user_histfile():
-    homedir=_get_homedir()
-    qr_userconfig=homedir + qr_user_configdir + histfile
-    if not os.path.isdir(homedir + qr_user_configdir):
-        os.mkdir(homedir + qr_user_configdir)
-    return qr_userconfig
+    global histfile
+    if not histfile:
+        qr_user_configdir=".config/qr_alchemy/"
+        filename="history_qr.dat"
+        homedir=_get_homedir()
+        histfile=homedir + qr_user_configdir + filename
+        if not os.path.isdir(homedir + qr_user_configdir):
+           os.mkdir(homedir + qr_user_configdir)
+    return histfile
     
 def get_history():
+    global histfile
     histfile=_get_user_histfile()
     codes = list()
+
     try:
         fh = open(histfile,'rb')
         codes=pickle.load(fh)
