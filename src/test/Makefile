@@ -10,6 +10,7 @@ basic: syntax clean
 	PYTHONPATH=${PYTHON_LIB} ./TestPlugins.py -v
 	PYTHONPATH=${PYTHON_LIB} ./TestConfig.py -v
 	PYTHONPATH=${PYTHON_LIB} ./TestProcess.py -v
+	PYTHONPATH=${PYTHON_LIB} ./TestSaved.py -v
 	make clean
 	
 clean:

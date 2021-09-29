@@ -2,8 +2,7 @@ import os
 import pickle
 from datetime import datetime
 
-qr_user_configdir=".config/qr_alchemy/"
-savefile="saved_qr.dat"
+savefile=""
 
 def _get_homedir():
     if "HOME" in os.environ:
@@ -11,12 +10,21 @@ def _get_homedir():
     else:
         return os.environ['/']
 
+def set_savefile(file):
+    global savefile
+    savefile=file
+
 def _get_user_savefile():
-    homedir=_get_homedir()
-    qr_userconfig=homedir + qr_user_configdir + savefile
-    if not os.path.isdir(homedir + qr_user_configdir):
-        os.mkdir(homedir + qr_user_configdir)
-    return qr_userconfig
+    global savefile
+    if not savefile:
+        qr_user_configdir=".config/qr_alchemy/"
+        savefile="saved_qr.dat"
+        homedir=_get_homedir()
+        qr_userconfig=homedir + qr_user_configdir + savefile
+        if not os.path.isdir(homedir + qr_user_configdir):
+            os.mkdir(homedir + qr_user_configdir)
+        return qr_userconfig
+    return savefile
     
 def get_saved_codes():
     savefile=_get_user_savefile()
