@@ -3,6 +3,7 @@ import gi
 import qr_alchemy.process as qr_process
 import qr_alchemy.generate as qr_generate
 import qr_alchemy.saved as qr_saved
+import qr_alchemy.history as qr_history
 import qr_alchemy.gui as gui
 
 gi.require_version('Gtk', '3.0')
@@ -16,7 +17,7 @@ class QrActionWindow(Gtk.Window):
 
         self.qr_code=qr_code
         if save_history:
-            qr_saved.add_history(qr_code)
+            qr_history.add_history(qr_code)
 
         ## Top Box
         box_t = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=1)

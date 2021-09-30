@@ -108,3 +108,6 @@ postprocess:
 	mkdir -p '${POSTPROCESS_DIR}'
 	cp -p '${BUILD_SHARE}/postprocess.sh' '${POSTPROCESS}'
 	chmod 755 ${POSTPROCESS}
+
+test:
+	cd build/test && make basic
