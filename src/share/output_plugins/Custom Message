@@ -9,6 +9,8 @@ from gi.repository import Gtk
 import qr_alchemy.gui as gui
 
 def main():
+    if sys.argv[1] != "start":
+        return
     window = Gtk.Window()
 
     get_code_window = gui.EntryDialog(
@@ -17,8 +19,6 @@ def main():
         message="Please Enter a custom QR Code to display. Note that the longer the qr code the harder it is to read. It is not reccommended to go over 200 characters in your message"        
     )
 
-    if sys.argv[1] == "stop":
-        return
 
     get_code_window.show_all()
     get_code_window.run()
@@ -27,7 +27,6 @@ def main():
 
     if state == Gtk.ResponseType.OK:
         print(get_code_window.get_result())
-        sys.exit(0)
+    sys.exit(0)
 
-    sys.exit(1)
 main()
