@@ -10,6 +10,8 @@ qr_user_configdir=".config/qr_alchemy/"
 qr_plugin_dir="/usr/share/qr_alchemy/input_plugins/"
 qr_user_plugin_dir=qr_user_configdir + "input_plugins/"
 
+qr_config = None
+
 def _get_homedir():
     if "HOME" in  os.environ:
         return os.environ['HOME']
@@ -31,7 +33,7 @@ def _get_user_configfile():
         user_configfile_path=homedir + '/' + qr_user_configdir + qr_configfile
     return user_configfile_path
 
-def update_confog_actionmap(code_type, a_type, a_subtype):
+def update_config_actionmap(code_type, a_type, a_subtype):
     section = 'action_map'
     key = code_type
     if a_subtype == '':
@@ -53,12 +55,15 @@ def update_config(section, key, value):
         
     if not section in config:
         config[section]=dict()
-    config[section][key]=value
+    config[section][key]=str(value)
     with open(user_configfile_path, 'w') as configfile:
         config.write(configfile)
+    refresh_config()
 
-def get_config():
+def refresh_config():
     global sys_configfile_path
+    global qr_config
+
     config = configparser.ConfigParser()
     config.read(sys_configfile_path)
 
@@ -70,9 +75,14 @@ def get_config():
     except:
         print("user configfile unavailable")
     
-    config_new = dict()
+    qr_config = dict()
     for topic in config:
-        config_new[topic]=dict()
+        qr_config[topic]=dict()
+        if topic == 'action_map':
+            continue
+        for entry in config[topic]:
+            qr_config[topic][entry] = config[topic][entry]
+
     for entry in config['action_map']:
         action = config['action_map'][entry]
         split = action.split(':', 2)
@@ -82,7 +92,13 @@ def get_config():
 
         if len(split) > 1:
             action_subtype = split[1]
-            config_new['action_map'][entry] = [action_type, action_subtype]
+            qr_config['action_map'][entry] = [action_type, action_subtype]
         else:
-            config_new['action_map'][entry] = [action_type]
-    return config_new
+            qr_config['action_map'][entry] = [action_type]
+    
+
+def get_config():
+    global qr_config
+    if qr_config == None:
+        refresh_config()
+    return qr_config

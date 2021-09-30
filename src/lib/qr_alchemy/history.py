@@ -2,14 +2,30 @@ import os
 import pickle
 from datetime import datetime
 
-hist_max=10
+import qr_alchemy.config as qr_config
+max_hist=10
 histfile=""
+qr_history=None
 
 def _get_homedir():
     if "HOME" in os.environ:
         return os.environ['HOME'] + '/'
     else:
         return os.environ['/']
+
+def set_max_hist(num):
+    global max_hist
+    if num != max_hist:
+        qr_config.update_config('general', 'max_hist', num)
+        max_hist=num
+        trim_history()
+
+def get_max_hist():
+    global max_hist
+    config = qr_config.get_config()
+    if 'general' in config and 'max_hist' in config['general']:
+        max_hist = int(config['general']['max_hist'])
+    return max_hist
 
 def set_histfile(file):
     global histfile
@@ -31,6 +47,8 @@ def get_history():
     histfile=_get_user_histfile()
     codes = list()
 
+    get_max_hist()
+
     try:
         fh = open(histfile,'rb')
         codes=pickle.load(fh)
@@ -47,14 +65,25 @@ def add_history(qr_code):
     dt_now = datetime.now()
     now = dt_now.strftime("%Y-%m-%d %H:%M:%S")
     codes = get_history()
-    fh_w = open(histfile, 'wb')
 
     entry = [now, qr_code]
     codes.insert(0, entry)
-    while len(codes) > hist_max:
+    while len(codes) > max_hist:
         del codes[-1]
+    fh_w = open(histfile, 'wb')
     pickle.dump(codes, fh_w)
     fh_w.close()
+
+def trim_history():
+    codes = get_history()
+    updated=False
+    while len(codes) > max_hist:
+        del codes[-1]
+        updated=True
+    if updated:
+        fh_w = open(histfile, 'wb')
+        pickle.dump(codes, fh_w)
+        fh_w.close()
 
 def clear_history():
     histfile=_get_user_histfile()
