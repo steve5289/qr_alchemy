@@ -1,7 +1,10 @@
 import os
 import configparser
+import subprocess
 import qr_alchemy.gui_process as gui
 import qr_alchemy.plugins as qr_plugins
+import qr_alchemy.config as qr_config
+import sys
 
 sys_configfile_path=""
 user_configfile_path=""
@@ -65,7 +68,11 @@ def refresh_config():
     global qr_config
 
     config = configparser.ConfigParser()
-    config.read(sys_configfile_path)
+    
+    try:
+        config.read(sys_configfile_path)
+    except:
+        print('system config not available')
 
     user_configfile_path=_get_user_configfile()
 
@@ -81,7 +88,8 @@ def refresh_config():
         if topic == 'action_map':
             continue
         for entry in config[topic]:
-            qr_config[topic][entry] = config[topic][entry]
+            if config[topic][entry] != '':
+                qr_config[topic][entry] = config[topic][entry]
 
     for entry in config['action_map']:
         action = config['action_map'][entry]
@@ -102,3 +110,46 @@ def get_config():
     if qr_config == None:
         refresh_config()
     return qr_config
+
+def set_offer_system(code_type, active):
+    home = _get_homedir()
+    apps_dir=home + '/.local/share/applications'
+    appfile = apps_dir + '/qr_alchemy_process.desktop'
+
+    if active:
+        update_config('system_offer', code_type, 1)
+    else:
+        update_config('system_offer', code_type, '')
+
+
+    config = get_config()
+    
+    if config['system_offer']:
+        code_types = config['system_offer'].keys()
+        output =  "[Desktop Entry]\n"
+        output += "Name=QR Alchemy Processer\n" 
+        output += "Exec=" +sys.argv[0] + " %u\n" 
+        output += "Icon=qr_alchemy\n" 
+        output += "Type=Application\n" 
+        output += "NoDisplay=true\n" 
+        output += "MimeType=" 
+        for code_type in code_types:
+            output +="x-scheme-handler/"+ code_type +";"
+        output += "\n"
+        fh_w = open(appfile, 'w')
+        fh_w.write(output)
+        fh_w.close()
+    else:
+        try:
+            os.remove(appfile)
+        except:
+            pass
+    subprocess.run(['update-desktop-database', apps_dir])
+
+def get_offer_system(code_type):
+    config = get_config()
+    if not 'system_offer' in config:
+        return
+    if code_type in config['system_offer']:
+        return True
+    return False
