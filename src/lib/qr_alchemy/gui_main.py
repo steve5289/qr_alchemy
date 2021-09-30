@@ -46,7 +46,7 @@ class QrMainWindow(Gtk.Window):
 
     def bu_config_clicked(self, button):
         config_window = gui_config.qr_gui_config()
-        self.first_select = 1
+        self.page_hist.refresh_history()
         
     def nb_page_changed(self, notebook, page, page_num):
         if page_num == 1:

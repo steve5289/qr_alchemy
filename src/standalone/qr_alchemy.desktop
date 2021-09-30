@@ -7,4 +7,4 @@ Icon=%STANDALONEDIR%/%BUILD_PIXMAP%/qr_alchemy.png
 Type=Application
 Categories=Utilities;
 X-Purism-FormFactor=Workstation;Mobile;
-
+MimeType=x-scheme-handler/wifi;

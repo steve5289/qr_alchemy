@@ -66,7 +66,7 @@ class QrDisplayPage():
         plugin=self.plugins[indices[0]]
         
         rc,qr_code = qr_plugins.run_output_plugin(plugin)
-        if rc == 0:
+        if rc == 0 and qr_code != '':
             gui_process.qr_gui_handle_code(qr_code, display_image=True)
         qr_plugins.stop_output_plugin(plugin)
         select = self.tv_display.get_selection()
