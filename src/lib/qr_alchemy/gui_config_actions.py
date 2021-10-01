@@ -6,7 +6,7 @@ from gi.repository import Gtk,Gio
 import qr_alchemy.process as qr_process
 import qr_alchemy.plugins as qr_plugins
 import qr_alchemy.gui as gui
-#import qr_alchemy.config as qr_config
+import qr_alchemy.config as qr_config
 
 
 class QRActionConfig():
@@ -89,7 +89,7 @@ class QRActionConfig():
         if state != Gtk.ResponseType.OK:
             return
 
-        #qr_config.update_config_actionmap(data[i][0], '', '')
+        qr_config.update_config_actionmap(data[i][0], '', '')
         self.ls_actions_populate(self.ls_act)
         
     def bu_add_clicked(self, qr_code):
@@ -114,7 +114,9 @@ class QRActionConfig():
         else:
             action_subtype = ''
         
-        edit_dialog = QRConfigEntry(self,title='Edit Action',code_type=code_type, action_type=action_type, action_subtype=action_subtype)
+        
+
+        edit_dialog = QRConfigEntry(self,title='Edit Action',code_type=code_type, action_type=action_type, action_subtype=action_subtype, system_offer=qr_config.get_offer_system(code_type))
         edit_dialog.run()
 
         self.ls_actions_populate(self.ls_act)
@@ -129,10 +131,11 @@ class QRConfigEntry(Gtk.Dialog):
     pg_plugin=None
     exists=False
     
-    def __init__(self, parent, title, code_type=None, action_type=None, action_subtype=None):
+    def __init__(self, parent, title, code_type=None, action_type=None, action_subtype=None, system_offer=False):
         Gtk.MessageDialog.__init__(self, title=title)
 
         self.code_type=code_type
+        self.system_offer=system_offer
         if self.code_type != None:
             self.exists=True
         self.action_type=action_type
@@ -176,6 +179,21 @@ class QRConfigEntry(Gtk.Dialog):
             en_code.set_editable(False)
             en_code.set_sensitive(False)
         box_code_type.pack_end(en_code, False, True, 0)
+        
+        ## Offer to system
+        box_system_offer = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=1)
+        box_t.pack_start(box_system_offer, False, True, 0)
+
+        # Label
+        lb_system_offer = Gtk.Label(label="Offer to system:")
+        lb_system_offer.set_line_wrap(False)
+        box_system_offer.pack_start(lb_system_offer, False, True, 0)
+
+        # Switch
+        sw_system_offer = Gtk.Switch()
+        sw_system_offer.set_active(self.system_offer)
+        sw_system_offer.connect('notify::active', self.sw_system_offer_activated)
+        box_system_offer.pack_end(sw_system_offer, False, True, 0)
 
         ## Action Box
         box_action = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=1)
@@ -212,8 +230,6 @@ class QRConfigEntry(Gtk.Dialog):
         ## Command Box
         self.pg_prog = self.page_prog()
         box_t.pack_start(self.pg_prog, False, True,0)
-       
-        
 
         ## Control what is shown
         box_t.show_all()
@@ -228,6 +244,10 @@ class QRConfigEntry(Gtk.Dialog):
         bu_ok.connect("clicked", self.bu_ok_clicked)
         cb_type.connect('changed', self.cb_type_changed)
         en_code.connect('changed', self.en_code_changed)
+
+    def sw_system_offer_activated(self, switch, gparam):
+        self.system_offer = switch.get_active()
+
 
     def cb_type_changed(self, comboBox):
         cb_tree_itr = comboBox.get_active_iter()
@@ -335,7 +355,8 @@ class QRConfigEntry(Gtk.Dialog):
             subtype=self.prog
         else:
             subtype=''
-        #qr_config.update_config_actionmap(self.code_type, self.action_type, subtype)
+        qr_config.update_config_actionmap(self.code_type, self.action_type, subtype)
+        qr_config.set_offer_system( self.code_type, self.system_offer)
         self.destroy()
         
     def bu_cancel_clicked(self, button):
@@ -360,8 +381,9 @@ class QRConfigEntry(Gtk.Dialog):
         if state != Gtk.ResponseType.OK:
             return
 
-        #qr_config.update_confog_actionmap(self.code_type, '', '')
+        qr_config.update_confog_actionmap(self.code_type, '', '')
         self.state = Gtk.ResponseType.OK
         self.destroy()
+
     def get_state():
         return self.state
