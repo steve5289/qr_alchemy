@@ -141,12 +141,14 @@ def set_offer_system(code_type, active):
         fh_w = open(appfile, 'w')
         fh_w.write(output)
         fh_w.close()
+        subprocess.run(['update-desktop-database', apps_dir])
+        subprocess.run(['xdg-mime','default', 'qr_alchemy_process.desktop', "x-scheme-handler/"+ code_type])
     else:
         try:
             os.remove(appfile)
         except:
             pass
-    subprocess.run(['update-desktop-database', apps_dir])
+        subprocess.run(['update-desktop-database', apps_dir])
 
 def get_offer_system(code_type):
     config = get_config()
