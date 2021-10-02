@@ -9,6 +9,9 @@ class TestSyntax(unittest.TestCase):
         self.test_load_generate()
         self.test_load_gui()
         self.test_load_config()
+        self.test_load_gui_config_general()
+        self.test_load_gui_config_actions()
+        self.test_load_gui_config_plugins()
         self.test_load_gui_display()
         self.test_load_gui_hist()
         self.test_import_gui_process()
@@ -33,6 +36,21 @@ class TestSyntax(unittest.TestCase):
         import qr_alchemy.gui_config
         return True
 
+    def test_load_gui_config_general(self):
+        '''import qr_alchemy.gui_config_general''' 
+        import qr_alchemy.gui_config_general
+        return True
+
+    def test_load_gui_config_actions(self):
+        '''import qr_alchemy.gui_config_actions''' 
+        import qr_alchemy.gui_config_actions
+        return True
+
+    def test_load_gui_config_plugins(self):
+        '''import qr_alchemy.gui_config_plugins''' 
+        import qr_alchemy.gui_config_plugins
+
+        return True
     def test_load_gui_display(self):
         '''import qr_alchemy.gui_display''' 
         import qr_alchemy.gui_display
