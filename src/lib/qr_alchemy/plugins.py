@@ -44,10 +44,7 @@ def set_sys_plugin_dir(path):
         set_user_plugin_dir(qr_userconfig)
         
 def _add_plugin(file, dest):
-    try:
-        os.mkdir(dest)
-    except:
-        pass
+    os.makedirs(dest, exist_ok=True)
     dest_path = dest + '/' + os.path.basename(file)
     shutil.copyfile(file, dest_path)
     os.chmod(dest_path, stat.S_IRUSR | stat.S_IXUSR)
