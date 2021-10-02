@@ -3,15 +3,11 @@ import pickle
 from datetime import datetime
 
 import qr_alchemy.config as qr_config
+import qr_alchemy.common as qr_common
+
 max_hist=10
 histfile=""
 qr_history=None
-
-def _get_homedir():
-    if "HOME" in os.environ:
-        return os.environ['HOME'] + '/'
-    else:
-        return os.environ['/']
 
 def set_max_hist(num):
     global max_hist
@@ -36,7 +32,7 @@ def _get_user_histfile():
     if not histfile:
         qr_user_configdir=".config/qr_alchemy/"
         filename="history_qr.dat"
-        homedir=_get_homedir()
+        homedir=qr_common.get_homedir()
         histfile=homedir + qr_user_configdir + filename
         if not os.path.isdir(homedir + qr_user_configdir):
            os.mkdir(homedir + qr_user_configdir)

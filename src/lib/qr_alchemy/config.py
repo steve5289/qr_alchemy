@@ -1,10 +1,8 @@
 import os
 import configparser
 import subprocess
-import qr_alchemy.gui_process as gui
-import qr_alchemy.plugins as qr_plugins
-import qr_alchemy.config as qr_config
 import sys
+import qr_alchemy.common as qr_common
 
 sys_configfile_path=""
 user_configfile_path=""
@@ -14,12 +12,6 @@ qr_plugin_dir="/usr/share/qr_alchemy/input_plugins/"
 qr_user_plugin_dir=qr_user_configdir + "input_plugins/"
 
 qr_config = None
-
-def _get_homedir():
-    if "HOME" in  os.environ:
-        return os.environ['HOME']
-    else:
-        return os.environ['/']
 
 def set_sys_configfile(file):
     global sys_configfile_path
@@ -34,7 +26,7 @@ def set_user_configfile(file):
 def _get_user_configfile():
     global user_configfile_path
     if user_configfile_path == '':
-        homedir=_get_homedir()
+        homedir=qr_common.get_homedir()
         user_configfile_path=homedir + '/' + qr_user_configdir + qr_configfile
     return user_configfile_path
 
@@ -114,7 +106,7 @@ def get_config():
     return qr_config
 
 def set_offer_system(code_type, active):
-    home = _get_homedir()
+    home = qr_common.get_homedir()
     apps_dir=home + '/.local/share/applications'
     appfile = apps_dir + '/qr_alchemy_process.desktop'
 
