@@ -68,10 +68,8 @@ class QrActionWindow(Gtk.Window):
         if qr_saved.is_code_saved(self.qr_code):
             code_name=qr_saved.get_code_saved_name(self.qr_code)
             self.bu_save.set_label("Delete Saved")
-            print('is saved')
         else:
             self.bu_save.set_label("Save")
-            print('is not saved')
 
     def bu_save_clicked(self, button):
         if qr_saved.is_code_saved(self.qr_code):

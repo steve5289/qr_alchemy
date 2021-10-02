@@ -97,7 +97,6 @@ class QRPluginConfig():
             
 
     def bu_del_clicked(self, qr_code):
-        print('delete')
         selected = self.tv_plug.get_selection()
         data, i = selected.get_selected()
         

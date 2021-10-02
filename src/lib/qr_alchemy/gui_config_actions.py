@@ -66,7 +66,6 @@ class QRActionConfig():
         return self.box
 
     def bu_delete_clicked(self, qr_code):
-        print('delete')
         selected = self.tv_act.get_selection()
         data, i = selected.get_selected()
         
@@ -93,13 +92,11 @@ class QRActionConfig():
         self.ls_actions_populate(self.ls_act)
         
     def bu_add_clicked(self, qr_code):
-        print('add')
         entryDialog = QRConfigEntry(self,title='Add New Action')
         entryDialog.run()
         self.ls_actions_populate(self.ls_act)
 
     def bu_edit_clicked(self, null1, null2, null3):
-        print('edit')
         path,data = self.tv_act.get_cursor()
         if path == None:
             return
@@ -273,7 +270,6 @@ class QRConfigEntry(Gtk.Dialog):
                 self.pg_prog.hide()
             except:
                 pass
-        print('changed to:', self.action_type)
 
     def en_code_changed(self, entry):
         self.code_type = entry.get_text()
@@ -338,17 +334,13 @@ class QRConfigEntry(Gtk.Dialog):
 
     def bu_ok_clicked(self, qr_code):
         if self.code_type == None or self.action_type == None:
-            print('test1', self.code_type, self.action_type)
             return
         if self.action_type == 'Program' and self.prog == None:
-            print('test2')
             return
         if self.action_type == 'Plugin' and self.plugin == None:
-            print('test3')
             return
 
         self.state = Gtk.ResponseType.OK
-        print('ok')
         if self.action_type == "Plugin":
             subtype=self.plugin
         elif self.action_type == "Program":
@@ -361,11 +353,9 @@ class QRConfigEntry(Gtk.Dialog):
         
     def bu_cancel_clicked(self, button):
         self.state = Gtk.ResponseType.CANCEL
-        print('cancel')
         self.destroy()
 
     def bu_delete_clicked(self, button):
-        print('delete')
         if self.code_type == '*':
             return
 
