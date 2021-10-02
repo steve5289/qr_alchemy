@@ -1,6 +1,9 @@
 import os
+import stat
 import sys
 import subprocess
+import shutil
+
 
 sys_input_plugin_dir=""
 sys_output_plugin_dir=""
@@ -40,6 +43,12 @@ def set_sys_plugin_dir(path):
         qr_userconfig=homedir + '/' + qr_user_configdir
         set_user_plugin_dir(qr_userconfig)
         
+def _add_plugin(file, dest):
+    os.makedirs(dest, exist_ok=True)
+    dest_path = dest + '/' + os.path.basename(file)
+    shutil.copyfile(file, dest_path)
+    os.chmod(dest_path, stat.S_IRUSR | stat.S_IXUSR)
+
 
 def _get_plugins(sys_dir,user_dir):
     plugin=dict()
@@ -86,7 +95,24 @@ def run_input_plugin(plugin, qr_code):
             sys.exit(0)
     else:
         os.wait()
-    
+
+def add_input_plugin(file):
+    _add_plugin(file, user_input_plugin_dir)
+
+def delete_input_plugin(plugin):
+    plugin2path = get_input_plugins()
+    if input_plugin_can_delete(plugin):
+        os.remove(plugin2path[plugin])
+        return True
+    print("Error! Failed to delete: ", plugin2path[plugin])
+    return False
+
+def input_plugin_can_delete(plugin):
+    global sys_input_plugin_dir
+    plugin2path = get_input_plugins()
+    if plugin2path[plugin].startswith(user_input_plugin_dir):
+        return True
+    return False
 
 ## OUTPUT
 def get_output_plugins():
@@ -113,4 +139,23 @@ def stop_output_plugin(plugin):
     
     cmd=subprocess.run([plugin_map[plugin],'stop'])
 
+def add_output_plugin(file):
+    _add_plugin(file, user_output_plugin_dir)
+
+def delete_output_plugin(plugin):
+    plugin2path = get_output_plugins()
+    if output_plugin_can_delete(plugin):
+        os.remove(plugin2path[plugin])
+        return True
+    print("Error! Failed to delete: ", plugin2path[plugin])
+    return False
+
+def output_plugin_can_delete(plugin):
+    global sys_output_plugin_dir
+    plugin2path = get_output_plugins()
+    if not plugin in plugin2path:
+        return False
+    if plugin2path[plugin].startswith(user_output_plugin_dir):
+        return True
+    return False
 

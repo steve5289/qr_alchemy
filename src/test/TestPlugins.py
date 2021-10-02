@@ -22,6 +22,8 @@ class TestPlugins(unittest.TestCase):
         self.test_run_sys_output_plugins()
         self.test_run_user_input_plugins()
         self.test_run_user_output_plugins()
+        self.test_add_input_plugins()
+        self.test_add_output_plugins()
 
     def test_plugin_list_normal(self):
         '''plugin_list normal plugin dir'''
@@ -114,6 +116,34 @@ class TestPlugins(unittest.TestCase):
         rc,code = qr_alchemy.plugins.run_output_plugin('user_output_plugin.sh')
         self.assertEqual(rc, 0)
         self.assertEqual(code, 'user_output_plugin.sh\n')
+        
+    def test_add_input_plugins(self):
+        '''test add_input_plugin'''
+
+        qr_alchemy.plugins.set_user_plugin_dir('tmp/user_test_plugins')
+        qr_alchemy.plugins.set_sys_plugin_dir('data/TestPlugins/sys_test_plugins')
+        qr_alchemy.plugins.add_input_plugin('data/TestPlugins/ex_plugin.sh')
+
+        plugin_list = qr_alchemy.plugins.get_input_plugins()
+        self.assertIn('ex_plugin.sh', plugin_list)
+
+        qr_alchemy.plugins.delete_input_plugin('ex_plugin.sh')
+        plugin_list = qr_alchemy.plugins.get_input_plugins()
+        self.assertNotIn('ex_plugin.sh', plugin_list)
+        
+    def test_add_output_plugins(self):
+        '''test add_output_plugin'''
+
+        qr_alchemy.plugins.set_user_plugin_dir('tmp/user_test_plugins')
+        qr_alchemy.plugins.set_sys_plugin_dir('data/TestPlugins/sys_test_plugins')
+        qr_alchemy.plugins.add_output_plugin('data/TestPlugins/ex_plugin.sh')
+
+        plugin_list = qr_alchemy.plugins.get_output_plugins()
+        self.assertIn('ex_plugin.sh', plugin_list)
+
+        qr_alchemy.plugins.delete_output_plugin('ex_plugin.sh')
+        plugin_list = qr_alchemy.plugins.get_output_plugins()
+        self.assertNotIn('ex_plugin.sh', plugin_list)
         
 def main():
     suite = unittest.TestSuite()
