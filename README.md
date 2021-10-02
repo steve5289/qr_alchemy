@@ -27,11 +27,6 @@ make
 sudo make install
 ```
 
- 6. (Optional) install the megapixels postprocess script
-```
-make postprocess
-```
-
 ## Plugin Documentation
 
 ### Plugin Format
