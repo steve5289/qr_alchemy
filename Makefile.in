@@ -79,7 +79,6 @@ run:
 standalone_install:
 	cp -p "${STANDALONE_DESKTOP}" "${USER_APPDIR}"/
 	update-desktop-database || :
-	@echo '${NAME} installed. If you want this to process megapixels pictures, please run `make standalone_postprocess` to install that'
 
 install:
 	mkdir -p '${BINDIR}'
@@ -96,8 +95,6 @@ install:
 	cp -pr '${BUILD_SHARE}'/* '${SHAREDIR}/'
 	cp -pr '${BUILD_CONF}'/* '${CONFDIR}/'
 	update-desktop-database || :
-
-	@echo '${NAME} installed. If you want this to process megapixels pictures, please run `make postprocess` to install that'
 
 standalone_postprocess:
 	mkdir -p '${POSTPROCESS_DIR}'
