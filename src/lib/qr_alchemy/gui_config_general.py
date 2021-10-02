@@ -15,9 +15,9 @@ class QRGeneralConfig():
     def __init__(self):
         self.box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=1)
         # Label
-        lb_desc = Gtk.Label(label="")
-        lb_desc.set_line_wrap(True)
-        self.box.pack_start(lb_desc, False, True, 0)
+        lb_history = Gtk.Label()
+        lb_history.set_markup("<b>History</b>")
+        self.box.pack_start(lb_history, False, True, 0)
 
         # Set History
         box_set_max_hist = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=1)
@@ -47,12 +47,36 @@ class QRGeneralConfig():
         box_set_max_hist.pack_end(cb_max_hist, False, True, 0)
 
         # Button
-        bu_clear_hist = Gtk.Button(label="Clear_history")
+        bu_clear_hist = Gtk.Button(label="Clear History")
         bu_clear_hist.connect("clicked", self.bu_clear_history_clicked)
         self.box.pack_start(bu_clear_hist, False, False, 0)
 
+        ## Plugins
+        seperator = Gtk.Separator()
+        self.box.pack_start(seperator, False, True, 10)
+
+        # Label
+        lb_plugins = Gtk.Label()
+        lb_plugins.set_markup("<b>Plugins</b>")
+        self.box.pack_start(lb_plugins, False, True, 0)
+
+        box_plugin_buttons = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=1)
+        bu_pl_in    = Gtk.Button(label="Add Input Plugin")
+        bu_pl_in.connect("clicked", self.bu_pl_in_clicked)
+        bu_pl_out    = Gtk.Button(label="Add Output Plugin")
+        bu_pl_out.connect("clicked", self.bu_pl_out_clicked)
+        box_plugin_buttons.pack_start(bu_pl_in, False, False, 0)
+        box_plugin_buttons.pack_end(bu_pl_out, False, False, 0)
+        self.box.pack_start(box_plugin_buttons, False, True, 10)
+
     def get_box(self):
         return self.box
+
+    def bu_pl_in_clicked(self, button):
+        pass
+
+    def bu_pl_out_clicked(self, button):
+        pass
 
     def cb_max_hist_changed(self, combo):
         print('test1')
