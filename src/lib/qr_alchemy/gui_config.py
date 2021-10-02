@@ -9,6 +9,7 @@ import qr_alchemy.gui as gui
 import qr_alchemy.config as qr_config
 import qr_alchemy.gui_config_general as config_general
 import qr_alchemy.gui_config_actions as config_actions
+import qr_alchemy.gui_config_plugins as config_plugins
 
 
 class QRConfig(Gtk.Window):
@@ -34,15 +35,16 @@ class QRConfig(Gtk.Window):
         self.connect
 
         ## Top Box
-        print('test1')
         self.notebook = Gtk.Notebook()
         self.add(self.notebook)
         page_general=config_general.QRGeneralConfig()
         self.notebook.append_page(page_general.get_box(), Gtk.Label('General'))
-        print('test2')
         page_action=config_actions.QRActionConfig()
         self.notebook.append_page(page_action.get_box(), Gtk.Label('Actions'))
-        print('test3')
+        page_inp_plugins=config_plugins.QRPluginConfig(plugin_type='Input')
+        self.notebook.append_page(page_inp_plugins.get_box(), Gtk.Label('Input Plugins'))
+        page_out_plugins=config_plugins.QRPluginConfig(plugin_type='Output')
+        self.notebook.append_page(page_out_plugins.get_box(), Gtk.Label('Output Plugins'))
 
     
     def bu_close_clicked(self,button):
