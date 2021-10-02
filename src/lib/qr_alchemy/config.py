@@ -1,7 +1,8 @@
-import os
 import configparser
+import os
 import subprocess
 import sys
+
 import qr_alchemy.common as qr_common
 
 sys_configfile_path=""
