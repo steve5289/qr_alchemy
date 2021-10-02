@@ -31,3 +31,18 @@ sudo make install
 ```
 make postprocess
 ```
+
+## Plugin Documentation
+
+### Plugin Format
+
+Any scripting language that permits direct execution of it's scripts (bash, python, perl, etc...).
+
+### Input Plugins
+An input plugin is a plugin that takes in a qr code or more specifically the text from the qr code such as http://www.duckduckgo.com.
+
+The code is given as the plugin's first argument, and is expected to perform some action with said code (such as opening up a browser or connecting to the given wifi network)
+
+### Output Plugins
+
+Output plugins are expected to provide a the text for a qr code from it's stdout after during execution. It is launched twice. First with the arguments 'start' to get the code to display. Once it exits, the output of the plugin will be put into a qr image and displayed. Once that display is closed the plugin is launched again with the argument 'stop'. This permits a plugin to perform an action only while a code is being displayed, and then stopping said action when it's been closed.
