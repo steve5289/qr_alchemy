@@ -43,6 +43,8 @@ def update_config_actionmap(code_type, a_type, a_subtype):
 def update_config(section, key, value):
     global user_configfile_path
 
+    # note that we only read the user config and not the system config as to 
+    # not replicate the system config into the user config file
     user_configfile_path=_get_user_configfile()
     config = configparser.ConfigParser()
     
@@ -85,7 +87,8 @@ def refresh_config():
         for entry in config[topic]:
             if config[topic][entry] != '':
                 qr_config[topic][entry] = config[topic][entry]
-
+    # The action map is special as it contains a colen(:) seperated list as 
+    # configparser can't handle an array in that field.
     for entry in config['action_map']:
         action = config['action_map'][entry]
         split = action.split(':', 2)
@@ -114,33 +117,41 @@ def set_offer_system(code_type, active):
     if active:
         update_config('system_offer', code_type, 1)
     else:
+        # To ensure the user can null out a field provided by the system config 
+        # file, we allow null entries to signify unset
         update_config('system_offer', code_type, '')
-
 
     config = get_config()
     
     if config['system_offer']:
         code_types = config['system_offer'].keys()
         output =  "[Desktop Entry]\n"
-        output += "Name=QR Alchemy Processer\n" 
-        output += "Exec=" +sys.argv[0] + " %u\n" 
-        output += "Icon=qr_alchemy\n" 
-        output += "Type=Application\n" 
-        output += "NoDisplay=true\n" 
-        output += "MimeType=" 
+        output += "Name=QR Alchemy Processer\n"
+        output += "Exec=" +sys.argv[0] + " %u\n"
+        output += "Icon=qr_alchemy\n"
+        output += "Type=Application\n"
+        output += "NoDisplay=true\n"
+        output += "MimeType="
         for code_type in code_types:
             output +="x-scheme-handler/"+ code_type +";"
         output += "\n"
+
         fh_w = open(appfile, 'w')
         fh_w.write(output)
         fh_w.close()
+
+        # Has xdg read the desktop files and update it's mappings for what mime 
+        # types launch what programs.
         subprocess.run(['update-desktop-database', apps_dir])
+        # Sets this program as the new default for the given mime code
         subprocess.run(['xdg-mime','default', 'qr_alchemy_process.desktop', "x-scheme-handler/"+ code_type])
     else:
         try:
             os.remove(appfile)
         except:
             pass
+        # Has xdg read the desktop files and update it's mappings for what mime 
+        # types launch what programs.
         subprocess.run(['update-desktop-database', apps_dir])
 
 def get_offer_system(code_type):
