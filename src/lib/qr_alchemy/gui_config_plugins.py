@@ -1,4 +1,8 @@
+### Plugin Configuration Lib
+# Allows for the adding and removing of input and output plugins
 
+# This is a subset of the gui_config lib, as it just calls this to provie the 
+# Actions Tab in the main config window.
 import gi
 
 gi.require_version('Gtk', '3.0')

@@ -1,3 +1,5 @@
+### Process Gui Lib
+# Provides a window for displaying qr codes
 
 import gi
 import qr_alchemy.process as qr_process

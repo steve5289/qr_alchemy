@@ -1,3 +1,5 @@
+### Display Gui Lib
+# Provides the Display Page for the main window
 
 import gi
 gi.require_version('Gtk', '3.0')

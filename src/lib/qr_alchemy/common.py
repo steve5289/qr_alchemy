@@ -1,3 +1,6 @@
+### Common Lib
+# Includes commonly used functions that are really generic
+
 import os
 
 def get_homedir():

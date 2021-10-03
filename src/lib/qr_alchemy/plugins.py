@@ -1,3 +1,6 @@
+### Plugin Lib
+# Provides the ability to query, add, and delete input and output plugins
+
 import os
 import stat
 import sys

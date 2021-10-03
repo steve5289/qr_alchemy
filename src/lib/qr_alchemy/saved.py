@@ -1,3 +1,6 @@
+### Saved Lib
+# Provides the ability to query, add and delete saved qr codes.
+
 import os
 import pickle
 from datetime import datetime

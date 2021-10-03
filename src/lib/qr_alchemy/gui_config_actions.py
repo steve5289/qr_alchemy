@@ -1,3 +1,9 @@
+### Gui Configuration of Actions Lib
+# Allows the setting of what to do for each qr code type, and allows the 
+# program to redirect system requests to this program to allow for user changes.
+
+# This is a subset of the gui_config lib, as it just calls this to provie the 
+# Actions Tab in the main config window.
 
 import gi
 

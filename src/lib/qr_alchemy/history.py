@@ -1,3 +1,6 @@
+### History Lib
+# Provides the ability to add, query and clear the code history
+
 import os
 import pickle
 from datetime import datetime

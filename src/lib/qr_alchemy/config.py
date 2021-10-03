@@ -1,3 +1,14 @@
+### Config Lib
+# Provides the ability to access and mofify the configuration files.
+#
+# Current setup is there is a system config file and a user config file, 
+# Settings in the user config file override settings in the system config file.
+# Only the user config file can be modified from this
+#
+# The contents of the configfile are cached in the qr_config variable to reduce 
+# disk access polls
+
+
 import configparser
 import os
 import subprocess

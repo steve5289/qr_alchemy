@@ -1,3 +1,5 @@
+### Main Gui Lib
+# Provides the main window for this program
 
 import gi
 import qr_alchemy.gui_config as gui_config

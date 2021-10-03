@@ -1,3 +1,5 @@
+### Generate Lib
+# Library for the generation of qr code images
 
 import gi
 import subprocess
