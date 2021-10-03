@@ -7,7 +7,6 @@ import qr_alchemy.common as qr_common
 
 max_hist=10
 histfile=""
-qr_history=None
 
 def set_max_hist(num):
     global max_hist

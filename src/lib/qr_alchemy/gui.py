@@ -41,11 +41,6 @@ class EntryDialog(Gtk.Dialog):
         self.en_result.connect("activate", self.bu_ok_clicked)
 
         # Paste Buttons
-        bu_paste = Gtk.Button()
-        bu_paste.connect("clicked", self.bu_paste_clicked)
-        bu_paste_icon = Gio.ThemedIcon(name='edit-paste-symbolic.symbolic')
-        bu_paste_image = Gtk.Image.new_from_gicon(bu_paste_icon, Gtk.IconSize.MENU)
-        bu_paste.add(bu_paste_image)
         bu_paste_selected = Gtk.Button()
         bu_paste_sel_icon = Gio.ThemedIcon(name='selection-end-symbolic')
         bu_paste_sel_image = Gtk.Image.new_from_gicon(bu_paste_sel_icon, Gtk.IconSize.MENU)
@@ -66,14 +61,6 @@ class EntryDialog(Gtk.Dialog):
             self.state=Gtk.ResponseType.OK
             self.result=self.en_result.get_text()
             self.destroy()
-        
-    def bu_paste_clicked(self, qr_code):
-        self.en_result
-        cb_text = self.clipboard.wait_for_text()
-        if cb_text != None:
-            text=self.en_result.get_text() + cb_text
-            self.en_result.set_text(text)
-
 
     def bu_paste_selected_clicked(self, qr_code):
         self.en_result
@@ -128,6 +115,9 @@ class OkDialog(Gtk.Dialog):
         return self.state
 
 
+
+## ResizableImage
+# Creates an image gtk object that will resize with the window size
 # Wrote this with much help from this blogpost: 
 # https://gabmus.org/posts/create_an_auto-resizing_image_widget_with_gtk3_and_python/
 # Thanks GabMus!

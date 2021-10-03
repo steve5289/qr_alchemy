@@ -3,6 +3,7 @@ import stat
 import sys
 import subprocess
 import shutil
+
 import qr_alchemy.common as qr_common
 
 
