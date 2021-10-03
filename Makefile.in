@@ -12,6 +12,8 @@ BUILD_CONF=${BUILD}/etc
 BUILD_SHARE=${BUILD}/share
 BUILD_STANDALONE=${BUILD}/standalone
 
+LOCALTMP=tmp
+
 BINDIR=%%BINDIR%%
 CONFDIR=%%CONFDIR%%
 PYTHON_LIBDIR=%%PYTHON_LIBDIR%%
@@ -26,6 +28,9 @@ POSTPROCESS=${POSTPROCESS_DIR}/postprocess.sh
 STANDALONE_LAUNCHER=${BUILD_STANDALONE}/${NAME}.sh
 STANDALONE_DESKTOP=${BUILD_STANDALONE}/${NAME}.desktop
 STANDALONE_POSTPROCESS=${BUILD_STANDALONE}/postprocess.sh
+
+ARCHIVE_DIR=${NAME}-${VERSION}
+ARCHIVE_FILE=${NAME}.tar.gz
 
 build: clean build_prep standalone_build standard_build
 	chmod 755 "${BUILD_BIN}"/*
@@ -72,9 +77,15 @@ standalone_build:
 	sed -i 's|%BUILD_STANDALONE%|${BUILD_STANDALONE}|g' "${STANDALONE_POSTPROCESS}"
 clean:
 	rm -rf '${BUILD}'
+	rm -rf '${LOCALTMP}'
 
 run:
 	"${STANDALONE_LAUNCHER}"
+
+dist: clean build
+	mkdir -p "${LOCALTMP}/${ARCHIVE_DIR}"
+	rsync -Carv --exclude "${LOCALTMP}" --delete ./ "${LOCALTMP}/${ARCHIVE_DIR}"
+	tar -C "${LOCALTMP}" -czvf "${ARCHIVE_FILE}" "${ARCHIVE_DIR}"
 
 standalone_install:
 	cp -p "${STANDALONE_DESKTOP}" "${USER_APPDIR}"/
