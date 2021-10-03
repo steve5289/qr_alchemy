@@ -1,9 +1,10 @@
 NAME=qr_alchemy
 VERSION=%%VERSION%%
+RELEASE=%%RELEASE%%
 
 SRC=./src
 
-BUILD=./build
+BUILD=build
 BUILD_APP=${BUILD}/app
 BUILD_PIXMAP=${BUILD}/pixmaps
 BUILD_BIN=${BUILD}/bin
@@ -32,6 +33,8 @@ STANDALONE_POSTPROCESS=${BUILD_STANDALONE}/postprocess.sh
 ARCHIVE_DIR=${NAME}-${VERSION}
 ARCHIVE_FILE=${NAME}.tar.gz
 
+SPEC_FILE=${NAME}.spec
+
 build: clean build_prep standalone_build standard_build
 	chmod 755 "${BUILD_BIN}"/*
 	chmod 644 "${BUILD_CONF}"/*
@@ -48,7 +51,19 @@ build: clean build_prep standalone_build standard_build
 
 build_prep:
 	cp -pr "${SRC}" "${BUILD}"
-	
+
+build_spec:
+	cp "${SPEC_FILE}.in" "${SPEC_FILE}"
+	sed -i 's|%NAME%|${NAME}|g' "${SPEC_FILE}"
+	sed -i 's|%VERSION%|${VERSION}|g' "${SPEC_FILE}"
+	sed -i 's|%RELEASE%|${RELEASE}|g' "${SPEC_FILE}"
+	sed -i 's|%BINDIR%|${BINDIR}|g' "${SPEC_FILE}"
+	sed -i 's|%CONFDIR%|${CONFDIR}|g' "${SPEC_FILE}"
+	sed -i 's|%PYTHON_LIBDIR%|${PYTHON_LIBDIR}|g' "${SPEC_FILE}"
+	sed -i 's|%SHAREDIR%|${SHAREDIR}|g' "${SPEC_FILE}"
+	sed -i 's|%APPDIR%|${APPDIR}|g' "${SPEC_FILE}"
+	sed -i 's|%PIXMAPDIR%|${PIXMAPDIR}|g' "${SPEC_FILE}"
+
 standard_build:
 	sed -i 's|%CONFDIR%|${CONFDIR}|g' "${BUILD_BIN}/${NAME}"
 	sed -i 's|%VERSION%|${VERSION}|g' "${BUILD_BIN}/${NAME}"
@@ -87,24 +102,27 @@ dist: clean build
 	rsync -Carv --exclude "${LOCALTMP}" --delete ./ "${LOCALTMP}/${ARCHIVE_DIR}"
 	tar -C "${LOCALTMP}" -czvf "${ARCHIVE_FILE}" "${ARCHIVE_DIR}"
 
+rpm: build_spec dist
+	rpmbuild -ta "${ARCHIVE_FILE}"
+
 standalone_install:
 	cp -p "${STANDALONE_DESKTOP}" "${USER_APPDIR}"/
 	update-desktop-database || :
 
 install:
-	mkdir -p '${DESTDIR}${BINDIR}'
-	mkdir -p '${DESTDIR}${PYTHON_LIBDIR}'
-	mkdir -p '${DESTDIR}${APPDIR}'
-	mkdir -p '${DESTDIR}${PIXMAPDIR}'
-	mkdir -p '${DESTDIR}${SHAREDIR}'
-	mkdir -p '${DESTDIR}${CONFDIR}'
+	mkdir -p '${DESTDIR}/${BINDIR}'
+	mkdir -p '${DESTDIR}/${PYTHON_LIBDIR}'
+	mkdir -p '${DESTDIR}/${APPDIR}'
+	mkdir -p '${DESTDIR}/${PIXMAPDIR}'
+	mkdir -p '${DESTDIR}/${SHAREDIR}'
+	mkdir -p '${DESTDIR}/${CONFDIR}'
 
-	cp -pr '${DESTDIR}${BUILD_BIN}'/* '${BINDIR}/'
-	cp -pr '${DESTDIR}${BUILD_LIB}'/* '${PYTHON_LIBDIR}/'
-	cp -pr '${DESTDIR}${BUILD_APP}'/* '${APPDIR}/'
-	cp -pr '${DESTDIR}${BUILD_PIXMAP}'/* '${PIXMAPDIR}/'
-	cp -pr '${DESTDIR}${BUILD_SHARE}'/* '${SHAREDIR}/'
-	cp -pr '${DESTDIR}${BUILD_CONF}'/* '${CONFDIR}/'
+	cp -pr '${BUILD_BIN}'/* '${DESTDIR}${BINDIR}/'
+	cp -pr '${BUILD_LIB}'/* '${DESTDIR}${PYTHON_LIBDIR}/'
+	cp -pr '${BUILD_APP}'/* '${DESTDIR}${APPDIR}/'
+	cp -pr '${BUILD_PIXMAP}'/* '${DESTDIR}${PIXMAPDIR}/'
+	cp -pr '${BUILD_SHARE}'/* '${DESTDIR}${SHAREDIR}/'
+	cp -pr '${BUILD_CONF}'/* '${DESTDIR}${CONFDIR}/'
 	update-desktop-database || :
 
 standalone_postprocess:

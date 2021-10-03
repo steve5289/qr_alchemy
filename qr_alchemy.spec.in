@@ -1,0 +1,54 @@
+Name:		%NAME%
+Version:	%VERSION%
+Release:	%RELEASE%%{?dist}
+Summary:	Tool for generating and processing qr codes
+
+Group:		Applications/Utilities
+License:	GPLv3
+URL:		https://github.com/steve5289/qr_alchemy/
+Source0:	%{NAME}.tar.gz
+
+Requires: 	python3
+Requires: 	python3-libs
+Requires: 	zbar
+Requires: 	qrencode
+Requires: 	zenity
+BuildArch: 	noarch
+
+%description
+Tool for generating and processing qr codes
+
+%prep
+%setup -q
+
+
+%build
+./configure
+make
+
+
+%install
+
+make install DESTDIR=%{buildroot}
+
+
+%pre
+
+%post
+update-desktop-database || :
+
+%preun
+
+%files
+%defattr(0644,root,root, 0755)
+%attr(755,root,root) %BINDIR%/%{NAME}
+%attr(644,root,root) %PIXMAPDIR%/%{NAME}.png
+%attr(644,root,root) %APPDIR%/%{NAME}.desktop
+%attr(644,root,root) %CONFDIR%/%{NAME}.conf
+%SHAREDIR%/*
+%PYTHON_LIBDIR%/%{NAME}/*
+
+
+
+
+%changelog
