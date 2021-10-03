@@ -2,6 +2,7 @@
 
 import sys
 import getopt
+
 import qr_alchemy.process as qr_process
 import qr_alchemy.config as qr_config
 import qr_alchemy.plugins as qr_plugins
@@ -28,10 +29,10 @@ def main():
             sys.exit(0)
         else:
             help()
-    print('test2: ', sys_plugin_dir)
     qr_plugins.set_sys_plugin_dir(sys_plugin_dir)
     qr_config.set_sys_configfile(configfile)
 
+    # Handle argument codes
     if file:
         qr_code = qr_process.qr_image_handler(file)
         if qr_code:
@@ -39,6 +40,7 @@ def main():
     elif len(args) >= 1:
         qr_gui_process.qr_gui_handle_code(args[0])
     else:
+        # if no code source provided, launch main gui
         qr_gui_main.qr_gui_main()
 
 

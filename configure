@@ -17,6 +17,7 @@ function check_dependancies {
 
     check_python_lib os
     check_python_lib gi
+    check_python_lib sys
     check_python_lib subprocess
     check_python_lib configparser
     check_python_lib test

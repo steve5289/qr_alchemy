@@ -1,3 +1,5 @@
+### Process Gui Lib
+# Provides a window for displaying qr codes
 
 import gi
 import qr_alchemy.process as qr_process
@@ -24,7 +26,7 @@ class QrActionWindow(Gtk.Window):
         self.add(box_t)
 
         # Buttons
-        ## Bottom Box
+        ## Button Box
         box_b = Gtk.Box(spacing=1)
         box_t.pack_start(box_b, False, True, 0)
 
@@ -40,7 +42,7 @@ class QrActionWindow(Gtk.Window):
         box_b.pack_end(bu_run, False, True, 0)
         box_b.pack_end(self.bu_save, False, True, 24)
 
-        # Label
+        # Question Label
         lb_desc = Gtk.Label(label="What would you like to do with this qr code?")
         lb_desc.set_line_wrap(True)
         lb_desc.set_alignment(0,0)
@@ -49,29 +51,26 @@ class QrActionWindow(Gtk.Window):
         seperator = Gtk.Separator()
         box_t.pack_start(seperator, False, True, 10)
 
-        # QR code Display
+        # QR code Image
         if display_image:
             img_code = qr_generate.generate_qr_img(qr_code)
             box_t.pack_start(img_code, True, True, 0)
 
-        # Label
+        # Show code text Label
         lb_code = Gtk.Label(label=qr_code)
         lb_code.set_alignment(0,0)
         lb_code.set_selectable(True)
         lb_code.set_line_wrap(True)
+        # allow breaking of words (for long qr codes)
         lb_code.set_line_wrap_mode(2)
         box_t.pack_start(lb_code, False, False, 0)
 
-
-        
     def refresh_save_state(self):
         if qr_saved.is_code_saved(self.qr_code):
             code_name=qr_saved.get_code_saved_name(self.qr_code)
             self.bu_save.set_label("Delete Saved")
-            print('is saved')
         else:
             self.bu_save.set_label("Save")
-            print('is not saved')
 
     def bu_save_clicked(self, button):
         if qr_saved.is_code_saved(self.qr_code):

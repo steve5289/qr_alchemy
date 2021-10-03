@@ -1,8 +1,13 @@
+### Plugin Configuration Lib
+# Allows for the adding and removing of input and output plugins
 
+# This is a subset of the gui_config lib, as it just calls this to provie the 
+# Actions Tab in the main config window.
+import os
 import gi
-
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk,Gio
+
 import qr_alchemy.plugins as qr_plugins
 import qr_alchemy.gui as gui
 import qr_alchemy.config as qr_config
@@ -97,7 +102,6 @@ class QRPluginConfig():
             
 
     def bu_del_clicked(self, qr_code):
-        print('delete')
         selected = self.tv_plug.get_selection()
         data, i = selected.get_selected()
         
@@ -141,10 +145,39 @@ class QRPluginConfig():
 
         state = dialog.run()
 
-        if state == Gtk.ResponseType.OK:
-            if self.plugin_type == 'Input':
-                qr_plugins.add_input_plugin(dialog.get_filename())
-            else:
-                qr_plugins.add_output_plugin(dialog.get_filename())
+
+        file = dialog.get_filename()
+        basefile = os.path.basename(file)
         dialog.destroy()
+
+        if state != Gtk.ResponseType.OK:
+            return
+
+        # if it exists ask before overwrite
+        if self.plugin_type == 'Input':
+            
+            plugins = qr_plugins.get_input_plugins()
+        else:
+            plugins = qr_plugins.get_output_plugins()
+
+        if basefile in plugins:
+            ok_window = gui.OkDialog(
+               self,
+               title="Really Replace?",
+               message="Are you sure you want to replace the existing " + basefile + "?"       
+            )
+            ok_window.show_all()
+            ok_window.run()
+
+            state = ok_window.get_state()
+            if state != Gtk.ResponseType.OK:
+                return
+            ok_window.destroy()
+            
+
+        if self.plugin_type == 'Input':
+            
+            qr_plugins.add_input_plugin(file)
+        else:
+            qr_plugins.add_output_plugin(file)
         self.ls_plug_populate()

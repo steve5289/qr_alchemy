@@ -1,4 +1,4 @@
-
+### General Configurations Lib
 import gi
 
 gi.require_version('Gtk', '3.0')
@@ -55,7 +55,6 @@ class QRGeneralConfig():
         return self.box
 
     def cb_max_hist_changed(self, combo):
-        print('test1')
         tree_iter = combo.get_active_iter()
         if tree_iter is not None:
             model = combo.get_model()

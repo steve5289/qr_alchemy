@@ -1,10 +1,20 @@
-import os
+### Config Lib
+# Provides the ability to access and mofify the configuration files.
+#
+# Current setup is there is a system config file and a user config file, 
+# Settings in the user config file override settings in the system config file.
+# Only the user config file can be modified from this
+#
+# The contents of the configfile are cached in the qr_config variable to reduce 
+# disk access polls
+
+
 import configparser
+import os
 import subprocess
-import qr_alchemy.gui_process as gui
-import qr_alchemy.plugins as qr_plugins
-import qr_alchemy.config as qr_config
 import sys
+
+import qr_alchemy.common as qr_common
 
 sys_configfile_path=""
 user_configfile_path=""
@@ -14,12 +24,6 @@ qr_plugin_dir="/usr/share/qr_alchemy/input_plugins/"
 qr_user_plugin_dir=qr_user_configdir + "input_plugins/"
 
 qr_config = None
-
-def _get_homedir():
-    if "HOME" in  os.environ:
-        return os.environ['HOME']
-    else:
-        return os.environ['/']
 
 def set_sys_configfile(file):
     global sys_configfile_path
@@ -34,7 +38,7 @@ def set_user_configfile(file):
 def _get_user_configfile():
     global user_configfile_path
     if user_configfile_path == '':
-        homedir=_get_homedir()
+        homedir=qr_common.get_homedir()
         user_configfile_path=homedir + '/' + qr_user_configdir + qr_configfile
     return user_configfile_path
 
@@ -50,6 +54,8 @@ def update_config_actionmap(code_type, a_type, a_subtype):
 def update_config(section, key, value):
     global user_configfile_path
 
+    # note that we only read the user config and not the system config as to 
+    # not replicate the system config into the user config file
     user_configfile_path=_get_user_configfile()
     config = configparser.ConfigParser()
     
@@ -92,7 +98,8 @@ def refresh_config():
         for entry in config[topic]:
             if config[topic][entry] != '':
                 qr_config[topic][entry] = config[topic][entry]
-
+    # The action map is special as it contains a colen(:) seperated list as 
+    # configparser can't handle an array in that field.
     for entry in config['action_map']:
         action = config['action_map'][entry]
         split = action.split(':', 2)
@@ -114,40 +121,48 @@ def get_config():
     return qr_config
 
 def set_offer_system(code_type, active):
-    home = _get_homedir()
+    home = qr_common.get_homedir()
     apps_dir=home + '/.local/share/applications'
     appfile = apps_dir + '/qr_alchemy_process.desktop'
 
     if active:
         update_config('system_offer', code_type, 1)
     else:
+        # To ensure the user can null out a field provided by the system config 
+        # file, we allow null entries to signify unset
         update_config('system_offer', code_type, '')
-
 
     config = get_config()
     
     if config['system_offer']:
         code_types = config['system_offer'].keys()
         output =  "[Desktop Entry]\n"
-        output += "Name=QR Alchemy Processer\n" 
-        output += "Exec=" +sys.argv[0] + " %u\n" 
-        output += "Icon=qr_alchemy\n" 
-        output += "Type=Application\n" 
-        output += "NoDisplay=true\n" 
-        output += "MimeType=" 
+        output += "Name=QR Alchemy Processer\n"
+        output += "Exec=" +sys.argv[0] + " %u\n"
+        output += "Icon=qr_alchemy\n"
+        output += "Type=Application\n"
+        output += "NoDisplay=true\n"
+        output += "MimeType="
         for code_type in code_types:
             output +="x-scheme-handler/"+ code_type +";"
         output += "\n"
+
         fh_w = open(appfile, 'w')
         fh_w.write(output)
         fh_w.close()
+
+        # Has xdg read the desktop files and update it's mappings for what mime 
+        # types launch what programs.
         subprocess.run(['update-desktop-database', apps_dir])
+        # Sets this program as the new default for the given mime code
         subprocess.run(['xdg-mime','default', 'qr_alchemy_process.desktop', "x-scheme-handler/"+ code_type])
     else:
         try:
             os.remove(appfile)
         except:
             pass
+        # Has xdg read the desktop files and update it's mappings for what mime 
+        # types launch what programs.
         subprocess.run(['update-desktop-database', apps_dir])
 
 def get_offer_system(code_type):
