@@ -6,7 +6,7 @@ import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
 
-import qr_alchemy.gui as gui
+import qralchemy.gui as gui
 
 def main():
     if sys.argv[1] != "start":

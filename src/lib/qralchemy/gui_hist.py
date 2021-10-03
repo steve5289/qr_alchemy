@@ -5,12 +5,12 @@ import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk,Gio
 
-import qr_alchemy.process as qr_process
-import qr_alchemy.history as qr_history
-import qr_alchemy.gui as gui
-import qr_alchemy.gui_process as gui_process
-import qr_alchemy.gui_config as gui_config
-import qr_alchemy.gui_saved as gui_saved
+import qralchemy.process as qr_process
+import qralchemy.history as qr_history
+import qralchemy.gui as gui
+import qralchemy.gui_process as gui_process
+import qralchemy.gui_config as gui_config
+import qralchemy.gui_saved as gui_saved
 
 
 # The general format of the history, saved, and display dialogs is very 

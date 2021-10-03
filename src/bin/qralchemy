@@ -3,15 +3,15 @@
 import sys
 import getopt
 
-import qr_alchemy.process as qr_process
-import qr_alchemy.config as qr_config
-import qr_alchemy.plugins as qr_plugins
-import qr_alchemy.gui_process as qr_gui_process
-import qr_alchemy.gui_main as qr_gui_main
+import qralchemy.process as qr_process
+import qralchemy.config as qr_config
+import qralchemy.plugins as qr_plugins
+import qralchemy.gui_process as qr_gui_process
+import qralchemy.gui_main as qr_gui_main
 
 def main():
     optlist, args = getopt.getopt(sys.argv[1:], "hVf:c:p:")
-    configfile="%CONFDIR%/qr_alchemy.conf"
+    configfile="%CONFDIR%/qralchemy.conf"
     sys_plugin_dir="%SHAREDIR%/"
     file=''
 

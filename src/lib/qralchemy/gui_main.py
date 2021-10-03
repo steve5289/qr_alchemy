@@ -2,10 +2,10 @@
 # Provides the main window for this program
 
 import gi
-import qr_alchemy.gui_config as gui_config
-import qr_alchemy.gui_saved as gui_saved
-import qr_alchemy.gui_hist as gui_hist
-import qr_alchemy.gui_display as gui_disp
+import qralchemy.gui_config as gui_config
+import qralchemy.gui_saved as gui_saved
+import qralchemy.gui_hist as gui_hist
+import qralchemy.gui_display as gui_disp
 
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk,Gio

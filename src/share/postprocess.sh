@@ -26,7 +26,7 @@ function main {
         die "Error! Could not find image file with name '$IMAGE_NAME'!"
     fi
 
-    %BINDIR%/qr_alchemy -f "$OUTPUT"
+    %BINDIR%/qralchemy -f "$OUTPUT"
 }
 
 ##

@@ -1,8 +1,8 @@
 import subprocess
 
-import qr_alchemy.gui_process as gui
-import qr_alchemy.plugins as qr_plugins
-import qr_alchemy.config as qr_config
+import qralchemy.gui_process as gui
+import qralchemy.plugins as qr_plugins
+import qralchemy.config as qr_config
 
 qr_action_types=['System Default', 'Nothing', 'Plugin', 'Program']
 

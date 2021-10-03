@@ -112,7 +112,7 @@ function generate_makefile {
 
     # share directory
     if [[ -z "$SHAREDIR" ]]; then
-        SHAREDIR="/usr/local/share/qr_alchemy"
+        SHAREDIR="/usr/local/share/qralchemy"
     fi
     sed -i "s|%%SHAREDIR%%|$SHAREDIR|g" "$MAKEFILE"
     
