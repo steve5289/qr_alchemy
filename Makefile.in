@@ -81,19 +81,19 @@ standalone_install:
 	update-desktop-database || :
 
 install:
-	mkdir -p '${BINDIR}'
-	mkdir -p '${PYTHON_LIBDIR}'
-	mkdir -p '${APPDIR}'
-	mkdir -p '${PIXMAPDIR}'
-	mkdir -p '${SHAREDIR}'
-	mkdir -p '${CONFDIR}'
+	mkdir -p '${DESTDIR}${BINDIR}'
+	mkdir -p '${DESTDIR}${PYTHON_LIBDIR}'
+	mkdir -p '${DESTDIR}${APPDIR}'
+	mkdir -p '${DESTDIR}${PIXMAPDIR}'
+	mkdir -p '${DESTDIR}${SHAREDIR}'
+	mkdir -p '${DESTDIR}${CONFDIR}'
 
-	cp -pr '${BUILD_BIN}'/* '${BINDIR}/'
-	cp -pr '${BUILD_LIB}'/* '${PYTHON_LIBDIR}/'
-	cp -pr '${BUILD_APP}'/* '${APPDIR}/'
-	cp -pr '${BUILD_PIXMAP}'/* '${PIXMAPDIR}/'
-	cp -pr '${BUILD_SHARE}'/* '${SHAREDIR}/'
-	cp -pr '${BUILD_CONF}'/* '${CONFDIR}/'
+	cp -pr '${DESTDIR}${BUILD_BIN}'/* '${BINDIR}/'
+	cp -pr '${DESTDIR}${BUILD_LIB}'/* '${PYTHON_LIBDIR}/'
+	cp -pr '${DESTDIR}${BUILD_APP}'/* '${APPDIR}/'
+	cp -pr '${DESTDIR}${BUILD_PIXMAP}'/* '${PIXMAPDIR}/'
+	cp -pr '${DESTDIR}${BUILD_SHARE}'/* '${SHAREDIR}/'
+	cp -pr '${DESTDIR}${BUILD_CONF}'/* '${CONFDIR}/'
 	update-desktop-database || :
 
 standalone_postprocess:
@@ -102,9 +102,9 @@ standalone_postprocess:
 	chmod 755 ${POSTPROCESS}
 
 postprocess:
-	mkdir -p '${POSTPROCESS_DIR}'
-	cp -p '${BUILD_SHARE}/postprocess.sh' '${POSTPROCESS}'
-	chmod 755 ${POSTPROCESS}
+	mkdir -p '${DESTDIR}${POSTPROCESS_DIR}'
+	cp -p '${DESTDIR}${BUILD_SHARE}/postprocess.sh' '${POSTPROCESS}'
+	chmod 755 '${DESTDIR}${POSTPROCESS}'
 
 test:
 	cd build/test && make basic
