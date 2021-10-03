@@ -125,6 +125,22 @@ install:
 	cp -pr '${BUILD_CONF}'/* '${DESTDIR}${CONFDIR}/'
 	update-desktop-database || :
 
+install:
+	mkdir -p '${DESTDIR}/${BINDIR}'
+	mkdir -p '${DESTDIR}/${PYTHON_LIBDIR}'
+	mkdir -p '${DESTDIR}/${APPDIR}'
+	mkdir -p '${DESTDIR}/${PIXMAPDIR}'
+	mkdir -p '${DESTDIR}/${SHAREDIR}'
+	mkdir -p '${DESTDIR}/${CONFDIR}'
+
+	rm -f '${DESTDIR}${BINDIR}/${NAME}'
+	rm -rf '${DESTDIR}${PYTHON_LIBDIR}/${NAME}'
+	rm -f '${DESTDIR}${APPDIR}/${NAME}.desktop'
+	rm -f '${DESTDIR}${PIXMAPDIR}/${NAME}.png'
+	rm -rf '${DESTDIR}${SHAREDIR}/${NAME}'
+	rm -f '${DESTDIR}${CONFDIR}/${NAME}.conf'
+	update-desktop-database || :
+
 standalone_postprocess:
 	mkdir -p '${POSTPROCESS_DIR}'
 	cp -p '${BUILD_STANDALONE}/postprocess.sh' '${POSTPROCESS}'

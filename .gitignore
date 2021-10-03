@@ -2,5 +2,5 @@
 /build
 /Makefile
 tmp
-/qr_alchemy.spec
-/qr_alchemy.tar.gz
+/qralchemy.spec
+/qralchemy.tar.gz
