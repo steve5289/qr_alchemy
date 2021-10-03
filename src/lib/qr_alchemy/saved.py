@@ -19,9 +19,10 @@ def _get_user_savefile():
         qr_user_configdir=".config/qr_alchemy/"
         filename="saved_qr.dat"
         homedir=qr_common.get_homedir()
-        savefile=homedir + qr_user_configdir + filename
-        if not os.path.isdir(homedir + qr_user_configdir):
-            os.mkdir(homedir + qr_user_configdir)
+        savedir=homedir + '/' + qr_user_configdir
+        savefile=savedir + filename
+        if not os.path.isdir(savedir):
+            os.makedirs(savedir, exist_ok=True)
     return savefile
     
 def get_saved_codes():

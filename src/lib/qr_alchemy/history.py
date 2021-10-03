@@ -35,9 +35,10 @@ def _get_user_histfile():
         qr_user_configdir=".config/qr_alchemy/"
         filename="history_qr.dat"
         homedir=qr_common.get_homedir()
-        histfile=homedir + qr_user_configdir + filename
-        if not os.path.isdir(homedir + qr_user_configdir):
-           os.mkdir(homedir + qr_user_configdir)
+        histdir=homedir + '/' + qr_user_configdir
+        histfile=histdir + filename
+        if not os.path.isdir(histdir):
+            os.makedirs(histdir, exist_ok=True)
     return histfile
     
 def get_history():
