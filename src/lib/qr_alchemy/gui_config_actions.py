@@ -363,10 +363,6 @@ class QRConfigEntry(Gtk.Dialog):
         ok_window.show_all()
         ok_window.run()
 
-        state = ok_window.get_state()
-        if state != Gtk.ResponseType.OK:
-            return
-
         qr_config.update_confog_actionmap(self.code_type, '', '')
         self.state = Gtk.ResponseType.OK
         self.destroy()
