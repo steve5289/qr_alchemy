@@ -1,6 +1,0 @@
-#!/usr/bin/env bash
-
-STATE="$1"
-if [[ "$STATE" -eq 'start' ]]; then
-    echo "This is an example message"
-fi
