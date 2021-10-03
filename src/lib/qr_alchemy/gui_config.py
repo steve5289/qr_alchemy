@@ -44,9 +44,9 @@ class QRConfig(Gtk.Window):
         page_action=config_actions.QRActionConfig()
         self.notebook.append_page(page_action.get_box(), Gtk.Label('Actions'))
         page_inp_plugins=config_plugins.QRPluginConfig(plugin_type='Input')
-        self.notebook.append_page(page_inp_plugins.get_box(), Gtk.Label('Input Plugins'))
+        self.notebook.append_page(page_inp_plugins.get_box(), Gtk.Label('In Plugin'))
         page_out_plugins=config_plugins.QRPluginConfig(plugin_type='Output')
-        self.notebook.append_page(page_out_plugins.get_box(), Gtk.Label('Output Plugins'))
+        self.notebook.append_page(page_out_plugins.get_box(), Gtk.Label('Out Plugin'))
 
     
     def bu_close_clicked(self,button):
