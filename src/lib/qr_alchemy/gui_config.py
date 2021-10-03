@@ -42,7 +42,7 @@ class QRConfig(Gtk.Window):
         page_general=config_general.QRGeneralConfig()
         self.notebook.append_page(page_general.get_box(), Gtk.Label('General'))
         page_action=config_actions.QRActionConfig()
-        self.notebook.append_page(page_action.get_box(), Gtk.Label('Actions'))
+        self.notebook.append_page(page_action.get_box(), Gtk.Label('Action'))
         page_inp_plugins=config_plugins.QRPluginConfig(plugin_type='Input')
         self.notebook.append_page(page_inp_plugins.get_box(), Gtk.Label('In Plugin'))
         page_out_plugins=config_plugins.QRPluginConfig(plugin_type='Output')
