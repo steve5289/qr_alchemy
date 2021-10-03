@@ -20,8 +20,10 @@ class QRActionConfig():
     state=Gtk.ResponseType.CANCEL
     name=""
     box = None
-    def __init__(self):
+    parent=None
+    def __init__(self,parent):
         self.box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=1)
+        self.parent=parent
 
         # Page Description Pabel
         lb_desc = Gtk.Label(label="Choose what actions to perform based on what type of qr code is recieved:")
@@ -74,8 +76,9 @@ class QRActionConfig():
         return self.box
 
     def bu_add_clicked(self, qr_code):
-        entryDialog = QRConfigEntry(self,title='Add New Action')
+        entryDialog = QRConfigEntry(self.parent,title='Add New Action')
         entryDialog.run()
+        entryDialog.destroy()
         self.ls_actions_populate(self.ls_act)
 
     def bu_edit_clicked(self, null1, null2, null3):
@@ -95,7 +98,7 @@ class QRActionConfig():
         system_offer=qr_config.get_offer_system(code_type)
         
         edit_dialog = QRConfigEntry(
-            self,
+            self.parent,
             title='Edit Action',
             code_type=code_type, 
             action_type=action_type, 
@@ -117,10 +120,11 @@ class QRConfigEntry(Gtk.Dialog):
     exists=False
 
     def __init__(self, parent, title, code_type=None, action_type=None, action_subtype=None, system_offer=False):
-        Gtk.MessageDialog.__init__(self, title=title)
+        super().__init__(title=title, transient_for=parent,flags=0)
 
         self.code_type=code_type
         self.system_offer=system_offer
+        self.parent = parent
         if self.code_type != None:
             self.exists=True
         self.action_type=action_type

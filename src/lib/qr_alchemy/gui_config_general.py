@@ -12,7 +12,9 @@ import qr_alchemy.history as qr_history
 
 class QRGeneralConfig():
     box = None
-    def __init__(self):
+    parent=None
+    def __init__(self,parent):
+        self.parent=parent
         self.box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=1)
         # Label
         lb_history = Gtk.Label()

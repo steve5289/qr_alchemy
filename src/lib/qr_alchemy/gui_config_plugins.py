@@ -16,7 +16,8 @@ import qr_alchemy.config as qr_config
 class QRPluginConfig():
     name=""
     box = None
-    def __init__(self, plugin_type):
+    def __init__(self, parent, plugin_type):
+        self.parent = parent
         self.box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=1)
         self.plugin_type=plugin_type
 
@@ -113,7 +114,7 @@ class QRPluginConfig():
             return
 
         ok_window = gui.OkDialog(
-           self,
+           self.parent,
            title="Really Delete?",
            message="Are you sure you want to delete '" + plugin + "'?"       
         )
@@ -162,7 +163,7 @@ class QRPluginConfig():
 
         if basefile in plugins:
             ok_window = gui.OkDialog(
-               self,
+               self.parent,
                title="Really Replace?",
                message="Are you sure you want to replace the existing " + basefile + "?"       
             )
