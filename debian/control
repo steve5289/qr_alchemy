@@ -11,6 +11,6 @@ Rules-Requires-Root: no
 
 Package: qralchemy
 Architecture: all
-Depends: ${misc:Depends}
+Depends: zbar qrencode python3 gnome-ssh-askpass xdg-utils
 Description: Tool for generating and processing qr codes
  Tool for generating and processing qr codes
