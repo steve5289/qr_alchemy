@@ -14,6 +14,8 @@ function check_dependancies {
     check_cmd python3
     check_cmd iwgetid
     check_cmd zenity
+    check_cmd xdg-open
+    check_cmd xdg-mime
 
     check_python_lib os
     check_python_lib gi
