@@ -1,34 +1,31 @@
+### Saved Gui Lib
+# Provides the Saved Page for the main window
 
 import gi
+gi.require_version('Gtk', '3.0')
+from gi.repository import Gtk
+
 import qr_alchemy.process as qr_process
 import qr_alchemy.saved as qr_saved
 import qr_alchemy.gui as gui
 import qr_alchemy.gui_process as gui_process
 import qr_alchemy.gui_config as gui_config
 
-gi.require_version('Gtk', '3.0')
-from gi.repository import Gtk
 
+# The general format of the history, saved, and display dialogs is very 
+# similar. Should figure out a way to see if this can be made more generic
 class QrSavedPage():
-    # HACK ALERT!!!!
-    # This uses the select multiple entries for the treeviews. This is 
-    # because this select option doesn't try to auto select things when 
-    # the tabs are switched.
-    # Currently picking an entry is handled by adding a function to the 
-    # selection that always says don't select. This is done as it prevents 
-    # selection but also allows us to call things when there is a selection.
-    # 
-    # There must be a better way of doing this... But I haven't found it yet...
-    tv_saved = Gtk.TreeView()
+    tv_saved = None
     saved_codes=list()
     saved_code=dict()
-    box=Gtk.Box()
+    box=None
 
     def __init__(self):
+        self.box = Gtk.Box()
 
         # Creating the ListStore model
         self.ls_saved = Gtk.ListStore(str, str)
-        self.refresh_saved()
+        self.refresh()
 
         self.tv_saved = Gtk.TreeView(model=self.ls_saved)
         for i, column_title in enumerate(
@@ -51,8 +48,7 @@ class QrSavedPage():
         stv_saved.add(self.tv_saved)
         self.box.pack_start(stv_saved, True, True, 1)
 
-    def refresh_saved(self):
-
+    def refresh(self):
         self.saved_code=qr_saved.get_saved_codes()
         self.ls_saved.clear()
         self.saved_codes=sorted(self.saved_code.keys())
@@ -69,7 +65,7 @@ class QrSavedPage():
         qr_code=self.saved_code[self.saved_codes[indices[0]]]
         
         gui_process.qr_gui_handle_code(qr_code,save_history=False,display_image=True)
-        self.refresh_saved()
+        self.refresh()
         select = self.tv_saved.get_selection()
         select.unselect_all()
 

@@ -1,8 +1,13 @@
+### Plugin Lib
+# Provides the ability to query, add, and delete input and output plugins
+
 import os
 import stat
 import sys
 import subprocess
 import shutil
+
+import qr_alchemy.common as qr_common
 
 
 sys_input_plugin_dir=""
@@ -12,12 +17,6 @@ qr_userconfig=""
 user_input_plugin_dir=""
 user_output_plugin_dir=""
 qr_user_configdir=".config/qr_alchemy/"
-
-def _get_homedir():
-    if "HOME" in  os.environ:
-        return os.environ['HOME']
-    else:
-        return os.environ['/']
 
 def set_user_plugin_dir(path):
     global qr_user_configdir
@@ -39,7 +38,7 @@ def set_sys_plugin_dir(path):
     sys_output_plugin_dir=path+"/output_plugins"
     
     if qr_userconfig == "":
-        homedir=_get_homedir()
+        homedir=qr_common.get_homedir()
         qr_userconfig=homedir + '/' + qr_user_configdir
         set_user_plugin_dir(qr_userconfig)
         
@@ -47,7 +46,7 @@ def _add_plugin(file, dest):
     os.makedirs(dest, exist_ok=True)
     dest_path = dest + '/' + os.path.basename(file)
     shutil.copyfile(file, dest_path)
-    os.chmod(dest_path, stat.S_IRUSR | stat.S_IXUSR)
+    os.chmod(dest_path, stat.S_IRUSR | stat.S_IXUSR | stat.S_IWUSR)
 
 
 def _get_plugins(sys_dir,user_dir):

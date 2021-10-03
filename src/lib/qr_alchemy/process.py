@@ -1,5 +1,5 @@
-
 import subprocess
+
 import qr_alchemy.gui_process as gui
 import qr_alchemy.plugins as qr_plugins
 import qr_alchemy.config as qr_config
@@ -46,7 +46,6 @@ def qr_get_header(qr_code):
     
 def qr_get_action(header):
     header2action = qr_code2action()
-    print('header2action:', header2action)
 
     if header in header2action:
         return header2action[header]
