@@ -1,5 +1,4 @@
 NAME=qralchemy
-PYTHON_NAME=qralchemy
 VERSION=%%VERSION%%
 RELEASE=%%RELEASE%%
 
@@ -64,7 +63,6 @@ build_spec:
 	sed -i 's|%SHAREDIR%|${SHAREDIR}|g' "${SPEC_FILE}"
 	sed -i 's|%APPDIR%|${APPDIR}|g' "${SPEC_FILE}"
 	sed -i 's|%PIXMAPDIR%|${PIXMAPDIR}|g' "${SPEC_FILE}"
-	sed -i 's|%PYTHON_NAME%|${PYTHON_NAME}|g' "${SPEC_FILE}"
 
 standard_build:
 	sed -i 's|%CONFDIR%|${CONFDIR}|g' "${BUILD_BIN}/${NAME}"
