@@ -2,7 +2,7 @@
 Tool for generating and processing qr codes with custom actions on linux. Designed to work in both desktop and phone based linux envronments.
 
 ## What can it do?
-It allows the creation and processing of qr codes. However, it is not a qr code scanning utility (it won't try to use your camera in any way).
+It allows the creation and processing of qr codes. Thus allowing programs like megapixels to handle more qr code types. However, it is not a qr code scanning utility (it won't try to use your camera in any way).
 Offers the following features:
  * Allows system to handle new types of qr codes with default settings. Currently supports:
    * Wifi
