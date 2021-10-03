@@ -6,7 +6,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 
 
 ## Installation Instructions
- 1. Download a copy of this from Releases section (fixme)
+ 1. Download a copy of this from Releases section: https://github.com/steve5289/qr_alchemy/releases/
 
  2. Install the needed dependancies:
 apt-get update
