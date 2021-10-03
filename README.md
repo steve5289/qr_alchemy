@@ -22,8 +22,10 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
  1. Download a copy of this from Releases section: https://github.com/steve5289/qr_alchemy/releases/
 
  2. Install the needed dependancies:
+```
 apt-get update
 apt-get install zbar qrencode python3 gnome-ssh-askpass xdg-utils
+```
 
  3. run the configure
 ```
