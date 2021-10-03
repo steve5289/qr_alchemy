@@ -23,7 +23,7 @@ class QrSavedPage():
 
         # Creating the ListStore model
         self.ls_saved = Gtk.ListStore(str, str)
-        self.refresh_saved()
+        self.refresh()
 
         self.tv_saved = Gtk.TreeView(model=self.ls_saved)
         for i, column_title in enumerate(
@@ -46,8 +46,7 @@ class QrSavedPage():
         stv_saved.add(self.tv_saved)
         self.box.pack_start(stv_saved, True, True, 1)
 
-    def refresh_saved(self):
-
+    def refresh(self):
         self.saved_code=qr_saved.get_saved_codes()
         self.ls_saved.clear()
         self.saved_codes=sorted(self.saved_code.keys())
@@ -64,7 +63,7 @@ class QrSavedPage():
         qr_code=self.saved_code[self.saved_codes[indices[0]]]
         
         gui_process.qr_gui_handle_code(qr_code,save_history=False,display_image=True)
-        self.refresh_saved()
+        self.refresh()
         select = self.tv_saved.get_selection()
         select.unselect_all()
 

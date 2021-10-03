@@ -3,7 +3,6 @@ import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
 
-import qr_alchemy.saved as qr_saved
 import qr_alchemy.gui as gui
 import qr_alchemy.gui_process as gui_process
 import qr_alchemy.plugins as qr_plugins

@@ -21,7 +21,7 @@ class QrHistPage(Gtk.Window):
 
         # Creating the ListStore model
         self.ls_hist = Gtk.ListStore(str, str)
-        self.refresh_history()
+        self.refresh()
 
         self.tv_hist = Gtk.TreeView(model=self.ls_hist)
         for i, column_title in enumerate(
@@ -44,7 +44,7 @@ class QrHistPage(Gtk.Window):
         stv_hist.add(self.tv_hist)
         self.box.pack_start(stv_hist, True, True, 1)
 
-    def refresh_history(self):
+    def refresh(self):
         self.ls_hist.clear()
         self.hist_codes=qr_history.get_history()
         for row in self.hist_codes:

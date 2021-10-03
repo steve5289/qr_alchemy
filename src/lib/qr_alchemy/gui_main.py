@@ -46,13 +46,13 @@ class QrMainWindow(Gtk.Window):
 
     def bu_config_clicked(self, button):
         config_window = gui_config.qr_gui_config()
-        self.page_hist.refresh_history()
+        self.page_hist.refresh()
         
     def nb_page_changed(self, notebook, page, page_num):
         if page_num == 1:
-            self.page_saved.refresh_saved()
+            self.page_saved.refresh()
         elif page_num == 2:
-            self.page_hist.refresh_history()
+            self.page_hist.refresh()
             
 
 def qr_gui_main():
