@@ -1,8 +1,8 @@
 
 import gi
-
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk,Gio
+
 import qr_alchemy.process as qr_process
 import qr_alchemy.plugins as qr_plugins
 import qr_alchemy.gui as gui
@@ -16,10 +16,9 @@ class QRConfig(Gtk.Window):
     state=Gtk.ResponseType.CANCEL
     name=""
     def __init__(self):
-        Gtk.Window.__init__(self, title="QR Code Detected")
-        #Gtk.Dialog.__init__(self, title='Configuration')
+        Gtk.Window.__init__(self, title="Configuration")
 
-        #dialog = self.get_content_area()
+        # Window Header Bar
         self.hb = Gtk.HeaderBar()
         self.hb.set_show_close_button(True)
         self.hb.props.title="Configuration"
@@ -34,7 +33,8 @@ class QRConfig(Gtk.Window):
         self.set_titlebar(self.hb)
         self.connect
 
-        ## Top Box
+        ## Notebooks/Pages
+        # Each page is a box provided by annother lib
         self.notebook = Gtk.Notebook()
         self.add(self.notebook)
         page_general=config_general.QRGeneralConfig()
