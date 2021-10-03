@@ -46,7 +46,7 @@ def _add_plugin(file, dest):
     os.makedirs(dest, exist_ok=True)
     dest_path = dest + '/' + os.path.basename(file)
     shutil.copyfile(file, dest_path)
-    os.chmod(dest_path, stat.S_IRUSR | stat.S_IXUSR)
+    os.chmod(dest_path, stat.S_IRUSR | stat.S_IXUSR | stat.S_IWUSR)
 
 
 def _get_plugins(sys_dir,user_dir):
