@@ -3,6 +3,7 @@
 MAKEFILE_SRC=./Makefile.in
 MAKEFILE=./Makefile
 VERSION=0.2.0
+RELEASE=0
 
 export PATH="$PATH:/usr/sbin"
 export PATH="$PATH:/sbin"
@@ -138,6 +139,7 @@ function generate_makefile {
     sed -i "s|%%STANDALONEDIR%%|$STANDALONEDIR|g" "$MAKEFILE"
 
     sed -i "s|%%VERSION%%|$VERSION|g" "$MAKEFILE"
+    sed -i "s|%%RELEASE%%|$RELEASE|g" "$MAKEFILE"
     set +e
     echo 'Done.'
 }

@@ -1,9 +1,10 @@
 NAME=qr_alchemy
 VERSION=%%VERSION%%
+RELEASE=%%RELEASE%%
 
 SRC=./src
 
-BUILD=./build
+BUILD=build
 BUILD_APP=${BUILD}/app
 BUILD_PIXMAP=${BUILD}/pixmaps
 BUILD_BIN=${BUILD}/bin
@@ -11,6 +12,8 @@ BUILD_LIB=${BUILD}/lib
 BUILD_CONF=${BUILD}/etc
 BUILD_SHARE=${BUILD}/share
 BUILD_STANDALONE=${BUILD}/standalone
+
+LOCALTMP=tmp
 
 BINDIR=%%BINDIR%%
 CONFDIR=%%CONFDIR%%
@@ -26,6 +29,11 @@ POSTPROCESS=${POSTPROCESS_DIR}/postprocess.sh
 STANDALONE_LAUNCHER=${BUILD_STANDALONE}/${NAME}.sh
 STANDALONE_DESKTOP=${BUILD_STANDALONE}/${NAME}.desktop
 STANDALONE_POSTPROCESS=${BUILD_STANDALONE}/postprocess.sh
+
+ARCHIVE_DIR=${NAME}-${VERSION}
+ARCHIVE_FILE=${NAME}.tar.gz
+
+SPEC_FILE=${NAME}.spec
 
 build: clean build_prep standalone_build standard_build
 	chmod 755 "${BUILD_BIN}"/*
@@ -43,7 +51,19 @@ build: clean build_prep standalone_build standard_build
 
 build_prep:
 	cp -pr "${SRC}" "${BUILD}"
-	
+
+build_spec:
+	cp "${SPEC_FILE}.in" "${SPEC_FILE}"
+	sed -i 's|%NAME%|${NAME}|g' "${SPEC_FILE}"
+	sed -i 's|%VERSION%|${VERSION}|g' "${SPEC_FILE}"
+	sed -i 's|%RELEASE%|${RELEASE}|g' "${SPEC_FILE}"
+	sed -i 's|%BINDIR%|${BINDIR}|g' "${SPEC_FILE}"
+	sed -i 's|%CONFDIR%|${CONFDIR}|g' "${SPEC_FILE}"
+	sed -i 's|%PYTHON_LIBDIR%|${PYTHON_LIBDIR}|g' "${SPEC_FILE}"
+	sed -i 's|%SHAREDIR%|${SHAREDIR}|g' "${SPEC_FILE}"
+	sed -i 's|%APPDIR%|${APPDIR}|g' "${SPEC_FILE}"
+	sed -i 's|%PIXMAPDIR%|${PIXMAPDIR}|g' "${SPEC_FILE}"
+
 standard_build:
 	sed -i 's|%CONFDIR%|${CONFDIR}|g' "${BUILD_BIN}/${NAME}"
 	sed -i 's|%VERSION%|${VERSION}|g' "${BUILD_BIN}/${NAME}"
@@ -72,28 +92,37 @@ standalone_build:
 	sed -i 's|%BUILD_STANDALONE%|${BUILD_STANDALONE}|g' "${STANDALONE_POSTPROCESS}"
 clean:
 	rm -rf '${BUILD}'
+	rm -rf '${LOCALTMP}'
 
 run:
 	"${STANDALONE_LAUNCHER}"
+
+dist: clean build
+	mkdir -p "${LOCALTMP}/${ARCHIVE_DIR}"
+	rsync -Carv --exclude "${LOCALTMP}" --delete ./ "${LOCALTMP}/${ARCHIVE_DIR}"
+	tar -C "${LOCALTMP}" -czvf "${ARCHIVE_FILE}" "${ARCHIVE_DIR}"
+
+rpm: build_spec dist
+	rpmbuild -ta "${ARCHIVE_FILE}"
 
 standalone_install:
 	cp -p "${STANDALONE_DESKTOP}" "${USER_APPDIR}"/
 	update-desktop-database || :
 
 install:
-	mkdir -p '${BINDIR}'
-	mkdir -p '${PYTHON_LIBDIR}'
-	mkdir -p '${APPDIR}'
-	mkdir -p '${PIXMAPDIR}'
-	mkdir -p '${SHAREDIR}'
-	mkdir -p '${CONFDIR}'
+	mkdir -p '${DESTDIR}/${BINDIR}'
+	mkdir -p '${DESTDIR}/${PYTHON_LIBDIR}'
+	mkdir -p '${DESTDIR}/${APPDIR}'
+	mkdir -p '${DESTDIR}/${PIXMAPDIR}'
+	mkdir -p '${DESTDIR}/${SHAREDIR}'
+	mkdir -p '${DESTDIR}/${CONFDIR}'
 
-	cp -pr '${BUILD_BIN}'/* '${BINDIR}/'
-	cp -pr '${BUILD_LIB}'/* '${PYTHON_LIBDIR}/'
-	cp -pr '${BUILD_APP}'/* '${APPDIR}/'
-	cp -pr '${BUILD_PIXMAP}'/* '${PIXMAPDIR}/'
-	cp -pr '${BUILD_SHARE}'/* '${SHAREDIR}/'
-	cp -pr '${BUILD_CONF}'/* '${CONFDIR}/'
+	cp -pr '${BUILD_BIN}'/* '${DESTDIR}${BINDIR}/'
+	cp -pr '${BUILD_LIB}'/* '${DESTDIR}${PYTHON_LIBDIR}/'
+	cp -pr '${BUILD_APP}'/* '${DESTDIR}${APPDIR}/'
+	cp -pr '${BUILD_PIXMAP}'/* '${DESTDIR}${PIXMAPDIR}/'
+	cp -pr '${BUILD_SHARE}'/* '${DESTDIR}${SHAREDIR}/'
+	cp -pr '${BUILD_CONF}'/* '${DESTDIR}${CONFDIR}/'
 	update-desktop-database || :
 
 standalone_postprocess:
@@ -102,9 +131,9 @@ standalone_postprocess:
 	chmod 755 ${POSTPROCESS}
 
 postprocess:
-	mkdir -p '${POSTPROCESS_DIR}'
-	cp -p '${BUILD_SHARE}/postprocess.sh' '${POSTPROCESS}'
-	chmod 755 ${POSTPROCESS}
+	mkdir -p '${DESTDIR}${POSTPROCESS_DIR}'
+	cp -p '${DESTDIR}${BUILD_SHARE}/postprocess.sh' '${POSTPROCESS}'
+	chmod 755 '${DESTDIR}${POSTPROCESS}'
 
 test:
 	cd build/test && make basic
