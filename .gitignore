@@ -4,3 +4,6 @@
 tmp
 /qralchemy.spec
 /qralchemy.tar.gz
+/debian/qralchemy/
+/debian/files
+/debian/qralchemy.substvars
