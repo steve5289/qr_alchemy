@@ -9,7 +9,7 @@ class EntryDialog(Gtk.Dialog):
     state=Gtk.ResponseType.CANCEL
     name=""
     def __init__(self, parent,title,message):
-        Gtk.Dialog.__init__(self, title=title)
+        super().__init__(title=title, transient_for=parent,flags=0)
 
         dialog = self.get_content_area()
 
@@ -77,7 +77,7 @@ class EntryDialog(Gtk.Dialog):
 class OkDialog(Gtk.Dialog):
     state=Gtk.ResponseType.CANCEL
     def __init__(self, parent,title,message):
-        Gtk.Dialog.__init__(self, title=title)
+        super().__init__(title=title, transient_for=parent,flags=0)
 
         dialog = self.get_content_area()
 

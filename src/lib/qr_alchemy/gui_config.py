@@ -39,13 +39,13 @@ class QRConfig(Gtk.Window):
         # Each page is a box provided by annother lib
         self.notebook = Gtk.Notebook()
         self.add(self.notebook)
-        page_general=config_general.QRGeneralConfig()
+        page_general=config_general.QRGeneralConfig(self)
         self.notebook.append_page(page_general.get_box(), Gtk.Label('General'))
-        page_action=config_actions.QRActionConfig()
+        page_action=config_actions.QRActionConfig(self)
         self.notebook.append_page(page_action.get_box(), Gtk.Label('Action'))
-        page_inp_plugins=config_plugins.QRPluginConfig(plugin_type='Input')
+        page_inp_plugins=config_plugins.QRPluginConfig(parent=self,plugin_type='Input')
         self.notebook.append_page(page_inp_plugins.get_box(), Gtk.Label('In Plugin'))
-        page_out_plugins=config_plugins.QRPluginConfig(plugin_type='Output')
+        page_out_plugins=config_plugins.QRPluginConfig(parent=self,plugin_type='Output')
         self.notebook.append_page(page_out_plugins.get_box(), Gtk.Label('Out Plugin'))
 
     
