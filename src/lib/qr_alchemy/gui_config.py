@@ -26,7 +26,7 @@ class QRConfig(Gtk.Window):
         self.hb.props.title="Configuration"
 
         bu_close = Gtk.Button()
-        bu_close_icon = Gio.ThemedIcon(name='carousel-arrow-previous-symbolic')
+        bu_close_icon = Gio.ThemedIcon(name='go-previous-symbolic')
         bu_close_image = Gtk.Image.new_from_gicon(bu_close_icon, Gtk.IconSize.MENU)
         bu_close.add(bu_close_image)
         bu_close.connect("clicked", self.bu_close_clicked)
