@@ -49,8 +49,7 @@ class EntryDialog(Gtk.Dialog):
 
         box_paste = Gtk.Box(spacing=1)
         box_t.pack_start(box_paste, False, True, 0)
-        box_paste.pack_start(bu_paste,  False, True, 0)
-        box_paste.pack_start(bu_paste_selected, False, True, 30)
+        box_paste.pack_start(bu_paste_selected, False, True, 0)
 
     def bu_cancel_clicked(self, qr_code):
         self.state=Gtk.ResponseType.CANCEL
