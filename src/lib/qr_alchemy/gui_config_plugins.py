@@ -172,6 +172,7 @@ class QRPluginConfig():
             state = ok_window.get_state()
             if state != Gtk.ResponseType.OK:
                 return
+            ok_window.destroy()
             
 
         if self.plugin_type == 'Input':
@@ -179,5 +180,4 @@ class QRPluginConfig():
             qr_plugins.add_input_plugin(file)
         else:
             qr_plugins.add_output_plugin(file)
-        dialog.destroy()
         self.ls_plug_populate()
