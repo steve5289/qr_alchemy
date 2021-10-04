@@ -41,7 +41,7 @@ update-desktop-database || :
 %preun
 
 %files
-%defattr(0644,root,root, 0755)
+%defattr(0755,root,root, 0755)
 %attr(755,root,root) %BINDIR%/%{NAME}
 %attr(644,root,root) %PIXMAPDIR%/%{NAME}.png
 %attr(644,root,root) %APPDIR%/%{NAME}.desktop

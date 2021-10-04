@@ -3,7 +3,7 @@
 MAKEFILE_SRC=./Makefile.in
 MAKEFILE=./Makefile
 VERSION=0.2.0
-RELEASE=0
+RELEASE=0.2
 
 export PATH="$PATH:/usr/sbin"
 export PATH="$PATH:/sbin"
