@@ -8,7 +8,7 @@ from gi.repository import Gtk,Gio,Gdk, GdkPixbuf
 import sys
 import os
 
-import qr_alchemy.config
+import qralchemy.config
 
 class TestConfig(unittest.TestCase):
     def runTest(self):
@@ -23,29 +23,29 @@ class TestConfig(unittest.TestCase):
 
     def test_get_config(self):
         '''test get_config'''
-        qr_alchemy.config.set_sys_configfile('data/TestConfig/sys_qr_alchemy.conf')
-        qr_alchemy.config.set_user_configfile('data/TestConfig/user_qr_alchemy.conf')
+        qralchemy.config.set_sys_configfile('data/TestConfig/sys_qralchemy.conf')
+        qralchemy.config.set_user_configfile('data/TestConfig/user_qralchemy.conf')
 
-        config = qr_alchemy.config.get_config()
+        config = qralchemy.config.get_config()
         self.assertEqual(config['action_map']['sysconfig'], ['System Default'])
         self.assertEqual(config['action_map']['userconfig'], ['System Default'])
 
     def test_update_config(self):
         '''test update config'''
-        qr_alchemy.config.set_sys_configfile('data/TestConfig/sys_qr_alchemy.conf')
-        qr_alchemy.config.set_user_configfile('tmp/user_qr_alchemy.conf')
+        qralchemy.config.set_sys_configfile('data/TestConfig/sys_qralchemy.conf')
+        qralchemy.config.set_user_configfile('tmp/user_qralchemy.conf')
 
-        qr_alchemy.config.update_config('action_map', 'bob', 'None')
-        config = qr_alchemy.config.get_config()
+        qralchemy.config.update_config('action_map', 'bob', 'None')
+        config = qralchemy.config.get_config()
         self.assertEqual(config['action_map']['bob'], ['None'])
 
     def test_delete_config(self):
         '''test delete config'''
-        qr_alchemy.config.set_sys_configfile('data/TestConfig/sys_qr_alchemy.conf')
-        qr_alchemy.config.set_user_configfile('tmp/user_qr_alchemy.conf')
+        qralchemy.config.set_sys_configfile('data/TestConfig/sys_qralchemy.conf')
+        qralchemy.config.set_user_configfile('tmp/user_qralchemy.conf')
 
-        qr_alchemy.config.update_config('action_map', 'userconfig', '')
-        config = qr_alchemy.config.get_config()
+        qralchemy.config.update_config('action_map', 'userconfig', '')
+        config = qralchemy.config.get_config()
         self.assertNotIn('userconfig', config['action_map'])
 
 def main():

@@ -14,13 +14,13 @@ import os
 import subprocess
 import sys
 
-import qr_alchemy.common as qr_common
+import qralchemy.common as qr_common
 
 sys_configfile_path=""
 user_configfile_path=""
-qr_configfile="qr_alchemy.conf"
-qr_user_configdir=".config/qr_alchemy/"
-qr_plugin_dir="/usr/share/qr_alchemy/input_plugins/"
+qr_configfile="qralchemy.conf"
+qr_user_configdir=".config/qralchemy/"
+qr_plugin_dir="/usr/share/qralchemy/input_plugins/"
 qr_user_plugin_dir=qr_user_configdir + "input_plugins/"
 
 qr_config = None
@@ -100,6 +100,8 @@ def refresh_config():
                 qr_config[topic][entry] = config[topic][entry]
     # The action map is special as it contains a colen(:) seperated list as 
     # configparser can't handle an array in that field.
+    if 'action_map' not in config:
+        return
     for entry in config['action_map']:
         action = config['action_map'][entry]
         split = action.split(':', 2)
@@ -123,7 +125,7 @@ def get_config():
 def set_offer_system(code_type, active):
     home = qr_common.get_homedir()
     apps_dir=home + '/.local/share/applications'
-    appfile = apps_dir + '/qr_alchemy_process.desktop'
+    appfile = apps_dir + '/qralchemy_process.desktop'
 
     if active:
         update_config('system_offer', code_type, 1)
@@ -139,7 +141,7 @@ def set_offer_system(code_type, active):
         output =  "[Desktop Entry]\n"
         output += "Name=QR Alchemy Processer\n"
         output += "Exec=" +sys.argv[0] + " %u\n"
-        output += "Icon=qr_alchemy\n"
+        output += "Icon=qralchemy\n"
         output += "Type=Application\n"
         output += "NoDisplay=true\n"
         output += "MimeType="
@@ -155,7 +157,7 @@ def set_offer_system(code_type, active):
         # types launch what programs.
         subprocess.run(['update-desktop-database', apps_dir])
         # Sets this program as the new default for the given mime code
-        subprocess.run(['xdg-mime','default', 'qr_alchemy_process.desktop', "x-scheme-handler/"+ code_type])
+        subprocess.run(['xdg-mime','default', 'qralchemy_process.desktop', "x-scheme-handler/"+ code_type])
     else:
         try:
             os.remove(appfile)

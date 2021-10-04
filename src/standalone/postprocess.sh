@@ -26,7 +26,7 @@ function main {
         die "Error! Could not find image file with name '$IMAGE_NAME'!"
     fi
 
-    %STANDALONE%/%BUILD_STANDALONE%/qr_alchemy.sh -f "$OUTPUT"
+    %STANDALONE%/%BUILD_STANDALONE%/qralchemy.sh -f "$OUTPUT"
 }
 
 ##

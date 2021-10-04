@@ -5,7 +5,7 @@ import os
 import pickle
 from datetime import datetime
 
-import qr_alchemy.common as qr_common
+import qralchemy.common as qr_common
 
 savefile=""
 
@@ -16,7 +16,7 @@ def set_savefile(file):
 def _get_user_savefile():
     global savefile
     if not savefile:
-        qr_user_configdir=".config/qr_alchemy/"
+        qr_user_configdir=".config/qralchemy/"
         filename="saved_qr.dat"
         homedir=qr_common.get_homedir()
         savedir=homedir + '/' + qr_user_configdir

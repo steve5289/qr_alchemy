@@ -1,6 +1,9 @@
-/lib/qr_alchemy/__pycache__
+/lib/qralchemy/__pycache__
 /build
 /Makefile
 tmp
 /qralchemy.spec
 /qralchemy.tar.gz
+/debian/qralchemy/
+/debian/files
+/debian/qralchemy.substvars

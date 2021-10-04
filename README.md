@@ -11,7 +11,7 @@ Offers the following features:
    * a custom code written by you
  * Supports creating plugins to allow you to handle your own qr code types via input plugins (see the Input Plugins section for instructions)
  * Supports creating plugins to display custom qr codes via output plugins (see the Output Plugins section for instructions)
- * Allows the offering of the custom defined codes to the system to allow for programs to send the requests to qr_alchemy.
+ * Allows the offering of the custom defined codes to the system to allow for programs to send the requests to qralchemy.
  * Allows the saving of qr codes for later, as well as a brief history of the ones used.
 
 ## Legal/Warranty
@@ -19,7 +19,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 
 
 ## Installation Instructions
- 1. Download a copy of this from Releases section: https://github.com/steve5289/qr_alchemy/releases/
+ 1. Download a copy of this from Releases section: https://github.com/steve5289/qralchemy/releases/
 
  2. Install the needed dependancies:
 ```

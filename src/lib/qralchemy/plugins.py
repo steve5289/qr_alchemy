@@ -7,7 +7,7 @@ import sys
 import subprocess
 import shutil
 
-import qr_alchemy.common as qr_common
+import qralchemy.common as qr_common
 
 
 sys_input_plugin_dir=""
@@ -16,7 +16,7 @@ sys_output_plugin_dir=""
 qr_userconfig=""
 user_input_plugin_dir=""
 user_output_plugin_dir=""
-qr_user_configdir=".config/qr_alchemy/"
+qr_user_configdir=".config/qralchemy/"
 
 def set_user_plugin_dir(path):
     global qr_user_configdir

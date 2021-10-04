@@ -5,8 +5,8 @@ import os
 import pickle
 from datetime import datetime
 
-import qr_alchemy.config as qr_config
-import qr_alchemy.common as qr_common
+import qralchemy.config as qr_config
+import qralchemy.common as qr_common
 
 max_hist=10
 histfile=""
@@ -32,7 +32,7 @@ def set_histfile(file):
 def _get_user_histfile():
     global histfile
     if not histfile:
-        qr_user_configdir=".config/qr_alchemy/"
+        qr_user_configdir=".config/qralchemy/"
         filename="history_qr.dat"
         homedir=qr_common.get_homedir()
         histdir=homedir + '/' + qr_user_configdir

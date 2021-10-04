@@ -22,73 +22,73 @@ class TestSyntax(unittest.TestCase):
         self.test_import_saved()
 
     def test_import_common(self):
-        '''import qr_alchemy.common'''
-        import qr_alchemy.common
+        '''import qralchemy.common'''
+        import qralchemy.common
         return True
 
     def test_import_config(self):
-        '''import qr_alchemy.gui_config''' 
-        import qr_alchemy.gui_config
+        '''import qralchemy.gui_config''' 
+        import qralchemy.gui_config
         return True
 
     def test_import_generate(self):
-        '''import qr_alchemy.generate'''
-        import qr_alchemy.generate
+        '''import qralchemy.generate'''
+        import qralchemy.generate
         return True
 
     def test_import_gui(self):
-        '''import qr_alchemy.gui''' 
-        import qr_alchemy.gui
+        '''import qralchemy.gui''' 
+        import qralchemy.gui
         return True
 
     def test_import_gui_config_general(self):
-        '''import qr_alchemy.gui_config_general''' 
-        import qr_alchemy.gui_config_general
+        '''import qralchemy.gui_config_general''' 
+        import qralchemy.gui_config_general
         return True
 
     def test_import_gui_config_actions(self):
-        '''import qr_alchemy.gui_config_actions''' 
-        import qr_alchemy.gui_config_actions
+        '''import qralchemy.gui_config_actions''' 
+        import qralchemy.gui_config_actions
         return True
 
     def test_import_gui_config_plugins(self):
-        '''import qr_alchemy.gui_config_plugins''' 
-        import qr_alchemy.gui_config_plugins
+        '''import qralchemy.gui_config_plugins''' 
+        import qralchemy.gui_config_plugins
 
         return True
     def test_import_gui_display(self):
-        '''import qr_alchemy.gui_display''' 
-        import qr_alchemy.gui_display
+        '''import qralchemy.gui_display''' 
+        import qralchemy.gui_display
         return True
 
     def test_import_gui_hist(self):
-        '''import qr_alchemy.gui_hist''' 
-        import qr_alchemy.gui_hist
+        '''import qralchemy.gui_hist''' 
+        import qralchemy.gui_hist
         return True
 
     def test_import_gui_process(self):
-        '''import qr_alchemy.gui_process''' 
-        import qr_alchemy.gui_process
+        '''import qralchemy.gui_process''' 
+        import qralchemy.gui_process
         return True
 
     def test_import_gui_saved(self):
-        '''import qr_alchemy.gui_saved''' 
-        import qr_alchemy.gui_saved
+        '''import qralchemy.gui_saved''' 
+        import qralchemy.gui_saved
         return True
 
     def test_import_plugins(self):
-        '''import qr_alchemy.plugins''' 
-        import qr_alchemy.plugins
+        '''import qralchemy.plugins''' 
+        import qralchemy.plugins
         return True
 
     def test_import_process(self):
-        '''import qr_alchemy.process''' 
-        import qr_alchemy.process
+        '''import qralchemy.process''' 
+        import qralchemy.process
         return True
 
     def test_import_saved(self):
-        '''import qr_alchemy.saved''' 
-        import qr_alchemy.saved
+        '''import qralchemy.saved''' 
+        import qralchemy.saved
         return True
 
 def main():

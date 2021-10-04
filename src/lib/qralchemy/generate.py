@@ -6,7 +6,7 @@ import subprocess
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk,Gio,Gdk, GdkPixbuf
 
-import qr_alchemy.gui as gui
+import qralchemy.gui as gui
 
 def generate_qr_img(qr_code):
     prog = 'qrencode'

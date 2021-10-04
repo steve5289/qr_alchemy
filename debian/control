@@ -1,0 +1,16 @@
+Source: qralchemy
+Section: unknown
+Priority: optional
+Maintainer: root <root@unknown>
+Build-Depends: debhelper-compat (= 13), autotools-dev
+Standards-Version: 4.5.1
+Homepage: https://github.com/steve5289/qr_alchemy
+#Vcs-Browser: https://salsa.debian.org/debian/qralchemy
+#Vcs-Git: https://salsa.debian.org/debian/qralchemy.git
+Rules-Requires-Root: no
+
+Package: qralchemy
+Architecture: all
+Depends: zbar qrencode python3 gnome-ssh-askpass xdg-utils
+Description: Tool for generating and processing qr codes
+ Tool for generating and processing qr codes

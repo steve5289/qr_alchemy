@@ -1,8 +1,8 @@
-NAME=qr_alchemy
+NAME=qralchemy
 VERSION=%%VERSION%%
 RELEASE=%%RELEASE%%
 
-SRC=./src
+SRC=src
 
 BUILD=build
 BUILD_APP=${BUILD}/app
@@ -32,6 +32,7 @@ STANDALONE_POSTPROCESS=${BUILD_STANDALONE}/postprocess.sh
 
 ARCHIVE_DIR=${NAME}-${VERSION}
 ARCHIVE_FILE=${NAME}.tar.gz
+DEBBALL_FILE=${NAME}_${VERSION}.orig.tar.gz
 
 SPEC_FILE=${NAME}.spec
 
@@ -49,8 +50,8 @@ build: clean build_prep standalone_build standard_build
 	@echo 'build complete. Run `sudo make install` to install in system space or `make standalone_install` to install in your homedir'
 
 
-build_prep:
-	cp -pr "${SRC}" "${BUILD}"
+build_prep: clean
+	cp -pr "${SRC}"/ "${BUILD}/"
 
 build_spec:
 	cp "${SPEC_FILE}.in" "${SPEC_FILE}"
@@ -93,14 +94,20 @@ standalone_build:
 clean:
 	rm -rf '${BUILD}'
 	rm -rf '${LOCALTMP}'
+	rm -f '${ARCHIVE_FILE}'
+	rm -f '${DEBBALL_FILE}'
 
 run:
 	"${STANDALONE_LAUNCHER}"
 
-dist: clean build
+dist: clean
 	mkdir -p "${LOCALTMP}/${ARCHIVE_DIR}"
 	rsync -Carv --exclude "${LOCALTMP}" --delete ./ "${LOCALTMP}/${ARCHIVE_DIR}"
 	tar -C "${LOCALTMP}" -czvf "${ARCHIVE_FILE}" "${ARCHIVE_DIR}"
+
+deb: dist
+	cp "${ARCHIVE_FILE}" "..//${DEBBALL_FILE}"
+	debuild -us -uc
 
 rpm: build_spec dist
 	rpmbuild -ta "${ARCHIVE_FILE}"

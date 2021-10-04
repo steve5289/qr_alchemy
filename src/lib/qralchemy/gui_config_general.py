@@ -3,11 +3,11 @@ import gi
 
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk,Gio
-import qr_alchemy.process as qr_process
-import qr_alchemy.plugins as qr_plugins
-import qr_alchemy.gui as gui
-import qr_alchemy.config as qr_config
-import qr_alchemy.history as qr_history
+import qralchemy.process as qr_process
+import qralchemy.plugins as qr_plugins
+import qralchemy.gui as gui
+import qralchemy.config as qr_config
+import qralchemy.history as qr_history
 
 
 class QRGeneralConfig():

@@ -2,11 +2,11 @@
 # Provides a window for displaying qr codes
 
 import gi
-import qr_alchemy.process as qr_process
-import qr_alchemy.generate as qr_generate
-import qr_alchemy.saved as qr_saved
-import qr_alchemy.history as qr_history
-import qr_alchemy.gui as gui
+import qralchemy.process as qr_process
+import qralchemy.generate as qr_generate
+import qralchemy.saved as qr_saved
+import qralchemy.history as qr_history
+import qralchemy.gui as gui
 
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk

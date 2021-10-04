@@ -7,8 +7,8 @@ gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk,Gio,Gdk, GdkPixbuf
 import sys
 
-import qr_alchemy.config
-import qr_alchemy.process
+import qralchemy.config
+import qralchemy.process
 
 class TestProcess(unittest.TestCase):
     def runTest(self):
@@ -20,36 +20,36 @@ class TestProcess(unittest.TestCase):
 
     def test_qr_image_handler(self):
         '''test qr_image_handler''' 
-        qr_code=qr_alchemy.process.qr_image_handler('data/TestProcess/bob.png')
+        qr_code=qralchemy.process.qr_image_handler('data/TestProcess/bob.png')
         self.assertEqual(qr_code, 'bob:Is not steve\n')
 
     def test_qr_get_header(self):
         '''test qr_get_header''' 
-        header=qr_alchemy.process.qr_get_header('bob:test')
+        header=qralchemy.process.qr_get_header('bob:test')
         self.assertEqual(header, 'bob')
 
     def test_qr_get_action_custom(self):
         '''test qr_get_action custom action''' 
-        qr_alchemy.config.set_sys_configfile('data/TestProcess/sys_qr_alchemy.conf')
-        qr_alchemy.config.set_user_configfile('data/TestProcess/user_qr_alchemy.conf')
+        qralchemy.config.set_sys_configfile('data/TestProcess/sys_qralchemy.conf')
+        qralchemy.config.set_user_configfile('data/TestProcess/user_qralchemy.conf')
 
-        action=qr_alchemy.process.qr_get_action('sysconfig')
+        action=qralchemy.process.qr_get_action('sysconfig')
         self.assertEqual(action, ['Program', 'ls'])
 
     def test_qr_get_action_default(self):
         '''test qr_get_action default action''' 
-        qr_alchemy.config.set_sys_configfile('data/TestProcess/sys_qr_alchemy.conf')
-        qr_alchemy.config.set_user_configfile('data/TestProcess/user_qr_alchemy.conf')
+        qralchemy.config.set_sys_configfile('data/TestProcess/sys_qralchemy.conf')
+        qralchemy.config.set_user_configfile('data/TestProcess/user_qralchemy.conf')
 
-        action=qr_alchemy.process.qr_get_action('asdf')
+        action=qralchemy.process.qr_get_action('asdf')
         self.assertEqual(action, ['None'])
 
     def test_qr_get_action_nodefault(self):
         '''test qr_get_action nodefault action''' 
-        qr_alchemy.config.set_sys_configfile('data/TestProcess/user_qr_alchemy.conf')
-        qr_alchemy.config.set_user_configfile('data/TestProcess/user_qr_alchemy.conf')
+        qralchemy.config.set_sys_configfile('data/TestProcess/user_qralchemy.conf')
+        qralchemy.config.set_user_configfile('data/TestProcess/user_qralchemy.conf')
 
-        action=qr_alchemy.process.qr_get_action('asdf')
+        action=qralchemy.process.qr_get_action('asdf')
         self.assertEqual(action, ['System Default'])
 
 def main():
