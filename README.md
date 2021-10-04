@@ -46,7 +46,7 @@ sudo make install
  1. Run The following:
 ```
 ./configure
-make uninstall
+sudo make uninstall
 ```
 
 ## Plugin Documentation
