@@ -125,7 +125,7 @@ install:
 	cp -pr '${BUILD_CONF}'/* '${DESTDIR}${CONFDIR}/'
 	update-desktop-database || :
 
-install:
+uninstall:
 	mkdir -p '${DESTDIR}/${BINDIR}'
 	mkdir -p '${DESTDIR}/${PYTHON_LIBDIR}'
 	mkdir -p '${DESTDIR}/${APPDIR}'
