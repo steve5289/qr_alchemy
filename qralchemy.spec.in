@@ -14,7 +14,6 @@ Requires: 	zbar
 Requires: 	qrencode
 Requires: 	zenity
 BuildArch: 	noarch
-Obsoletes:	qr_alchemy
 
 %description
 Tool for generating and processing qr codes
