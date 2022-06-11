@@ -13,6 +13,7 @@ Requires: 	python3-libs
 Requires: 	zbar
 Requires: 	qrencode
 Requires: 	zenity
+Requires: 	iwgetid
 BuildArch: 	noarch
 
 %description
